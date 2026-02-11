@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | v37.0 Performance</title>
+    <title>Solo Personal Autorizado | v38.0 Fixed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
@@ -37,16 +37,21 @@
             --primary: #10b981; 
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        /* RESET TOTAL */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        /* FIX DE RENDIMIENTO CRÍTICO: Scroll Nativo */
-        html { height: 100%; overflow-x: hidden; }
-        body { 
-            background-color: var(--bg-deep); color: var(--text-main); margin: 0; 
-            min-height: 100%; display: flex; flex-direction: column; 
-            overflow-x: hidden; 
-            overscroll-behavior-y: none; /* Evita el rebote elástico que gasta recursos */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden !important; /* BLOQUEO TOTAL DE SCROLL HORIZONTAL */
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
+        
+        body { display: flex; flex-direction: column; }
 
         /* --- LOGIN --- */
         #login-wrap { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at bottom, #111 0%, var(--bg-deep) 60%); display: flex; align-items: center; justify-content: center; }
@@ -56,15 +61,17 @@
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; }
 
-        /* --- HEADER PC --- */
-        header { background: var(--bg-card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 65px; position: sticky; top: 0; z-index: 50; }
+        /* --- HEADER --- */
+        header { background: var(--bg-card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 65px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
+        
         .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
         .cat-btn { padding: 5px 15px; border-radius: 6px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
         .cat-btn:hover { color: var(--text-main); }
         .cat-btn.active { background: var(--primary); color: #000; }
         .abast-btn-logo { height: 14px; width: auto; display: block; }
         body.abastible-mode .cat-btn.active .abast-btn-logo { filter: brightness(0) invert(1); }
+
         .header-right { display: flex; align-items: center; gap: 10px; }
         .icon-btn { width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: 0.2s; }
         .icon-btn:hover { color: var(--text-main); border-color: var(--text-main); }
@@ -72,25 +79,29 @@
         .status-dot.online { background: var(--status-ok) !important; box-shadow: 0 0 8px var(--status-ok) !important; }
         
         /* --- TOOLBAR --- */
-        .toolbar { padding: 10px 20px; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex-shrink: 0; position: sticky; top: 65px; z-index: 40; }
+        .toolbar { padding: 10px 20px; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
         .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 3px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; }
         .tab-item { padding: 6px 15px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
         .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); }
+
         .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; height: 40px; align-items: center; flex: 1; min-width: 250px; }
         .search-grp select { border: none; background: transparent; width: auto; max-width: 100px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
         .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.9rem; }
         .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
 
-        /* --- MAIN TABLE (PC) --- */
-        main { flex: 1; padding: 0 20px 20px; display: flex; flex-direction: column; width: 100%; }
+        /* --- MAIN TABLE (MODO PC DEFAULT) --- */
+        main { flex: 1; padding: 0 20px 20px; overflow: hidden; display: flex; flex-direction: column; width: 100%; }
         .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; width: 100%; }
         .t-scroll { overflow: auto; flex: 1; width: 100%; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1500px; /* PC requiere ancho, móvil NO */ }
         th { background: var(--bg-input); padding: 12px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 10; }
         td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-main); cursor: pointer; }
         tr:hover { background: rgba(255,255,255,0.03); }
         tr:hover td:first-child { color: var(--primary); font-weight: 700; }
+
+        /* Etiquetas para móvil (ocultas en PC) */
+        .mobile-label { display: none; }
 
         .pagination { padding: 8px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
@@ -114,56 +125,55 @@
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 50px; z-index: 6000; display: none; font-size: 0.85rem; border-left: 4px solid var(--primary); }
 
         /* =========================================
-           MOBILE ULTRA OPTIMIZADO (v37.0)
+           MOBILE OPTIMIZADO (v38.0 - BULLETPROOF)
            ========================================= */
         @media (max-width: 900px) {
-            /* 1. HEADER & TOOLBAR */
+            /* 0. RESET SCROLL */
+            body { height: auto; overflow-y: auto; overflow-x: hidden; }
+            
+            /* 1. Header */
             header { height: auto; padding: 10px 15px; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand icons" "switch switch"; gap: 12px; position: static; }
             .header-left { grid-area: brand; } .header-right { grid-area: icons; justify-content: flex-end; }
             .header-left::after { content: "JM AUTOGAS"; font-weight: 900; font-size: 1.1rem; color: var(--text-main); letter-spacing: 1px; }
             .cat-switch { grid-area: switch; margin: 0; width: 100%; display: flex; background: var(--bg-input); padding: 4px; border-radius: 12px; height: 48px; }
             .cat-btn { flex: 1; justify-content: center; padding: 0; font-size: 0.9rem; } 
             .abast-btn-logo { height: 18px; }
-            
+
+            /* 2. Toolbar */
             .toolbar { padding: 0 15px 10px; flex-direction: column; gap: 10px; position: static; }
             .tabs { width: 100%; padding: 2px; } .tab-item { flex: 1; text-align: center; padding: 10px; font-size: 0.8rem; }
             .search-grp { width: 100%; height: 50px; max-width: none; border-radius: 10px; } .search-grp input { font-size: 1rem; }
 
-            /* 2. MAIN SCROLLABLE */
+            /* 3. Main Container */
             main { 
                 padding: 15px 15px 120px 15px; 
                 display: block; width: 100%; max-width: 100%; 
-                overflow: visible; /* Dejar que el body haga scroll */
+                overflow: visible; height: auto;
             }
             .panel { border: none; background: transparent; box-shadow: none; overflow: visible; height: auto; width: 100%; }
             .t-scroll { overflow: visible; height: auto; width: 100%; }
 
-            /* 3. TARJETAS MÓVILES (OPTIMIZADAS) */
+            /* 4. TARJETAS MÓVILES (FIX INFINITO) */
+            /* IMPORTANTE: Anular min-width de PC */
+            table { min-width: 0 !important; width: 100% !important; display: block; }
             thead { display: none; }
-            table, tbody { display: block; width: 100%; }
+            tbody { display: block; width: 100%; }
             
             tr {
                 display: flex; flex-direction: column;
                 margin: 0 0 15px 0;
-                background: #151515; 
+                background: #1a1a1a; 
                 border: 1px solid #333;
                 border-radius: 16px;
                 padding: 16px;
                 position: relative;
-                width: 100%; box-sizing: border-box; max-width: 100%;
-                
-                /* OPTIMIZACIÓN DE RENDIMIENTO */
-                content-visibility: auto; /* Magia: No renderiza si no está en pantalla */
-                contain-intrinsic-size: 100px; /* Altura estimada */
-                box-shadow: none; /* Sombras simples para velocidad */
+                width: 100%; box-sizing: border-box; 
+                /* Evitar desborde */
+                max-width: 100%; 
+                overflow: hidden; 
             }
             
-            tr::after { 
-                content: '\f054'; font-family: "Font Awesome 6 Free"; font-weight: 900; 
-                position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
-                color: var(--primary); font-size: 1.2rem; opacity: 0.3; pointer-events: none; 
-            }
-
+            /* Celdas */
             td {
                 display: flex; justify-content: space-between; align-items: center; 
                 padding: 6px 0; border-bottom: 1px solid #2a2a2a; font-size: 0.95rem;
@@ -171,34 +181,49 @@
             }
             td:last-child { border-bottom: none; }
 
-            td::before { display: none; } 
-            
+            /* VISIBILIDAD DE DATOS (FIX) */
+            .mobile-label { 
+                display: block; /* Mostrar etiqueta en móvil */
+                font-size: 0.75rem; font-weight: 700; color: var(--text-muted); 
+                text-transform: uppercase; margin-right: 10px; flex-shrink: 0;
+            }
             .mobile-val { 
-                color: #ffffff !important; font-size: 1rem; display: block; text-align: right;
-                word-break: break-word; white-space: normal; flex: 1; 
+                color: #ffffff !important; /* BLANCO FORZADO */
+                font-size: 1rem; text-align: right; 
+                word-break: break-word; /* Romper palabras largas */
+                white-space: normal;
             }
 
-            /* Estilos Datos */
-            td[data-label="Patente"] { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 8px; }
-            td[data-label="Patente"] .mobile-val { font-size: 1.6rem; font-weight: 900; color: var(--primary) !important; text-align: left; }
-            td[data-label="Cliente"] .mobile-val { font-size: 1.1rem; font-weight: 700; color: #fff !important; }
-            td[data-label="Marca"], td[data-label="Modelo"] { display: inline-block; width: auto; margin-right: 5px; border: none; padding: 2px 0; }
-            td[data-label="Marca"] .mobile-val, td[data-label="Modelo"] .mobile-val { color: #aaa !important; font-size: 0.9rem; }
-            td[data-label="Fecha"] { border: none; padding: 2px 0; }
-            td[data-label="Fecha"] .mobile-val { color: var(--text-muted) !important; font-size: 0.8rem; }
+            /* Estilos Específicos */
+            
+            /* Patente Grande */
+            td[data-col="Patente"] { 
+                border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 8px; display: block; 
+            }
+            td[data-col="Patente"] .mobile-label { display: none; } /* Ocultar etiqueta "Patente" */
+            td[data-label="Patente"] .mobile-val { text-align: center; font-size: 1.6rem; font-weight: 900; color: var(--primary) !important; }
 
-            /* Ocultar */
-            td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
-            td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
-            td[data-label="Color"], td[data-label="Año"], td[data-label="Técnico"], td[data-label="Diagnóstico"] { display: none; }
+            /* Ocultar en lista (click para ver) */
+            td[data-col="Sede"], td[data-col="Ficha"], td[data-col="RUT"], td[data-col="Celular"], 
+            td[data-col="Comuna"], td[data-col="KM"], td[data-col="Coord."], td[data-col="Materiales"],
+            td[data-col="Color"], td[data-col="Año"], td[data-col="Técnico"], td[data-col="Diagnóstico"] { 
+                display: none; 
+            }
+
+            /* Flecha */
+            tr::after { 
+                content: '\f054'; font-family: "Font Awesome 6 Free"; font-weight: 900; 
+                position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
+                color: var(--primary); font-size: 1.2rem; opacity: 0.3; pointer-events: none; 
+            }
 
             /* Modals */
-            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; border: none; padding: 20px 20px 100px 20px; overflow-y: auto; }
+            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 20px 20px 100px 20px; overflow-y: auto; }
             .f-grid { grid-template-columns: 1fr; gap: 15px; } .f-full { grid-column: span 1; }
             .close { top: 20px; right: 20px; font-size: 2.2rem; padding: 10px; z-index: 100; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
 
-            /* Paginación y FAB */
-            .pagination { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,10,0.95); padding: 15px; justify-content: center; gap: 20px; z-index: 90; border-top: 1px solid var(--border); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+            /* Paginación */
+            .pagination { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10,10,10,0.95); padding: 15px; justify-content: center; gap: 20px; z-index: 90; border-top: 1px solid var(--border); }
             .fab { bottom: 80px; right: 20px; width: 60px; height: 60px; font-size: 1.8rem; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
         }
     </style>
@@ -427,17 +452,20 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    let cells = `<td data-label="Patente"><span class="mobile-val">${row[9]}</span></td>`; // Patente
-                    cells += `<td data-label="Cliente"><span class="mobile-val">${row[3]}</span></td>`;
-                    cells += `<td data-label="Marca"><span class="mobile-val">${row[7]} ${row[8]}</span></td>`;
-                    cells += `<td data-label="Fecha"><span class="mobile-val">${d}</span></td>`;
+                    // DATA-COL PARA FILTRADO, SPAN EXPLÍCITO PARA VISIBILIDAD MÓVIL
+                    let cells = `<td data-col="Patente"><span class="mobile-label">Patente</span><span class="mobile-val">${row[9]}</span></td>`; // Patente primero
+                    cells += `<td data-col="Cliente"><span class="mobile-label">Cliente</span><span class="mobile-val">${row[3]}</span></td>`;
+                    cells += `<td data-col="Marca"><span class="mobile-label">Marca</span><span class="mobile-val">${row[7]} ${row[8]}</span></td>`;
+                    cells += `<td data-col="Fecha"><span class="mobile-label">Fecha</span><span class="mobile-val">${d}</span></td>`;
                     
-                    let standardCells = `<td data-label="Fecha"><span class="mobile-val">${d}</span></td>`;
+                    // Resto de datos con HTML explícito (aunque se oculten por CSS en vista tarjeta)
                     for(let k=1; k<row.length-1; k++) {
+                        // Saltamos los que ya pusimos manualmente
+                        if([3,7,8,9].includes(k)) continue; 
                         let label = HEADERS[k] || "Info";
-                        standardCells += `<td data-label="${label}"><span class="mobile-val">${row[k] || '-'}</span></td>`;
+                        cells += `<td data-col="${label}"><span class="mobile-label">${label}</span><span class="mobile-val">${row[k] || '-'}</span></td>`;
                     }
-                    return `<tr onclick="openInsp(${i})">${standardCells}</tr>`;
+                    return `<tr onclick="openInsp(${i})">${cells}</tr>`;
                 }).join('');
             }
             document.getElementById('page-lbl').innerText = `Pág ${page}`;
