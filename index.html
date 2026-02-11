@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | Mobile v28</title>
+    <title>Solo Personal Autorizado | v28.1</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* --- VARIABLES BASE --- */
+        /* --- VARIABLES --- */
         :root {
             --bg-deep: #000000;
             --bg-card: #0a0a0a;
@@ -14,26 +14,21 @@
             
             --primary: #00e676; 
             --primary-dim: #00b35c;
-            --primary-glow: rgba(0, 230, 118, 0.3);
-            --primary-glow-subtle: rgba(0, 230, 118, 0.1);
+            --primary-glow: rgba(0, 230, 118, 0.2);
             
             --text-main: #ffffff;
             --text-muted: #888888;
             --border: #333333;
             --danger: #ff4d4d;
             
-            /* Status Fijo */
             --status-ok: #00e676;
             --status-err: #ff4d4d;
-            
-            --transition-speed: 0.3s;
         }
 
         body.abastible-mode {
             --primary: #ff6f00; 
             --primary-dim: #e65100;
-            --primary-glow: rgba(255, 111, 0, 0.4);
-            --primary-glow-subtle: rgba(255, 111, 0, 0.15);
+            --primary-glow: rgba(255, 111, 0, 0.25);
         }
 
         body.light {
@@ -42,175 +37,164 @@
             --primary: #10b981; 
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background-color: var(--bg-deep); color: var(--text-main); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s;
-        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-deep); color: var(--text-main); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         /* --- LOGIN --- */
-        #login-wrap { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at center bottom, #111 0%, var(--bg-deep) 60%); display: flex; align-items: center; justify-content: center; }
-        .login-card { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(20px); padding: 2rem; border-radius: 24px; width: 90%; max-width: 380px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.8; }
-        
-        .login-icon-box { width: 80px; height: 80px; margin: 0 auto 20px; background: var(--primary-glow-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary-glow); box-shadow: 0 0 20px var(--primary-glow); }
-        .login-icon-box i { font-size: 2.5rem; color: var(--primary); }
+        #login-wrap { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at bottom, #111 0%, var(--bg-deep) 60%); display: flex; align-items: center; justify-content: center; }
+        .login-card { background: rgba(15,15,15,0.9); backdrop-filter: blur(20px); padding: 2rem; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         
         .input-group { position: relative; margin-bottom: 15px; }
-        .login-input { width: 100%; padding: 14px 14px 14px 45px; background: rgba(30, 30, 30, 0.6); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 1rem; }
-        .login-input:focus { border-color: var(--primary); background: black; }
+        .login-input { width: 100%; padding: 14px 14px 14px 45px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 1rem; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 20px var(--primary-glow); }
+        .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; }
 
-        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--duration) linear infinite; opacity: 0; }
-        @keyframes twinkle { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: translateY(-150px); } }
-
-        /* --- HEADER & APP --- */
-        header { background: var(--bg-card); padding: 10px 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 50; flex-shrink: 0; gap: 15px; }
-        
+        /* --- HEADER --- */
+        header { background: var(--bg-card); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 60px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .brand-logo { height: 40px; width: auto; object-fit: contain; }
+        .brand-logo { height: 35px; width: auto; object-fit: contain; }
         
-        .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 10px; border: 1px solid var(--border); }
-        .cat-btn { padding: 6px 15px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .cat-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
-        .abast-btn-logo { height: 20px; width: auto; display: block; }
+        .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
+        .cat-btn { padding: 5px 12px; border-radius: 6px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; }
+        .cat-btn.active { background: var(--primary); color: #000; }
+        .abast-btn-logo { height: 16px; width: auto; display: block; }
         body.abastible-mode .cat-btn.active .abast-btn-logo { filter: brightness(0) invert(1); }
 
-        .header-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-        .status-pill { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; background: var(--bg-input); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-muted); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
-        .dot.ok { background: var(--status-ok) !important; box-shadow: 0 0 8px var(--status-ok); }
-        .dot.err { background: var(--status-err) !important; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--status-err); box-shadow: 0 0 5px var(--status-err); }
+        .status-dot.online { background: var(--status-ok) !important; box-shadow: 0 0 5px var(--status-ok) !important; }
+        
+        /* --- TOOLBAR --- */
+        .toolbar { padding: 10px 20px; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
+        .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 3px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; }
+        .tab-item { padding: 6px 15px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
+        .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); }
 
-        /* TOOLBAR */
-        .toolbar { padding: 1rem 1.5rem; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; z-index: 40; flex-shrink: 0; }
-        .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 4px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; }
-        .tab-item { padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
-        .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-
-        .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; height: 40px; align-items: center; flex: 1; min-width: 200px; }
-        .search-grp select { border: none; background: transparent; width: auto; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
-        .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); width: 100%; font-size: 0.9rem; }
+        .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; height: 38px; align-items: center; flex: 1; min-width: 250px; }
+        .search-grp select { border: none; background: transparent; width: auto; max-width: 100px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
+        .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.9rem; }
         .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
 
-        /* MAIN */
-        main { flex: 1; padding: 0 1.5rem 1.5rem; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; flex: 1; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .t-scroll { overflow: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        /* --- MAIN TABLE --- */
+        main { flex: 1; padding: 0 20px 20px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
+        .t-scroll { overflow: auto; flex: 1; }
         
         table { width: 100%; border-collapse: collapse; min-width: 1800px; }
-        th { background: var(--bg-input); padding: 14px 16px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
-        td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-main); cursor: pointer; }
-        tr:hover { background: rgba(255,255,255,0.02); }
+        th { background: var(--bg-input); padding: 12px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
+        td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-main); cursor: pointer; }
+        tr:hover { background: rgba(255,255,255,0.03); }
         tr:hover td:first-child { color: var(--primary); font-weight: 700; }
 
-        .pagination { padding: 10px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
-        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+        .pagination { padding: 8px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
 
         /* FAB */
-        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.5rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; transition: transform 0.2s; }
-        .fab:active { transform: scale(0.9); }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.5rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; }
         .fab.hidden { display: none !important; }
 
-        /* --- MOBILE RESPONSIVE CSS --- */
-        @media (max-width: 768px) {
-            /* RE-ESTRUCTURA HEADER */
-            header { display: flex; flex-direction: column; height: auto; gap: 10px; padding: 10px 15px; }
-            .header-left { width: 100%; justify-content: space-between; }
-            .header-controls { width: 100%; justify-content: space-between; margin: 0; }
-            
-            /* SWITCH DE CATEGORÍA GRANDE EN MOVIL */
-            .cat-switch { width: 100%; margin: 0; display: flex; }
-            .cat-btn { flex: 1; justify-content: center; padding: 10px; }
+        /* --- MODALS --- */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .m-card { background: var(--bg-card); width: 95%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 2rem; border-radius: 16px; border: 1px solid var(--border); position: relative; }
+        .close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
 
-            /* TOOLBAR STACK */
-            .toolbar { padding: 10px 15px; flex-direction: column; align-items: stretch; gap: 10px; }
+        /* FORMULARIOS */
+        .f-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .f-full { grid-column: span 2; }
+        label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+        .form-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-main); font-size: 0.95rem; }
+        .btn-green { background: var(--primary); color: #000; padding: 12px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; width: 100%; }
+
+        /* DETALLES */
+        .d-item { padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); }
+        .d-lbl { font-size: 0.65rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .d-val { font-size: 1rem; font-weight: 500; color: var(--text-main); }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 50px; z-index: 6000; display: none; font-size: 0.85rem; border-left: 4px solid var(--primary); }
+
+        /* --- RESPONSIVE MOBILE FIXES --- */
+        @media (max-width: 768px) {
+            /* 1. Header en columna */
+            header { height: auto; flex-direction: column; padding: 10px; gap: 10px; }
+            .header-left { width: 100%; justify-content: space-between; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .cat-switch { margin: 0; width: 100%; display: flex; }
+            .cat-btn { flex: 1; justify-content: center; }
+
+            /* 2. Toolbar apilada */
+            .toolbar { padding: 10px; flex-direction: column; gap: 10px; }
             .tabs { width: 100%; justify-content: space-between; }
-            .tab-item { flex: 1; text-align: center; padding: 8px 0; }
+            .tab-item { flex: 1; text-align: center; }
             .search-grp { width: 100%; }
 
-            /* MAIN CONTENT PADDING */
-            main { padding: 5px 10px 10px; }
-            .panel { border-radius: 12px; border: none; background: transparent; box-shadow: none; }
+            /* 3. Main sin padding extra */
+            main { padding: 5px; }
+            .panel { border: none; background: transparent; }
             .t-scroll { overflow: visible; }
 
-            /* TRANSFORMACION TABLA A TARJETAS */
+            /* 4. TABLA -> TARJETAS (CARD VIEW) */
             thead { display: none; }
-            table { display: block; min-width: 100%; }
-            tbody { display: block; }
+            table, tbody, tr, td { display: block; width: 100%; }
             
-            tr { 
-                display: flex; flex-direction: column;
-                margin-bottom: 15px; 
-                background: var(--bg-card); 
-                border: 1px solid var(--border); 
-                border-radius: 16px; 
-                padding: 15px; 
+            tr {
+                margin-bottom: 15px;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 15px;
                 position: relative;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             }
-            tr:active { transform: scale(0.98); }
 
-            td { 
-                display: flex; 
-                justify-content: space-between; 
+            td {
+                display: flex;
+                justify-content: space-between;
                 align-items: center;
-                padding: 6px 0; 
-                border: none; 
+                text-align: right;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
                 font-size: 0.95rem;
-                color: var(--text-main);
             }
             
-            /* ETIQUETAS */
-            td::before { 
-                content: attr(data-label); 
-                font-size: 0.75rem; 
-                font-weight: 700; 
-                color: var(--text-muted); 
-                text-transform: uppercase; 
-                margin-right: 15px;
-                min-width: 80px;
+            td:last-child { border-bottom: none; }
+
+            /* Etiquetas automáticas usando data-label */
+            td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 800;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                font-size: 0.75rem;
             }
 
-            /* CAMPOS CLAVE EN MOVIL */
-            /* Patente Grande y Arriba */
-            td[data-label="Patente"] { 
-                font-size: 1.4rem; 
-                font-weight: 900; 
-                color: var(--primary); 
-                padding-bottom: 10px; 
-                border-bottom: 1px solid var(--border); 
-                margin-bottom: 10px; 
-                display: block; 
+            /* Estilos especiales para tarjeta */
+            td[data-label="Patente"] {
+                font-size: 1.4rem;
+                font-weight: 900;
+                color: var(--primary);
                 text-align: center;
+                display: block;
+                border-bottom: 2px solid var(--border);
+                margin-bottom: 10px;
+                padding-bottom: 10px;
             }
-            td[data-label="Patente"]::before { display: none; }
+            td[data-label="Patente"]::before { display: none; } /* Ocultar etiqueta patente */
 
-            /* OCULTAR DATOS MENOS RELEVANTES EN LA VISTA TARJETA */
+            /* Ocultar columnas menos importantes en la vista previa */
             td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
             td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
-            td[data-label="Color"], td[data-label="Año"], td[data-label="Modelo"], td[data-label="Técnico"] { 
-                display: none; 
-            }
+            td[data-label="Color"], td[data-label="Año"], td[data-label="Modelo"], td[data-label="Técnico"],
+            td[data-label="Marca"] { display: none; }
 
-            /* MODALES FULL SCREEN EN MOVIL */
-            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 20px; border:none; }
+            /* 5. Modales Full Screen */
+            .m-card { 
+                width: 100%; height: 100%; max-height: 100%; 
+                border-radius: 0; border: none; padding: 20px; 
+            }
             .f-grid { grid-template-columns: 1fr; }
             .f-full { grid-column: span 1; }
             .close { top: 20px; right: 20px; font-size: 2rem; padding: 10px; }
         }
-
-        /* MODALS */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
-        .close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
-        
-        .btn-green { background: var(--primary); color: #000; padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; width: 100%; }
-        
-        .user-pill { display: flex; align-items: center; gap: 5px; }
-        .user-row { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; align-items: center; }
-        
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 25px; border-radius: 50px; z-index: 6000; display: none; border-left: 4px solid var(--primary); font-size: 0.9rem; width: max-content; max-width: 90%; text-align: center; }
     </style>
 </head>
 <body class="dark">
@@ -220,9 +204,9 @@
 <div id="login-wrap">
     <div id="star-container"></div>
     <div class="login-card">
-        <div class="login-icon-box"><i class="fas fa-user-astronaut"></i></div>
-        <h2 style="margin:0 0 5px; color:white;">ACCESO RESTRINGIDO</h2>
-        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:25px;">Sistema de Gestión Integral</p>
+        <div style="font-size:3rem; color:var(--primary); margin-bottom:1rem;"><i class="fas fa-user-astronaut"></i></div>
+        <h2 style="color:white; margin:0 0 5px;">ACCESO RESTRINGIDO</h2>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Solo Personal Autorizado</p>
         <div class="input-group">
             <input type="text" id="user" class="login-input" placeholder="Usuario">
             <i class="fas fa-user input-icon"></i>
@@ -231,33 +215,25 @@
             <input type="password" id="pass" class="login-input" placeholder="Contraseña">
             <i class="fas fa-lock input-icon"></i>
         </div>
-        <button class="login-btn-main" onclick="attemptLogin()">CONECTAR</button>
-        <div style="margin-top:20px; color:var(--text-muted); font-size:0.8rem;">
-            <span id="boot-status">Estableciendo conexión segura...</span>
-        </div>
+        <button class="login-btn-main btn-green" onclick="attemptLogin()">INGRESAR</button>
+        <p id="boot-status" style="margin-top:15px; font-size:0.8rem; color:#666;">Conectando...</p>
     </div>
 </div>
 
 <header>
     <div class="header-left">
         <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" alt="JM Logo" class="brand-logo">
-        <div class="user-pill"><div class="avatar" id="u-av">U</div><span id="u-name" style="font-size:0.8rem;">...</span></div>
+        <div class="status-dot" id="dot" title="Estado"></div>
     </div>
-    
-    <div class="header-controls">
-        <div class="status-pill">
-            <div id="dot" class="dot"></div>
-            <span id="status-txt">...</span>
-        </div>
-        <button class="btn-ghost" id="btn-admin" style="display:none;" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
-        <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-lightbulb"></i></button>
-        <button class="btn-ghost" style="color:var(--danger); border-color:var(--danger);" onclick="logout()"><i class="fas fa-power-off"></i></button>
+    <div class="header-right header-controls">
+        <button class="btn-ghost" id="btn-admin" style="display:none" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
+        <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-adjust"></i></button>
+        <button class="btn-ghost" style="color:var(--danger); border-color:var(--danger)" onclick="logout()"><i class="fas fa-power-off"></i></button>
     </div>
-
-    <div class="cat-switch">
-        <button class="cat-btn active" id="btn-taller" onclick="setCategory('TALLER')"><i class="fas fa-wrench"></i> TALLER</button>
-        <button class="cat-btn" id="btn-abast" onclick="setCategory('ABASTIBLE')">
-            <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" alt="Abastible" class="abast-btn-logo">
+    <div class="cat-switch" style="width:100%; margin:0; order:3;">
+        <button class="cat-btn active" id="btn-taller" onclick="setCategory('TALLER')" style="flex:1; justify-content:center"><i class="fas fa-wrench"></i> TALLER</button>
+        <button class="cat-btn" id="btn-abast" onclick="setCategory('ABASTIBLE')" style="flex:1; justify-content:center">
+            <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-btn-logo">
         </button>
     </div>
 </header>
@@ -271,9 +247,23 @@
     <div class="search-grp">
         <select id="s-col">
             <option value="-1">Global</option>
-            <option value="9">Patente</option>
+            <option value="0">Fecha</option>
+            <option value="1">Sede</option>
             <option value="2">Ficha</option>
             <option value="3">Cliente</option>
+            <option value="4">RUT</option>
+            <option value="5">Celular</option>
+            <option value="6">Comuna</option>
+            <option value="7">Marca</option>
+            <option value="8">Modelo</option>
+            <option value="9">Patente</option>
+            <option value="10">Color</option>
+            <option value="11">KM</option>
+            <option value="12">Año</option>
+            <option value="13">Coord.</option>
+            <option value="14">Diagnóstico</option>
+            <option value="15">Técnico</option>
+            <option value="16">Materiales</option>
         </select>
         <input type="text" id="s-in" placeholder="Buscar..." onkeydown="if(event.key==='Enter') search()">
         <button class="search-btn" onclick="search()"><i class="fas fa-search"></i></button>
@@ -305,10 +295,8 @@
 <div class="modal" id="m-insp">
     <div class="m-card">
         <i class="fas fa-times close" onclick="closeM('m-insp')"></i>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
-            <h2 style="margin:0; color:var(--primary);">Detalles</h2>
-            <div id="insp-btns" style="display:flex; gap:10px;"></div>
-        </div>
+        <h2 style="color:var(--primary); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;">Detalles</h2>
+        <div style="display:flex; gap:10px; margin-bottom:15px;" id="insp-btns"></div>
         <div class="f-grid" id="insp-data"></div>
     </div>
 </div>
@@ -316,28 +304,28 @@
 <div class="modal" id="m-form">
     <div class="m-card">
         <i class="fas fa-times close" onclick="closeM('m-form')"></i>
-        <h2 id="f-title" style="margin-top:0; color:var(--primary)">Registro</h2>
+        <h2 id="f-title" style="color:var(--primary); margin-top:0;">Registro</h2>
         <input type="hidden" id="f-id">
         <div class="f-grid">
-            <div><label>Fecha</label><input type="date" class="login-input" id="i_fecha" style="background:var(--bg-input)"></div>
-            <div><label>Sede</label><select class="login-input" id="i_sede" style="background:var(--bg-input)"><option>CONCHALÍ</option><option>SAN BERNARDO</option></select></div>
-            <div><label>Ficha</label><input type="text" class="login-input" id="i_ficha" style="background:var(--bg-input)"></div>
-            <div><label>Cliente</label><input type="text" class="login-input" id="i_cliente" style="background:var(--bg-input)"></div>
-            <div><label>RUT</label><input type="text" class="login-input" id="i_rut" style="background:var(--bg-input)"></div>
-            <div><label>Celular</label><input type="text" class="login-input" id="i_cel" style="background:var(--bg-input)"></div>
-            <div><label>Comuna</label><input type="text" class="login-input" id="i_comuna" style="background:var(--bg-input)"></div>
-            <div><label>Marca</label><input type="text" class="login-input" id="i_marca" style="background:var(--bg-input)"></div>
-            <div><label>Modelo</label><input type="text" class="login-input" id="i_modelo" style="background:var(--bg-input)"></div>
-            <div><label>Patente</label><input type="text" class="login-input" id="i_patente" style="background:var(--bg-input)"></div>
-            <div><label>Color</label><input type="text" class="login-input" id="i_color" style="background:var(--bg-input)"></div>
-            <div><label>KM</label><input type="text" class="login-input" id="i_km" style="background:var(--bg-input)"></div>
-            <div><label>Año</label><input type="number" class="login-input" id="i_año" style="background:var(--bg-input)"></div>
-            <div><label>Coord.</label><input type="text" class="login-input" id="i_coord" style="background:var(--bg-input)"></div>
-            <div class="f-full"><label>Diagnóstico</label><textarea class="login-input" id="i_diag" rows="3" style="background:var(--bg-input)"></textarea></div>
-            <div><label>Técnico</label><select class="login-input" id="i_colab" style="background:var(--bg-input)"><option>JIMMY</option><option>DAIR</option><option>JOSE</option></select></div>
-            <div><label>Materiales</label><input type="text" class="login-input" id="i_mat" style="background:var(--bg-input)"></div>
+            <div><label>Fecha</label><input type="date" class="form-input" id="i_fecha"></div>
+            <div><label>Sede</label><select class="form-input" id="i_sede"><option>CONCHALÍ</option><option>SAN BERNARDO</option></select></div>
+            <div><label>Ficha</label><input type="text" class="form-input" id="i_ficha"></div>
+            <div><label>Cliente</label><input type="text" class="form-input" id="i_cliente"></div>
+            <div><label>RUT</label><input type="text" class="form-input" id="i_rut"></div>
+            <div><label>Celular</label><input type="text" class="form-input" id="i_cel"></div>
+            <div><label>Comuna</label><input type="text" class="form-input" id="i_comuna"></div>
+            <div><label>Marca</label><input type="text" class="form-input" id="i_marca"></div>
+            <div><label>Modelo</label><input type="text" class="form-input" id="i_modelo"></div>
+            <div><label>Patente</label><input type="text" class="form-input" id="i_patente"></div>
+            <div><label>Color</label><input type="text" class="form-input" id="i_color"></div>
+            <div><label>KM</label><input type="text" class="form-input" id="i_km"></div>
+            <div><label>Año</label><input type="number" class="form-input" id="i_año"></div>
+            <div><label>Coord.</label><input type="text" class="form-input" id="i_coord"></div>
+            <div class="f-full"><label>Diagnóstico</label><textarea class="form-input" id="i_diag" rows="3"></textarea></div>
+            <div><label>Técnico</label><select class="form-input" id="i_colab"><option>JIMMY</option><option>DAIR</option><option>JOSE</option></select></div>
+            <div><label>Materiales</label><input type="text" class="form-input" id="i_mat"></div>
         </div>
-        <button class="btn-green" style="margin-top:20px;" id="btn-save" onclick="saveData()">GUARDAR</button>
+        <button class="btn-green" style="margin-top:20px;" onclick="saveData()">GUARDAR</button>
     </div>
 </div>
 
@@ -356,8 +344,8 @@
         <i class="fas fa-times close" onclick="closeM('m-admin')"></i>
         <h3>Usuarios</h3>
         <div style="background:var(--bg-input); padding:15px; border-radius:12px; margin-bottom:15px;">
-            <input type="text" id="n_u" class="login-input" placeholder="Usuario" style="margin-bottom:10px; background:var(--bg-deep)">
-            <input type="text" id="n_p" class="login-input" placeholder="Clave" style="background:var(--bg-deep); margin-bottom:10px;">
+            <input type="text" id="n_u" class="form-input" placeholder="Usuario" style="margin-bottom:10px;">
+            <input type="text" id="n_p" class="form-input" placeholder="Clave" style="margin-bottom:10px;">
             <div style="display:flex; gap:10px; flex-wrap:wrap; font-size:0.8rem; color:var(--text-muted)">
                 <label><input type="checkbox" id="p_add"> Agregar</label>
                 <label><input type="checkbox" id="p_edit"> Editar</label>
@@ -372,41 +360,40 @@
 
 <script>
     const API = "https://script.google.com/macros/s/AKfycbyIC7hiCJfxK2Fk-4Qkf-r-BvM8qDNu3ULmHzJR5RSLrfyOxNpES3jyqY-7cQ4CkXU/exec";
-    let curCategory = 'TALLER', curYear = '2026', curPage = 1, users = [], currUser = {}, rowData = [], isEdit = false;
+    let curCategory='TALLER', curYear='2026', curPage=1, users=[], currUser={}, rowData=[], isEdit=false;
     const CAT_PREFIX = { 'TALLER': 'Folios ', 'ABASTIBLE': 'ABASTIBLE ' };
     const HEADERS = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
 
+    // INIT
     window.onload = async () => {
         const st=document.getElementById('boot-status');
-        try {
-            const r=await fetch(`${API}?type=users`); const j=await r.json(); users=j.data;
-            st.innerText="Conexión Segura."; st.style.color="var(--status-ok)";
-        } catch(e) { st.innerText="Offline Mode"; }
+        const dt=document.getElementById('dot');
         
-        // Stars
-        const c = document.getElementById('star-container');
-        for(let i=0; i<50; i++) {
-            let s = document.createElement('div'); s.className='star';
+        // Efecto Estrellas
+        const c=document.getElementById('star-container');
+        for(let i=0; i<50; i++){
+            let s=document.createElement('div'); s.className='star';
             let z=Math.random()*2; s.style.width=z+'px'; s.style.height=z+'px';
             s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
             s.style.animationDelay=Math.random()*5+'s'; s.style.setProperty('--duration',(Math.random()*5+8)+'s');
             c.appendChild(s);
         }
+
+        try {
+            const r=await fetch(`${API}?type=users`); const j=await r.json(); users=j.data;
+            st.innerText="Conexión Segura."; dt.classList.add('ok');
+        } catch(e) { st.innerText="Offline Mode"; dt.classList.add('err'); }
     };
 
     function setCategory(cat) {
         curCategory = cat;
-        document.getElementById('btn-taller').className = cat === 'TALLER' ? 'cat-btn active' : 'cat-btn';
-        document.getElementById('btn-abast').className = cat === 'ABASTIBLE' ? 'cat-btn active' : 'cat-btn';
-        if (cat === 'ABASTIBLE') document.body.classList.add('abastible-mode'); else document.body.classList.remove('abastible-mode');
+        document.getElementById('btn-taller').className = cat==='TALLER'?'cat-btn active':'cat-btn';
+        document.getElementById('btn-abast').className = cat==='ABASTIBLE'?'cat-btn active':'cat-btn';
+        if(cat==='ABASTIBLE') document.body.classList.add('abastible-mode'); else document.body.classList.remove('abastible-mode');
         loadData(1);
     }
 
-    function changeYear(y) {
-        curYear = y;
-        document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.innerText === y));
-        loadData(1);
-    }
+    function changeYear(y) { curYear=y; document.querySelectorAll('.tab-item').forEach(t=>t.classList.toggle('active', t.innerText===y)); loadData(1); }
 
     function attemptLogin() {
         const u=document.getElementById('user').value, p=document.getElementById('pass').value;
@@ -417,7 +404,6 @@
 
     function loginSuccess(u) {
         currUser = { name:u.user, role:u.perms==="ALL"?"ADMIN":"USER", perms:u.perms==="ALL"?["ADD","EDIT","DEL"]:u.perms.split(',') };
-        document.getElementById('u-name').innerText=currUser.name;
         if(currUser.role==="ADMIN") document.getElementById('btn-admin').style.display="inline-flex";
         if(!currUser.perms.includes("ADD")) document.getElementById('fab').classList.add('hidden');
         document.getElementById('login-wrap').style.display="none";
@@ -425,9 +411,8 @@
     }
 
     function setStatus(isOnline) {
-        const dot = document.getElementById('dot'); const txt = document.getElementById('status-txt');
-        if(isOnline) { dot.className = 'dot ok'; txt.innerText = "Online"; txt.style.color = "var(--status-ok)"; } 
-        else { dot.className = 'dot err'; txt.innerText = "Error"; txt.style.color = "var(--status-err)"; }
+        const dot=document.getElementById('dot');
+        dot.className = isOnline ? 'status-dot online' : 'status-dot';
     }
 
     async function loadData(page) {
@@ -446,7 +431,10 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    let cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
+                    // GENERAR CELDAS CON DATA-LABEL PARA MÓVIL
+                    let cells = `<td data-label="Fecha">${d}</td>`; // Fecha no es Patente
+                    // Mapeo manual de índices para data-label
+                    cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
                     for(let k=1; k<row.length-1; k++) {
                         let label = HEADERS[k] || "Info";
                         cells += `<td data-label="${label}">${row[k] || ''}</td>`;
@@ -489,7 +477,7 @@
     function openForm(y) { curYear = y; closeM('m-sel'); document.getElementById('m-form').style.display='flex'; }
 
     async function saveData() {
-        const btn=document.getElementById('btn-save'); btn.disabled=true; btn.innerText="...";
+        const btn=document.getElementById('btn-save'); btn.disabled=true; btn.innerText="GUARDANDO...";
         let sheetName = CAT_PREFIX[curCategory] + curYear;
         const p = new URLSearchParams(); p.append('sheetName', sheetName); p.append('action', isEdit?'UPDATE':'CREATE'); p.append('rowId', document.getElementById('f-id').value);
         const ids=['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año','i_coord','i_diag','i_colab','i_mat'];
@@ -500,10 +488,7 @@
 
     async function del(id) { if(!confirm("Eliminar?")) return; closeM('m-insp'); let sheetName = CAT_PREFIX[curCategory] + curYear; await fetch(API, {method:'POST', body:new URLSearchParams({sheetName:sheetName, action:'DELETE', rowId:id}), mode:'no-cors'}); showToast("Eliminado", "err"); loadData(curPage); }
 
-    function openAdmin() {
-        document.getElementById('u-list').innerHTML = users.map(u => `<div class="user-row"><span>${u.user} <small>(${u.perms})</small></span>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--danger);" onclick="delUser(${u.id})"></i>`:''}</div>`).join('');
-        document.getElementById('m-admin').style.display='flex';
-    }
+    function openAdmin() { document.getElementById('u-list').innerHTML = users.map(u => `<div class="user-row"><span>${u.user} <small>(${u.perms})</small></span>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--danger);" onclick="delUser(${u.id})"></i>`:''}</div>`).join(''); document.getElementById('m-admin').style.display='flex'; }
     function toggleAdm(c) { ['p_add','p_edit','p_del'].forEach(i=>document.getElementById(i).disabled=c.checked); }
     async function createUsr() {
         const u=document.getElementById('n_u').value, p=document.getElementById('n_p').value; if(!u||!p) return;
