@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | v28.1</title>
+    <title>Solo Personal Autorizado | v28.2</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
@@ -43,7 +43,6 @@
         /* --- LOGIN --- */
         #login-wrap { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at bottom, #111 0%, var(--bg-deep) 60%); display: flex; align-items: center; justify-content: center; }
         .login-card { background: rgba(15,15,15,0.9); backdrop-filter: blur(20px); padding: 2rem; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        
         .input-group { position: relative; margin-bottom: 15px; }
         .login-input { width: 100%; padding: 14px 14px 14px 45px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 1rem; }
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
@@ -180,17 +179,14 @@
             }
             td[data-label="Patente"]::before { display: none; } /* Ocultar etiqueta patente */
 
-            /* Ocultar columnas menos importantes en la vista previa */
+            /* Ocultar columnas menos importantes en la vista tarjeta */
             td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
             td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
             td[data-label="Color"], td[data-label="Año"], td[data-label="Modelo"], td[data-label="Técnico"],
             td[data-label="Marca"] { display: none; }
 
             /* 5. Modales Full Screen */
-            .m-card { 
-                width: 100%; height: 100%; max-height: 100%; 
-                border-radius: 0; border: none; padding: 20px; 
-            }
+            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 20px; border: none; }
             .f-grid { grid-template-columns: 1fr; }
             .f-full { grid-column: span 1; }
             .close { top: 20px; right: 20px; font-size: 2rem; padding: 10px; }
@@ -215,7 +211,7 @@
             <input type="password" id="pass" class="login-input" placeholder="Contraseña">
             <i class="fas fa-lock input-icon"></i>
         </div>
-        <button class="login-btn-main btn-green" onclick="attemptLogin()">INGRESAR</button>
+        <button class="login-btn-main" onclick="attemptLogin()">INGRESAR</button>
         <p id="boot-status" style="margin-top:15px; font-size:0.8rem; color:#666;">Conectando...</p>
     </div>
 </div>
@@ -325,7 +321,7 @@
             <div><label>Técnico</label><select class="form-input" id="i_colab"><option>JIMMY</option><option>DAIR</option><option>JOSE</option></select></div>
             <div><label>Materiales</label><input type="text" class="form-input" id="i_mat"></div>
         </div>
-        <button class="btn-green" style="margin-top:20px;" onclick="saveData()">GUARDAR</button>
+        <button class="btn-green" style="margin-top:20px;" id="btn-save" onclick="saveData()">GUARDAR</button>
     </div>
 </div>
 
@@ -364,12 +360,9 @@
     const CAT_PREFIX = { 'TALLER': 'Folios ', 'ABASTIBLE': 'ABASTIBLE ' };
     const HEADERS = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
 
-    // INIT
     window.onload = async () => {
         const st=document.getElementById('boot-status');
         const dt=document.getElementById('dot');
-        
-        // Efecto Estrellas
         const c=document.getElementById('star-container');
         for(let i=0; i<50; i++){
             let s=document.createElement('div'); s.className='star';
@@ -378,11 +371,10 @@
             s.style.animationDelay=Math.random()*5+'s'; s.style.setProperty('--duration',(Math.random()*5+8)+'s');
             c.appendChild(s);
         }
-
         try {
             const r=await fetch(`${API}?type=users`); const j=await r.json(); users=j.data;
-            st.innerText="Conexión Segura."; dt.classList.add('ok');
-        } catch(e) { st.innerText="Offline Mode"; dt.classList.add('err'); }
+            st.innerText="Conexión Segura."; dt.classList.add('online');
+        } catch(e) { st.innerText="Offline Mode"; }
     };
 
     function setCategory(cat) {
@@ -431,10 +423,7 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    // GENERAR CELDAS CON DATA-LABEL PARA MÓVIL
-                    let cells = `<td data-label="Fecha">${d}</td>`; // Fecha no es Patente
-                    // Mapeo manual de índices para data-label
-                    cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
+                    let cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
                     for(let k=1; k<row.length-1; k++) {
                         let label = HEADERS[k] || "Info";
                         cells += `<td data-label="${label}">${row[k] || ''}</td>`;
@@ -467,6 +456,7 @@
     }
 
     function prepAdd() { isEdit=false; document.querySelectorAll('#m-form input, textarea').forEach(e=>e.value=''); document.getElementById('f-title').innerText = `Nuevo (${curCategory})`; document.getElementById('m-sel').style.display='flex'; }
+    
     function prepEdit(r) {
         closeM('m-insp'); isEdit=true; document.getElementById('f-id').value = r[r.length-1];
         let d=r[0]; if(d.match(/^\d{2}[\/-]\d{2}[\/-]\d{4}$/)) { let p=d.split(/[\/-]/); document.getElementById('i_fecha').value=`${p[2]}-${p[1]}-${p[0]}`; } else document.getElementById('i_fecha').value=d;
@@ -474,16 +464,47 @@
         ids.forEach((id,i) => document.getElementById(id).value = r[i+1]);
         document.getElementById('f-title').innerText = `Editar (${curCategory})`; document.getElementById('m-form').style.display='flex';
     }
+    
     function openForm(y) { curYear = y; closeM('m-sel'); document.getElementById('m-form').style.display='flex'; }
 
     async function saveData() {
-        const btn=document.getElementById('btn-save'); btn.disabled=true; btn.innerText="GUARDANDO...";
+        const btn = document.getElementById('btn-save'); 
+        btn.disabled = true; 
+        btn.innerText = "GUARDANDO...";
+        
         let sheetName = CAT_PREFIX[curCategory] + curYear;
-        const p = new URLSearchParams(); p.append('sheetName', sheetName); p.append('action', isEdit?'UPDATE':'CREATE'); p.append('rowId', document.getElementById('f-id').value);
-        const ids=['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año','i_coord','i_diag','i_colab','i_mat'];
-        ids.forEach((id,i) => { let v=document.getElementById(id).value; if(!['ly','rut'].includes(id.replace('i_',''))) v=v.toUpperCase(); p.append(id.replace('i_',''), v); });
-        await fetch(API, {method:'POST', body:p, mode:'no-cors'});
-        closeM('m-form'); showToast("Guardado"); loadData(curPage); btn.disabled=false; btn.innerText="GUARDAR";
+        
+        const p = new URLSearchParams();
+        p.append('sheetName', sheetName); 
+        p.append('action', isEdit ? 'UPDATE' : 'CREATE'); 
+        p.append('rowId', document.getElementById('f-id').value);
+        
+        // Mapeo exacto
+        const ids =  ['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año',       'i_coord','i_diag','i_colab','i_mat'];
+        const keys = ['ly',     'sede',  'ficha',  'cliente',  'rut',  'celular','comuna', 'marca',  'modelo',  'patente',  'color',  'km',  'fabricacion','coord',  'diag',  'colab',  'mat'];
+        
+        ids.forEach((id, i) => { 
+            let el = document.getElementById(id);
+            if (el) {
+                let v = el.value;
+                if (keys[i] !== 'ly' && keys[i] !== 'rut') {
+                    v = v.toUpperCase();
+                }
+                p.append(keys[i], v);
+            }
+        });
+
+        try {
+            await fetch(API, { method: 'POST', body: p, mode: 'no-cors' });
+            closeM('m-form'); 
+            showToast("Guardado Correctamente"); 
+            loadData(curPage);
+        } catch (e) {
+            showToast("Error de conexión", "err");
+        } finally {
+            btn.disabled = false; 
+            btn.innerText = "GUARDAR";
+        }
     }
 
     async function del(id) { if(!confirm("Eliminar?")) return; closeM('m-insp'); let sheetName = CAT_PREFIX[curCategory] + curYear; await fetch(API, {method:'POST', body:new URLSearchParams({sheetName:sheetName, action:'DELETE', rowId:id}), mode:'no-cors'}); showToast("Eliminado", "err"); loadData(curPage); }
