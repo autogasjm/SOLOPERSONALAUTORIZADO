@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | Mobile v27</title>
+    <title>Solo Personal Autorizado | Mobile v28</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- VARIABLES BASE --- */
@@ -66,16 +66,18 @@
         @keyframes twinkle { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: translateY(-150px); } }
 
         /* --- HEADER & APP --- */
-        header { background: var(--bg-card); height: 70px; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 50; flex-shrink: 0; }
+        header { background: var(--bg-card); padding: 10px 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 50; flex-shrink: 0; gap: 15px; }
+        
+        .header-left { display: flex; align-items: center; gap: 15px; }
         .brand-logo { height: 40px; width: auto; object-fit: contain; }
         
-        .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 10px; border: 1px solid var(--border); margin-left: 15px; }
-        .cat-btn { padding: 6px 15px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
+        .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 10px; border: 1px solid var(--border); }
+        .cat-btn { padding: 6px 15px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
         .cat-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
         .abast-btn-logo { height: 20px; width: auto; display: block; }
         body.abastible-mode .cat-btn.active .abast-btn-logo { filter: brightness(0) invert(1); }
 
-        .header-controls { display: flex; align-items: center; gap: 8px; }
+        .header-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .status-pill { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; background: var(--bg-input); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-muted); }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
         .dot.ok { background: var(--status-ok) !important; box-shadow: 0 0 8px var(--status-ok); }
@@ -83,7 +85,7 @@
 
         /* TOOLBAR */
         .toolbar { padding: 1rem 1.5rem; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; z-index: 40; flex-shrink: 0; }
-        .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 4px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; }
+        .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 4px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; max-width: 100%; }
         .tab-item { padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
         .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
 
@@ -113,48 +115,54 @@
 
         /* --- MOBILE RESPONSIVE CSS --- */
         @media (max-width: 768px) {
-            /* Header Stack */
-            header { height: auto; flex-wrap: wrap; padding: 10px 15px; gap: 10px; }
-            .brand-logo { height: 35px; }
-            .cat-switch { margin-left: auto; width: auto; }
-            .header-controls { width: 100%; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
+            /* RE-ESTRUCTURA HEADER */
+            header { display: flex; flex-direction: column; height: auto; gap: 10px; padding: 10px 15px; }
+            .header-left { width: 100%; justify-content: space-between; }
+            .header-controls { width: 100%; justify-content: space-between; margin: 0; }
             
-            /* Toolbar Stack */
+            /* SWITCH DE CATEGORÍA GRANDE EN MOVIL */
+            .cat-switch { width: 100%; margin: 0; display: flex; }
+            .cat-btn { flex: 1; justify-content: center; padding: 10px; }
+
+            /* TOOLBAR STACK */
             .toolbar { padding: 10px 15px; flex-direction: column; align-items: stretch; gap: 10px; }
             .tabs { width: 100%; justify-content: space-between; }
             .tab-item { flex: 1; text-align: center; padding: 8px 0; }
             .search-grp { width: 100%; }
 
-            /* Main Content Adjustments */
-            main { padding: 0 10px 10px; }
-            .panel { border-radius: 12px; }
+            /* MAIN CONTENT PADDING */
+            main { padding: 5px 10px 10px; }
+            .panel { border-radius: 12px; border: none; background: transparent; box-shadow: none; }
+            .t-scroll { overflow: visible; }
 
-            /* TABLE TO CARDS TRANSFORMATION */
+            /* TRANSFORMACION TABLA A TARJETAS */
             thead { display: none; }
             table { display: block; min-width: 100%; }
             tbody { display: block; }
             
             tr { 
-                display: block; 
-                margin-bottom: 10px; 
+                display: flex; flex-direction: column;
+                margin-bottom: 15px; 
                 background: var(--bg-card); 
                 border: 1px solid var(--border); 
-                border-radius: 12px; 
-                padding: 12px; 
+                border-radius: 16px; 
+                padding: 15px; 
                 position: relative;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             }
-            tr:hover { background: var(--bg-card); } /* Remove hover effect on mobile */
+            tr:active { transform: scale(0.98); }
 
             td { 
                 display: flex; 
                 justify-content: space-between; 
                 align-items: center;
-                padding: 4px 0; 
+                padding: 6px 0; 
                 border: none; 
-                font-size: 0.9rem;
+                font-size: 0.95rem;
+                color: var(--text-main);
             }
             
-            /* Label injection via CSS content from data-label attr */
+            /* ETIQUETAS */
             td::before { 
                 content: attr(data-label); 
                 font-size: 0.75rem; 
@@ -162,33 +170,35 @@
                 color: var(--text-muted); 
                 text-transform: uppercase; 
                 margin-right: 15px;
+                min-width: 80px;
             }
 
-            /* Customizing specific fields for Card Layout */
-            /* Patente: Top, Big, Colored */
+            /* CAMPOS CLAVE EN MOVIL */
+            /* Patente Grande y Arriba */
             td[data-label="Patente"] { 
-                font-size: 1.2rem; 
+                font-size: 1.4rem; 
                 font-weight: 900; 
                 color: var(--primary); 
-                padding-bottom: 8px; 
+                padding-bottom: 10px; 
                 border-bottom: 1px solid var(--border); 
-                margin-bottom: 8px; 
+                margin-bottom: 10px; 
                 display: block; 
                 text-align: center;
             }
             td[data-label="Patente"]::before { display: none; }
 
-            /* Ocultar columnas secundarias en la vista tarjeta (se ven al hacer click) */
+            /* OCULTAR DATOS MENOS RELEVANTES EN LA VISTA TARJETA */
             td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
             td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
             td[data-label="Color"], td[data-label="Año"], td[data-label="Modelo"], td[data-label="Técnico"] { 
                 display: none; 
             }
 
-            /* Modals Full Screen */
-            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 1.5rem; }
+            /* MODALES FULL SCREEN EN MOVIL */
+            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 20px; border:none; }
             .f-grid { grid-template-columns: 1fr; }
             .f-full { grid-column: span 1; }
+            .close { top: 20px; right: 20px; font-size: 2rem; padding: 10px; }
         }
 
         /* MODALS */
@@ -229,24 +239,26 @@
 </div>
 
 <header>
-    <div style="display:flex; align-items:center;">
+    <div class="header-left">
         <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" alt="JM Logo" class="brand-logo">
-        <div class="cat-switch">
-            <button class="cat-btn active" id="btn-taller" onclick="setCategory('TALLER')"><i class="fas fa-wrench"></i> TALLER</button>
-            <button class="cat-btn" id="btn-abast" onclick="setCategory('ABASTIBLE')">
-                <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" alt="Abastible" class="abast-btn-logo">
-            </button>
-        </div>
+        <div class="user-pill"><div class="avatar" id="u-av">U</div><span id="u-name" style="font-size:0.8rem;">...</span></div>
     </div>
+    
     <div class="header-controls">
         <div class="status-pill">
             <div id="dot" class="dot"></div>
-            <span id="status-txt" class="status-text">...</span>
+            <span id="status-txt">...</span>
         </div>
         <button class="btn-ghost" id="btn-admin" style="display:none;" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
-        <div class="user-pill"><div class="avatar" id="u-av">U</div></div>
         <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-lightbulb"></i></button>
         <button class="btn-ghost" style="color:var(--danger); border-color:var(--danger);" onclick="logout()"><i class="fas fa-power-off"></i></button>
+    </div>
+
+    <div class="cat-switch">
+        <button class="cat-btn active" id="btn-taller" onclick="setCategory('TALLER')"><i class="fas fa-wrench"></i> TALLER</button>
+        <button class="cat-btn" id="btn-abast" onclick="setCategory('ABASTIBLE')">
+            <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" alt="Abastible" class="abast-btn-logo">
+        </button>
     </div>
 </header>
 
@@ -405,7 +417,7 @@
 
     function loginSuccess(u) {
         currUser = { name:u.user, role:u.perms==="ALL"?"ADMIN":"USER", perms:u.perms==="ALL"?["ADD","EDIT","DEL"]:u.perms.split(',') };
-        document.getElementById('u-av').innerText=currUser.name[0];
+        document.getElementById('u-name').innerText=currUser.name;
         if(currUser.role==="ADMIN") document.getElementById('btn-admin').style.display="inline-flex";
         if(!currUser.perms.includes("ADD")) document.getElementById('fab').classList.add('hidden');
         document.getElementById('login-wrap').style.display="none";
@@ -432,7 +444,6 @@
             const r = await fetch(url); const j = await r.json(); rowData = j.data;
             if(!rowData || !rowData.length) { tb.innerHTML = '<tr><td colspan="17" style="text-align:center; padding:3rem; color:var(--text-muted)">Sin datos</td></tr>'; } 
             else {
-                // GENERACIÓN DE TARJETAS PARA MÓVIL
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
                     let cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
@@ -458,7 +469,6 @@
             h += `<div class="d-item ${i===14?'f-full':''}"><span class="d-lbl">${HEADERS[i]}</span><span class="d-val">${val||'-'}</span></div>`;
         });
         document.getElementById('insp-data').innerHTML = h;
-        
         let btns = '';
         const safe = JSON.stringify(r).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
         const id = r[r.length-1];
@@ -484,7 +494,6 @@
         const p = new URLSearchParams(); p.append('sheetName', sheetName); p.append('action', isEdit?'UPDATE':'CREATE'); p.append('rowId', document.getElementById('f-id').value);
         const ids=['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año','i_coord','i_diag','i_colab','i_mat'];
         ids.forEach((id,i) => { let v=document.getElementById(id).value; if(!['ly','rut'].includes(id.replace('i_',''))) v=v.toUpperCase(); p.append(id.replace('i_',''), v); });
-        
         await fetch(API, {method:'POST', body:p, mode:'no-cors'});
         closeM('m-form'); showToast("Guardado"); loadData(curPage); btn.disabled=false; btn.innerText="GUARDAR";
     }
@@ -495,6 +504,7 @@
         document.getElementById('u-list').innerHTML = users.map(u => `<div class="user-row"><span>${u.user} <small>(${u.perms})</small></span>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--danger);" onclick="delUser(${u.id})"></i>`:''}</div>`).join('');
         document.getElementById('m-admin').style.display='flex';
     }
+    function toggleAdm(c) { ['p_add','p_edit','p_del'].forEach(i=>document.getElementById(i).disabled=c.checked); }
     async function createUsr() {
         const u=document.getElementById('n_u').value, p=document.getElementById('n_p').value; if(!u||!p) return;
         let perms = document.getElementById('p_adm').checked ? "ALL" : [];
@@ -508,7 +518,6 @@
     function logout() { location.reload(); }
     function search() { loadData(1); }
     function movePage(d) { if(curPage+d > 0) loadData(curPage+d); }
-    function toggleAdm(c) { ['p_add','p_edit','p_del'].forEach(i=>document.getElementById(i).disabled=c.checked); }
 </script>
 </body>
 </html>
