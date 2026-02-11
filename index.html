@@ -49,15 +49,16 @@
         .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; }
 
         /* --- HEADER --- */
-        header { background: var(--bg-card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 60px; }
+        header { background: var(--bg-card); padding: 5px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 60px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
+        .brand-logo { height: 35px; width: auto; object-fit: contain; }
         
-        /* BOTONES PC: MÁS PEQUEÑOS Y ELEGANTES */
-        .cat-switch { display: flex; background: var(--bg-input); padding: 2px; border-radius: 8px; border: 1px solid var(--border); }
-        .cat-btn { padding: 4px 12px; border-radius: 6px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        /* BOTONES PC PEQUEÑOS */
+        .cat-switch { display: flex; background: var(--bg-input); padding: 2px; border-radius: 6px; border: 1px solid var(--border); }
+        .cat-btn { padding: 4px 10px; border-radius: 4px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .cat-btn:hover { color: var(--text-main); }
-        .cat-btn.active { background: var(--primary); color: #000; box-shadow: 0 2px 5px var(--primary-glow); }
-        .abast-btn-logo { height: 14px; width: auto; display: block; }
+        .cat-btn.active { background: var(--primary); color: #000; }
+        .abast-btn-logo { height: 12px; width: auto; display: block; }
         body.abastible-mode .cat-btn.active .abast-btn-logo { filter: brightness(0) invert(1); }
 
         .header-right { display: flex; align-items: center; gap: 10px; }
@@ -65,14 +66,14 @@
         .status-dot.online { background: var(--status-ok) !important; box-shadow: 0 0 5px var(--status-ok) !important; }
         
         /* --- TOOLBAR --- */
-        .toolbar { padding: 10px 20px; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
+        .toolbar { padding: 8px 20px; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
         .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 3px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; }
-        .tab-item { padding: 6px 15px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
+        .tab-item { padding: 5px 12px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.75rem; white-space: nowrap; }
         .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); }
 
-        .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; height: 38px; align-items: center; flex: 1; min-width: 250px; }
+        .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; height: 35px; align-items: center; flex: 1; min-width: 250px; }
         .search-grp select { border: none; background: transparent; width: auto; max-width: 100px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
-        .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.9rem; }
+        .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.85rem; }
         .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
 
         /* --- MAIN TABLE --- */
@@ -86,11 +87,13 @@
         tr:hover { background: rgba(255,255,255,0.03); }
         tr:hover td:first-child { color: var(--primary); font-weight: 700; }
 
+        /* PAGINACIÓN ESCRITORIO */
         .pagination { padding: 8px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
 
         /* FAB */
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.8rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.8rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; transition: 0.3s; }
+        .fab:active { transform: scale(0.9); }
         .fab.hidden { display: none !important; }
 
         /* --- MODALS --- */
@@ -112,12 +115,13 @@
 
         /* --- MOBILE RESPONSIVE FIXES (v30.0) --- */
         @media (max-width: 768px) {
-            /* 1. Header */
-            header { height: auto; flex-direction: column; padding: 15px; gap: 15px; }
+            /* 1. Header en columna */
+            header { height: auto; flex-direction: column; padding: 15px; gap: 12px; }
             .header-left { width: 100%; justify-content: space-between; }
             .header-right { width: 100%; justify-content: space-between; }
             .cat-switch { margin: 0; width: 100%; display: flex; order: 3; padding: 4px; height: 45px; }
-            .cat-btn { flex: 1; justify-content: center; padding: 0; font-size: 0.85rem; } 
+            /* Botones grandes en móvil */
+            .cat-btn { flex: 1; justify-content: center; padding: 8px; font-size: 0.85rem; } 
             .abast-btn-logo { height: 18px; }
 
             /* 2. Toolbar & BUSCADOR GRANDE */
@@ -132,17 +136,20 @@
             .search-btn { padding: 0 20px; font-size: 1.2rem; }
 
             /* 3. Main container */
-            main { padding: 5px 10px 100px 10px; } 
-            .panel { border: none; background: transparent; box-shadow: none; }
-            .t-scroll { overflow: visible; }
+            main { padding: 5px 10px 10px 10px; overflow-y: auto; display: block; } 
+            .panel { border: none; background: transparent; box-shadow: none; overflow: visible; }
+            .t-scroll { overflow: visible; height: auto; }
 
-            /* 4. TARJETAS MÓVILES - VISIBILIDAD ROBUSTA */
+            /* 4. TARJETAS MÓVILES - VISIBILIDAD TOTAL */
             thead { display: none; }
-            table, tbody, tr, td { display: block; width: 100%; }
+            table { display: block; width: 100%; }
+            tbody { display: block; width: 100%; }
             
             tr {
+                display: flex; 
+                flex-direction: column;
                 margin-bottom: 20px;
-                background: #1a1a1a; /* Fondo más claro para contraste */
+                background: #1a1a1a; /* Fondo más claro que el negro puro */
                 border: 1px solid var(--border);
                 border-radius: 16px;
                 padding: 15px;
@@ -168,9 +175,18 @@
                 float: left;
                 font-weight: 700;
                 text-transform: uppercase;
-                color: var(--text-muted); /* Gris claro */
+                color: var(--text-muted);
                 font-size: 0.75rem;
                 margin-right: 10px;
+            }
+
+            /* VALOR DEL DATO (FORZAR BLANCO) */
+            .mobile-val {
+                color: #ffffff !important;
+                font-weight: 500;
+                text-align: right;
+                max-width: 65%;
+                word-wrap: break-word;
             }
 
             /* Patente Destacada */
@@ -184,10 +200,13 @@
                 margin-bottom: 12px;
                 padding-bottom: 10px;
             }
+            td[data-label="Patente"] .mobile-val {
+                width: 100%; max-width: 100%; text-align: center; color: var(--primary) !important;
+            }
             td[data-label="Patente"]::before { display: none; }
-            
-            /* En móvil, el span interior toma el control */
-            .td-val { color: #fff; font-weight: 500; text-align: right; width: 60%; }
+
+            /* MOSTRAR TODO */
+            td { display: flex !important; }
 
             /* 5. Modales Full Screen */
             .m-card { 
@@ -198,14 +217,15 @@
             .f-full { grid-column: span 1; }
             .close { top: 20px; right: 20px; font-size: 2.2rem; padding: 10px; z-index: 10; }
 
-            /* 6. Paginación */
+            /* 6. Paginación NORMAL al final */
             .pagination { 
-                justify-content: center; gap: 20px; 
-                position: fixed; bottom: 0; left: 0; width: 100%; 
-                background: rgba(10,10,10,0.95); border-top: 1px solid var(--border); 
-                padding: 20px; z-index: 90;
+                position: relative; /* Ya no es fixed */
+                margin-top: 20px;
+                background: transparent;
+                border: none;
+                padding-bottom: 100px; /* Espacio para el FAB */
             }
-            .fab { bottom: 90px; right: 20px; width: 65px; height: 65px; font-size: 2rem; }
+            .fab { bottom: 30px; right: 20px; width: 65px; height: 65px; font-size: 2rem; }
         }
     </style>
 </head>
@@ -235,7 +255,7 @@
 <header>
     <div class="header-left">
         <div class="status-dot" id="dot" title="Estado"></div>
-    </div>
+        </div>
     <div class="header-right header-controls">
         <button class="btn-ghost" id="btn-admin" style="display:none" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
         <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-adjust"></i></button>
@@ -438,11 +458,11 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    // MOVIL: ESTRUCTURA ROBUSTA CON SPAN PARA QUE EL CSS LO AGARRE BIEN
-                    let cells = `<td data-label="Fecha"><span class="td-val" style="color:var(--primary); font-weight:bold">${d}</span></td>`;
+                    // CRUCIAL: USAR SPANS CON CLASE EXPLICITA PARA MÓVIL
+                    let cells = `<td data-label="Fecha"><span class="mobile-val" style="color:var(--primary); font-weight:bold">${d}</span></td>`;
                     for(let k=1; k<row.length-1; k++) {
                         let label = HEADERS[k] || "Info";
-                        cells += `<td data-label="${label}"><span class="td-val">${row[k] || '-'}</span></td>`;
+                        cells += `<td data-label="${label}"><span class="mobile-val">${row[k] || '-'}</span></td>`;
                     }
                     return `<tr onclick="openInsp(${i})">${cells}</tr>`;
                 }).join('');
