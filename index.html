@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | v38.0 Fixed</title>
+    <title>Solo Personal Autorizado | v39.0 Light</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
@@ -37,17 +37,12 @@
             --primary: #10b981; 
         }
 
-        /* RESET TOTAL */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
         html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden !important; /* BLOQUEO TOTAL DE SCROLL HORIZONTAL */
-            background-color: var(--bg-deep);
-            color: var(--text-main);
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow-x: hidden !important; 
+            background-color: var(--bg-deep); color: var(--text-main);
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         
@@ -61,7 +56,7 @@
         .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; }
 
-        /* --- HEADER --- */
+        /* --- HEADER PC --- */
         header { background: var(--bg-card); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; height: 65px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
         
@@ -83,25 +78,21 @@
         .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 3px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; }
         .tab-item { padding: 6px 15px; border-radius: 6px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
         .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); }
-
         .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; height: 40px; align-items: center; flex: 1; min-width: 250px; }
         .search-grp select { border: none; background: transparent; width: auto; max-width: 100px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
         .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.9rem; }
         .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
 
-        /* --- MAIN TABLE (MODO PC DEFAULT) --- */
+        /* --- MAIN TABLE (PC) --- */
         main { flex: 1; padding: 0 20px 20px; overflow: hidden; display: flex; flex-direction: column; width: 100%; }
         .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; width: 100%; }
         .t-scroll { overflow: auto; flex: 1; width: 100%; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 1500px; /* PC requiere ancho, móvil NO */ }
+        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
         th { background: var(--bg-input); padding: 12px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 10; }
         td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-main); cursor: pointer; }
         tr:hover { background: rgba(255,255,255,0.03); }
         tr:hover td:first-child { color: var(--primary); font-weight: 700; }
-
-        /* Etiquetas para móvil (ocultas en PC) */
-        .mobile-label { display: none; }
 
         .pagination { padding: 8px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
@@ -125,16 +116,19 @@
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 50px; z-index: 6000; display: none; font-size: 0.85rem; border-left: 4px solid var(--primary); }
 
         /* =========================================
-           MOBILE OPTIMIZADO (v38.0 - BULLETPROOF)
+           MOBILE OPTIMIZADO (v39.0 - LIGHTWEIGHT)
            ========================================= */
         @media (max-width: 900px) {
             /* 0. RESET SCROLL */
             body { height: auto; overflow-y: auto; overflow-x: hidden; }
             
-            /* 1. Header */
+            /* 1. Header LIMPIO (SIN TITULO) */
             header { height: auto; padding: 10px 15px; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "brand icons" "switch switch"; gap: 12px; position: static; }
-            .header-left { grid-area: brand; } .header-right { grid-area: icons; justify-content: flex-end; }
-            .header-left::after { content: "JM AUTOGAS"; font-weight: 900; font-size: 1.1rem; color: var(--text-main); letter-spacing: 1px; }
+            .header-left { grid-area: brand; } 
+            .header-right { grid-area: icons; justify-content: flex-end; }
+            
+            /* TITULO ELIMINADO: No hay ::after aqui */
+            
             .cat-switch { grid-area: switch; margin: 0; width: 100%; display: flex; background: var(--bg-input); padding: 4px; border-radius: 12px; height: 48px; }
             .cat-btn { flex: 1; justify-content: center; padding: 0; font-size: 0.9rem; } 
             .abast-btn-logo { height: 18px; }
@@ -153,8 +147,7 @@
             .panel { border: none; background: transparent; box-shadow: none; overflow: visible; height: auto; width: 100%; }
             .t-scroll { overflow: visible; height: auto; width: 100%; }
 
-            /* 4. TARJETAS MÓVILES (FIX INFINITO) */
-            /* IMPORTANTE: Anular min-width de PC */
+            /* 4. TARJETAS MÓVILES */
             table { min-width: 0 !important; width: 100% !important; display: block; }
             thead { display: none; }
             tbody { display: block; width: 100%; }
@@ -167,13 +160,16 @@
                 border-radius: 16px;
                 padding: 16px;
                 position: relative;
-                width: 100%; box-sizing: border-box; 
-                /* Evitar desborde */
-                max-width: 100%; 
-                overflow: hidden; 
+                width: 100%; box-sizing: border-box; max-width: 100%; overflow: hidden; 
             }
             
-            /* Celdas */
+            /* Flecha */
+            tr::after { 
+                content: '\f054'; font-family: "Font Awesome 6 Free"; font-weight: 900; 
+                position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
+                color: var(--primary); font-size: 1.2rem; opacity: 0.3; pointer-events: none; 
+            }
+
             td {
                 display: flex; justify-content: space-between; align-items: center; 
                 padding: 6px 0; border-bottom: 1px solid #2a2a2a; font-size: 0.95rem;
@@ -181,41 +177,19 @@
             }
             td:last-child { border-bottom: none; }
 
-            /* VISIBILIDAD DE DATOS (FIX) */
-            .mobile-label { 
-                display: block; /* Mostrar etiqueta en móvil */
-                font-size: 0.75rem; font-weight: 700; color: var(--text-muted); 
-                text-transform: uppercase; margin-right: 10px; flex-shrink: 0;
-            }
-            .mobile-val { 
-                color: #ffffff !important; /* BLANCO FORZADO */
-                font-size: 1rem; text-align: right; 
-                word-break: break-word; /* Romper palabras largas */
-                white-space: normal;
-            }
+            /* VISIBILIDAD DE DATOS */
+            .mobile-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 10px; flex-shrink: 0; }
+            .mobile-val { color: #ffffff !important; font-size: 1rem; text-align: right; word-break: break-word; white-space: normal; }
 
             /* Estilos Específicos */
-            
-            /* Patente Grande */
-            td[data-col="Patente"] { 
-                border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 8px; display: block; 
-            }
-            td[data-col="Patente"] .mobile-label { display: none; } /* Ocultar etiqueta "Patente" */
+            td[data-col="Patente"] { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 8px; display: block; }
+            td[data-col="Patente"] .mobile-label { display: none; }
             td[data-label="Patente"] .mobile-val { text-align: center; font-size: 1.6rem; font-weight: 900; color: var(--primary) !important; }
 
-            /* Ocultar en lista (click para ver) */
+            /* Ocultar en lista */
             td[data-col="Sede"], td[data-col="Ficha"], td[data-col="RUT"], td[data-col="Celular"], 
             td[data-col="Comuna"], td[data-col="KM"], td[data-col="Coord."], td[data-col="Materiales"],
-            td[data-col="Color"], td[data-col="Año"], td[data-col="Técnico"], td[data-col="Diagnóstico"] { 
-                display: none; 
-            }
-
-            /* Flecha */
-            tr::after { 
-                content: '\f054'; font-family: "Font Awesome 6 Free"; font-weight: 900; 
-                position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
-                color: var(--primary); font-size: 1.2rem; opacity: 0.3; pointer-events: none; 
-            }
+            td[data-col="Color"], td[data-col="Año"], td[data-col="Técnico"], td[data-col="Diagnóstico"] { display: none; }
 
             /* Modals */
             .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 20px 20px 100px 20px; overflow-y: auto; }
@@ -389,7 +363,7 @@
 </div>
 
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbyIC7hiCJfxK2Fk-4Qkf-r-BvM8qDNu3ULmHzJR5RSLrfyOxNpES3jyqY-7cQ4CkXU/exec";
+    const API = "https://script.google.com/macros/s/AKfycbzm38y4IQpUzkkQwyJlk2IIXYlacJmy6sPxLnZpiBbsFGmktZDUXlf588HLVTGmANK5/exec";
     let curCategory='TALLER', curYear='2026', curPage=1, users=[], currUser={}, rowData=[], isEdit=false;
     const CAT_PREFIX = { 'TALLER': 'Folios ', 'ABASTIBLE': 'ABASTIBLE ' };
     const HEADERS = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
@@ -436,13 +410,21 @@
         loadData(1);
     }
 
+    function setStatus(isOnline) {
+        const dot=document.getElementById('dot');
+        dot.className = isOnline ? 'status-dot online' : 'status-dot';
+    }
+
     async function loadData(page) {
         curPage = page;
         const tb = document.getElementById('tbody');
         tb.innerHTML = '<tr><td colspan="17" style="text-align:center; padding:3rem;"><img src="https://media.tenor.com/V0vzeHv6LbwAAAAj/windows-loandig-cargando.gif" style="width:40px; opacity:0.8;"></td></tr>';
         
         let sheetName = CAT_PREFIX[curCategory] + curYear;
-        let url = `${API}?sheetName=${encodeURIComponent(sheetName)}&page=${page}&nocache=${Date.now()}`;
+        // DETECCIÓN DE MÓVIL PARA LIMITAR A 10
+        const limit = window.innerWidth <= 900 ? 10 : 50; 
+        
+        let url = `${API}?sheetName=${encodeURIComponent(sheetName)}&page=${page}&limit=${limit}&nocache=${Date.now()}`;
         const term = document.getElementById('s-in').value;
         if(term) url += `&search=${encodeURIComponent(term)}&colIndex=${document.getElementById('s-col').value}`;
 
@@ -452,15 +434,15 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    // DATA-COL PARA FILTRADO, SPAN EXPLÍCITO PARA VISIBILIDAD MÓVIL
+                    // MOVIL: SPANS EXPLICITOS
                     let cells = `<td data-col="Patente"><span class="mobile-label">Patente</span><span class="mobile-val">${row[9]}</span></td>`; // Patente primero
                     cells += `<td data-col="Cliente"><span class="mobile-label">Cliente</span><span class="mobile-val">${row[3]}</span></td>`;
                     cells += `<td data-col="Marca"><span class="mobile-label">Marca</span><span class="mobile-val">${row[7]} ${row[8]}</span></td>`;
                     cells += `<td data-col="Fecha"><span class="mobile-label">Fecha</span><span class="mobile-val">${d}</span></td>`;
                     
-                    // Resto de datos con HTML explícito (aunque se oculten por CSS en vista tarjeta)
+                    // RENDERIZADO STANDARD PARA PC Y DATOS OCULTOS MÓVIL
                     for(let k=1; k<row.length-1; k++) {
-                        // Saltamos los que ya pusimos manualmente
+                        // Saltamos los que ya pusimos manualmente en el orden móvil
                         if([3,7,8,9].includes(k)) continue; 
                         let label = HEADERS[k] || "Info";
                         cells += `<td data-col="${label}"><span class="mobile-label">${label}</span><span class="mobile-val">${row[k] || '-'}</span></td>`;
@@ -470,7 +452,7 @@
             }
             document.getElementById('page-lbl').innerText = `Pág ${page}`;
             document.getElementById('prev').disabled = page===1;
-            document.getElementById('next').disabled = rowData.length < 50;
+            document.getElementById('next').disabled = rowData.length < limit; // Ajuste lógico
         } catch(e) { tb.innerHTML='<tr><td colspan="17" style="text-align:center; color:var(--danger)">Error conexión</td></tr>'; }
     }
 
