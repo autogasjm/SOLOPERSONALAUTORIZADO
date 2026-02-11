@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Solo Personal Autorizado | Mobile v27</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- VARIABLES BASE --- */
+        :root {
+            --bg-deep: #000000;
+            --bg-card: #0a0a0a;
+            --bg-input: #111111;
+            
+            --primary: #00e676; 
+            --primary-dim: #00b35c;
+            --primary-glow: rgba(0, 230, 118, 0.3);
+            --primary-glow-subtle: rgba(0, 230, 118, 0.1);
+            
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border: #333333;
+            --danger: #ff4d4d;
+            
+            /* Status Fijo */
+            --status-ok: #00e676;
+            --status-err: #ff4d4d;
+            
+            --transition-speed: 0.3s;
+        }
+
+        body.abastible-mode {
+            --primary: #ff6f00; 
+            --primary-dim: #e65100;
+            --primary-glow: rgba(255, 111, 0, 0.4);
+            --primary-glow-subtle: rgba(255, 111, 0, 0.15);
+        }
+
+        body.light {
+            --bg-deep: #f5f5f5; --bg-card: #ffffff; --bg-input: #e0e0e0;
+            --text-main: #1a1a1a; --text-muted: #616161; --border: #bdbdbd;
+            --primary: #10b981; 
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-deep); color: var(--text-main); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s;
+        }
+
+        /* --- LOGIN --- */
+        #login-wrap { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at center bottom, #111 0%, var(--bg-deep) 60%); display: flex; align-items: center; justify-content: center; }
+        .login-card { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(20px); padding: 2rem; border-radius: 24px; width: 90%; max-width: 380px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.8; }
+        
+        .login-icon-box { width: 80px; height: 80px; margin: 0 auto 20px; background: var(--primary-glow-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary-glow); box-shadow: 0 0 20px var(--primary-glow); }
+        .login-icon-box i { font-size: 2.5rem; color: var(--primary); }
+        
+        .input-group { position: relative; margin-bottom: 15px; }
+        .login-input { width: 100%; padding: 14px 14px 14px 45px; background: rgba(30, 30, 30, 0.6); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 1rem; }
+        .login-input:focus { border-color: var(--primary); background: black; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .login-btn-main { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary); color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 20px var(--primary-glow); }
+
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--duration) linear infinite; opacity: 0; }
+        @keyframes twinkle { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: translateY(-150px); } }
+
+        /* --- HEADER & APP --- */
+        header { background: var(--bg-card); height: 70px; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 50; flex-shrink: 0; }
+        .brand-logo { height: 40px; width: auto; object-fit: contain; }
+        
+        .cat-switch { display: flex; background: var(--bg-input); padding: 3px; border-radius: 10px; border: 1px solid var(--border); margin-left: 15px; }
+        .cat-btn { padding: 6px 15px; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
+        .cat-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+        .abast-btn-logo { height: 20px; width: auto; display: block; }
+        body.abastible-mode .cat-btn.active .abast-btn-logo { filter: brightness(0) invert(1); }
+
+        .header-controls { display: flex; align-items: center; gap: 8px; }
+        .status-pill { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; background: var(--bg-input); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-muted); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .dot.ok { background: var(--status-ok) !important; box-shadow: 0 0 8px var(--status-ok); }
+        .dot.err { background: var(--status-err) !important; }
+
+        /* TOOLBAR */
+        .toolbar { padding: 1rem 1.5rem; background: var(--bg-deep); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; z-index: 40; flex-shrink: 0; }
+        .tabs { display: flex; gap: 5px; background: var(--bg-card); padding: 4px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; }
+        .tab-item { padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-weight: 600; background: transparent; border: none; font-size: 0.8rem; white-space: nowrap; }
+        .tab-item.active { background: var(--bg-input); color: var(--primary); border: 1px solid var(--border); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+
+        .search-grp { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; height: 40px; align-items: center; flex: 1; min-width: 200px; }
+        .search-grp select { border: none; background: transparent; width: auto; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border); height: 100%; padding: 0 10px; }
+        .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); width: 100%; font-size: 0.9rem; }
+        .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
+
+        /* MAIN */
+        main { flex: 1; padding: 0 1.5rem 1.5rem; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; flex: 1; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .t-scroll { overflow: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        
+        table { width: 100%; border-collapse: collapse; min-width: 1800px; }
+        th { background: var(--bg-input); padding: 14px 16px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; position: sticky; top: 0; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-main); cursor: pointer; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        tr:hover td:first-child { color: var(--primary); font-weight: 700; }
+
+        .pagination { padding: 10px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+
+        /* FAB */
+        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.5rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; transition: transform 0.2s; }
+        .fab:active { transform: scale(0.9); }
+        .fab.hidden { display: none !important; }
+
+        /* --- MOBILE RESPONSIVE CSS --- */
+        @media (max-width: 768px) {
+            /* Header Stack */
+            header { height: auto; flex-wrap: wrap; padding: 10px 15px; gap: 10px; }
+            .brand-logo { height: 35px; }
+            .cat-switch { margin-left: auto; width: auto; }
+            .header-controls { width: 100%; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
+            
+            /* Toolbar Stack */
+            .toolbar { padding: 10px 15px; flex-direction: column; align-items: stretch; gap: 10px; }
+            .tabs { width: 100%; justify-content: space-between; }
+            .tab-item { flex: 1; text-align: center; padding: 8px 0; }
+            .search-grp { width: 100%; }
+
+            /* Main Content Adjustments */
+            main { padding: 0 10px 10px; }
+            .panel { border-radius: 12px; }
+
+            /* TABLE TO CARDS TRANSFORMATION */
+            thead { display: none; }
+            table { display: block; min-width: 100%; }
+            tbody { display: block; }
+            
+            tr { 
+                display: block; 
+                margin-bottom: 10px; 
+                background: var(--bg-card); 
+                border: 1px solid var(--border); 
+                border-radius: 12px; 
+                padding: 12px; 
+                position: relative;
+            }
+            tr:hover { background: var(--bg-card); } /* Remove hover effect on mobile */
+
+            td { 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center;
+                padding: 4px 0; 
+                border: none; 
+                font-size: 0.9rem;
+            }
+            
+            /* Label injection via CSS content from data-label attr */
+            td::before { 
+                content: attr(data-label); 
+                font-size: 0.75rem; 
+                font-weight: 700; 
+                color: var(--text-muted); 
+                text-transform: uppercase; 
+                margin-right: 15px;
+            }
+
+            /* Customizing specific fields for Card Layout */
+            /* Patente: Top, Big, Colored */
+            td[data-label="Patente"] { 
+                font-size: 1.2rem; 
+                font-weight: 900; 
+                color: var(--primary); 
+                padding-bottom: 8px; 
+                border-bottom: 1px solid var(--border); 
+                margin-bottom: 8px; 
+                display: block; 
+                text-align: center;
+            }
+            td[data-label="Patente"]::before { display: none; }
+
+            /* Ocultar columnas secundarias en la vista tarjeta (se ven al hacer click) */
+            td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
+            td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
+            td[data-label="Color"], td[data-label="Año"], td[data-label="Modelo"], td[data-label="Técnico"] { 
+                display: none; 
+            }
+
+            /* Modals Full Screen */
+            .m-card { width: 100%; height: 100%; max-height: 100%; border-radius: 0; padding: 1.5rem; }
+            .f-grid { grid-template-columns: 1fr; }
+            .f-full { grid-column: span 1; }
+        }
+
+        /* MODALS */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+        
+        .btn-green { background: var(--primary); color: #000; padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; width: 100%; }
+        
+        .user-pill { display: flex; align-items: center; gap: 5px; }
+        .user-row { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-input); border-radius: 8px; margin-bottom: 8px; align-items: center; }
+        
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 25px; border-radius: 50px; z-index: 6000; display: none; border-left: 4px solid var(--primary); font-size: 0.9rem; width: max-content; max-width: 90%; text-align: center; }
+    </style>
+</head>
+<body class="dark">
+
+<div id="toast">Notificación</div>
+
+<div id="login-wrap">
+    <div id="star-container"></div>
+    <div class="login-card">
+        <div class="login-icon-box"><i class="fas fa-user-astronaut"></i></div>
+        <h2 style="margin:0 0 5px; color:white;">ACCESO RESTRINGIDO</h2>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:25px;">Sistema de Gestión Integral</p>
+        <div class="input-group">
+            <input type="text" id="user" class="login-input" placeholder="Usuario">
+            <i class="fas fa-user input-icon"></i>
+        </div>
+        <div class="input-group">
+            <input type="password" id="pass" class="login-input" placeholder="Contraseña">
+            <i class="fas fa-lock input-icon"></i>
+        </div>
+        <button class="login-btn-main" onclick="attemptLogin()">CONECTAR</button>
+        <div style="margin-top:20px; color:var(--text-muted); font-size:0.8rem;">
+            <span id="boot-status">Estableciendo conexión segura...</span>
+        </div>
+    </div>
+</div>
+
+<header>
+    <div style="display:flex; align-items:center;">
+        <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" alt="JM Logo" class="brand-logo">
+        <div class="cat-switch">
+            <button class="cat-btn active" id="btn-taller" onclick="setCategory('TALLER')"><i class="fas fa-wrench"></i> TALLER</button>
+            <button class="cat-btn" id="btn-abast" onclick="setCategory('ABASTIBLE')">
+                <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" alt="Abastible" class="abast-btn-logo">
+            </button>
+        </div>
+    </div>
+    <div class="header-controls">
+        <div class="status-pill">
+            <div id="dot" class="dot"></div>
+            <span id="status-txt" class="status-text">...</span>
+        </div>
+        <button class="btn-ghost" id="btn-admin" style="display:none;" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
+        <div class="user-pill"><div class="avatar" id="u-av">U</div></div>
+        <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-lightbulb"></i></button>
+        <button class="btn-ghost" style="color:var(--danger); border-color:var(--danger);" onclick="logout()"><i class="fas fa-power-off"></i></button>
+    </div>
+</header>
+
+<div class="toolbar">
+    <div class="tabs">
+        <button class="tab-item active" onclick="changeYear('2026')">2026</button>
+        <button class="tab-item" onclick="changeYear('2025')">2025</button>
+        <button class="tab-item" onclick="changeYear('2024')">2024</button>
+    </div>
+    <div class="search-grp">
+        <select id="s-col">
+            <option value="-1">Global</option>
+            <option value="9">Patente</option>
+            <option value="2">Ficha</option>
+            <option value="3">Cliente</option>
+        </select>
+        <input type="text" id="s-in" placeholder="Buscar..." onkeydown="if(event.key==='Enter') search()">
+        <button class="search-btn" onclick="search()"><i class="fas fa-search"></i></button>
+    </div>
+</div>
+
+<main id="app">
+    <div class="panel">
+        <div class="t-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th><th>Sede</th><th>Ficha</th><th>Cliente</th><th>RUT</th><th>Celular</th><th>Comuna</th><th>Marca</th><th>Modelo</th><th>Patente</th><th>Color</th><th>KM</th><th>Año</th><th>Coord.</th><th>Diagnóstico</th><th>Técnico</th><th>Materiales</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            <button class="btn-ghost" id="prev" onclick="movePage(-1)"><i class="fas fa-chevron-left"></i></button>
+            <span id="page-lbl">Cargando...</span>
+            <button class="btn-ghost" id="next" onclick="movePage(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+</main>
+
+<button class="fab" id="fab" onclick="prepAdd()"><i class="fas fa-plus"></i></button>
+
+<div class="modal" id="m-insp">
+    <div class="m-card">
+        <i class="fas fa-times close" onclick="closeM('m-insp')"></i>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+            <h2 style="margin:0; color:var(--primary);">Detalles</h2>
+            <div id="insp-btns" style="display:flex; gap:10px;"></div>
+        </div>
+        <div class="f-grid" id="insp-data"></div>
+    </div>
+</div>
+
+<div class="modal" id="m-form">
+    <div class="m-card">
+        <i class="fas fa-times close" onclick="closeM('m-form')"></i>
+        <h2 id="f-title" style="margin-top:0; color:var(--primary)">Registro</h2>
+        <input type="hidden" id="f-id">
+        <div class="f-grid">
+            <div><label>Fecha</label><input type="date" class="login-input" id="i_fecha" style="background:var(--bg-input)"></div>
+            <div><label>Sede</label><select class="login-input" id="i_sede" style="background:var(--bg-input)"><option>CONCHALÍ</option><option>SAN BERNARDO</option></select></div>
+            <div><label>Ficha</label><input type="text" class="login-input" id="i_ficha" style="background:var(--bg-input)"></div>
+            <div><label>Cliente</label><input type="text" class="login-input" id="i_cliente" style="background:var(--bg-input)"></div>
+            <div><label>RUT</label><input type="text" class="login-input" id="i_rut" style="background:var(--bg-input)"></div>
+            <div><label>Celular</label><input type="text" class="login-input" id="i_cel" style="background:var(--bg-input)"></div>
+            <div><label>Comuna</label><input type="text" class="login-input" id="i_comuna" style="background:var(--bg-input)"></div>
+            <div><label>Marca</label><input type="text" class="login-input" id="i_marca" style="background:var(--bg-input)"></div>
+            <div><label>Modelo</label><input type="text" class="login-input" id="i_modelo" style="background:var(--bg-input)"></div>
+            <div><label>Patente</label><input type="text" class="login-input" id="i_patente" style="background:var(--bg-input)"></div>
+            <div><label>Color</label><input type="text" class="login-input" id="i_color" style="background:var(--bg-input)"></div>
+            <div><label>KM</label><input type="text" class="login-input" id="i_km" style="background:var(--bg-input)"></div>
+            <div><label>Año</label><input type="number" class="login-input" id="i_año" style="background:var(--bg-input)"></div>
+            <div><label>Coord.</label><input type="text" class="login-input" id="i_coord" style="background:var(--bg-input)"></div>
+            <div class="f-full"><label>Diagnóstico</label><textarea class="login-input" id="i_diag" rows="3" style="background:var(--bg-input)"></textarea></div>
+            <div><label>Técnico</label><select class="login-input" id="i_colab" style="background:var(--bg-input)"><option>JIMMY</option><option>DAIR</option><option>JOSE</option></select></div>
+            <div><label>Materiales</label><input type="text" class="login-input" id="i_mat" style="background:var(--bg-input)"></div>
+        </div>
+        <button class="btn-green" style="margin-top:20px;" id="btn-save" onclick="saveData()">GUARDAR</button>
+    </div>
+</div>
+
+<div class="modal" id="m-sel">
+    <div class="m-card" style="max-width:300px; text-align:center;">
+        <i class="fas fa-times close" onclick="closeM('m-sel')"></i>
+        <h3>Destino</h3>
+        <button class="btn-green" style="margin-bottom:10px" onclick="openForm('2026')">2026</button>
+        <button class="btn-ghost" style="width:100%; margin-bottom:10px" onclick="openForm('2025')">2025</button>
+        <button class="btn-ghost" style="width:100%;" onclick="openForm('2024')">2024</button>
+    </div>
+</div>
+
+<div class="modal" id="m-admin">
+    <div class="m-card" style="max-width:500px">
+        <i class="fas fa-times close" onclick="closeM('m-admin')"></i>
+        <h3>Usuarios</h3>
+        <div style="background:var(--bg-input); padding:15px; border-radius:12px; margin-bottom:15px;">
+            <input type="text" id="n_u" class="login-input" placeholder="Usuario" style="margin-bottom:10px; background:var(--bg-deep)">
+            <input type="text" id="n_p" class="login-input" placeholder="Clave" style="background:var(--bg-deep); margin-bottom:10px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; font-size:0.8rem; color:var(--text-muted)">
+                <label><input type="checkbox" id="p_add"> Agregar</label>
+                <label><input type="checkbox" id="p_edit"> Editar</label>
+                <label><input type="checkbox" id="p_del"> Borrar</label>
+                <label style="color:var(--primary)"><input type="checkbox" id="p_adm" onchange="toggleAdm(this)"> ADMIN</label>
+            </div>
+            <button class="btn-green" style="margin-top:10px;" onclick="createUsr()">Crear</button>
+        </div>
+        <div id="u-list" style="max-height:200px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<script>
+    const API = "https://script.google.com/macros/s/AKfycbyIC7hiCJfxK2Fk-4Qkf-r-BvM8qDNu3ULmHzJR5RSLrfyOxNpES3jyqY-7cQ4CkXU/exec";
+    let curCategory = 'TALLER', curYear = '2026', curPage = 1, users = [], currUser = {}, rowData = [], isEdit = false;
+    const CAT_PREFIX = { 'TALLER': 'Folios ', 'ABASTIBLE': 'ABASTIBLE ' };
+    const HEADERS = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
+
+    window.onload = async () => {
+        const st=document.getElementById('boot-status');
+        try {
+            const r=await fetch(`${API}?type=users`); const j=await r.json(); users=j.data;
+            st.innerText="Conexión Segura."; st.style.color="var(--status-ok)";
+        } catch(e) { st.innerText="Offline Mode"; }
+        
+        // Stars
+        const c = document.getElementById('star-container');
+        for(let i=0; i<50; i++) {
+            let s = document.createElement('div'); s.className='star';
+            let z=Math.random()*2; s.style.width=z+'px'; s.style.height=z+'px';
+            s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+            s.style.animationDelay=Math.random()*5+'s'; s.style.setProperty('--duration',(Math.random()*5+8)+'s');
+            c.appendChild(s);
+        }
+    };
+
+    function setCategory(cat) {
+        curCategory = cat;
+        document.getElementById('btn-taller').className = cat === 'TALLER' ? 'cat-btn active' : 'cat-btn';
+        document.getElementById('btn-abast').className = cat === 'ABASTIBLE' ? 'cat-btn active' : 'cat-btn';
+        if (cat === 'ABASTIBLE') document.body.classList.add('abastible-mode'); else document.body.classList.remove('abastible-mode');
+        loadData(1);
+    }
+
+    function changeYear(y) {
+        curYear = y;
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.innerText === y));
+        loadData(1);
+    }
+
+    function attemptLogin() {
+        const u=document.getElementById('user').value, p=document.getElementById('pass').value;
+        if(u==="Jimmy" && p==="0505") return loginSuccess({user:"Jimmy", perms:"ALL"});
+        const f=users.find(x=>x.user===u && x.pass==p);
+        if(f) loginSuccess(f); else showToast("Error Credenciales", "err");
+    }
+
+    function loginSuccess(u) {
+        currUser = { name:u.user, role:u.perms==="ALL"?"ADMIN":"USER", perms:u.perms==="ALL"?["ADD","EDIT","DEL"]:u.perms.split(',') };
+        document.getElementById('u-av').innerText=currUser.name[0];
+        if(currUser.role==="ADMIN") document.getElementById('btn-admin').style.display="inline-flex";
+        if(!currUser.perms.includes("ADD")) document.getElementById('fab').classList.add('hidden');
+        document.getElementById('login-wrap').style.display="none";
+        loadData(1);
+    }
+
+    function setStatus(isOnline) {
+        const dot = document.getElementById('dot'); const txt = document.getElementById('status-txt');
+        if(isOnline) { dot.className = 'dot ok'; txt.innerText = "Online"; txt.style.color = "var(--status-ok)"; } 
+        else { dot.className = 'dot err'; txt.innerText = "Error"; txt.style.color = "var(--status-err)"; }
+    }
+
+    async function loadData(page) {
+        curPage = page;
+        const tb = document.getElementById('tbody');
+        tb.innerHTML = '<tr><td colspan="17" style="text-align:center; padding:3rem;"><img src="https://media.tenor.com/V0vzeHv6LbwAAAAj/windows-loandig-cargando.gif" style="width:40px; opacity:0.8;"></td></tr>';
+        
+        let sheetName = CAT_PREFIX[curCategory] + curYear;
+        let url = `${API}?sheetName=${encodeURIComponent(sheetName)}&page=${page}&nocache=${Date.now()}`;
+        const term = document.getElementById('s-in').value;
+        if(term) url += `&search=${encodeURIComponent(term)}&colIndex=${document.getElementById('s-col').value}`;
+
+        try {
+            const r = await fetch(url); const j = await r.json(); rowData = j.data;
+            if(!rowData || !rowData.length) { tb.innerHTML = '<tr><td colspan="17" style="text-align:center; padding:3rem; color:var(--text-muted)">Sin datos</td></tr>'; } 
+            else {
+                // GENERACIÓN DE TARJETAS PARA MÓVIL
+                tb.innerHTML = rowData.map((row, i) => {
+                    let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
+                    let cells = `<td data-label="Fecha" style="color:var(--primary); font-weight:bold">${d}</td>`;
+                    for(let k=1; k<row.length-1; k++) {
+                        let label = HEADERS[k] || "Info";
+                        cells += `<td data-label="${label}">${row[k] || ''}</td>`;
+                    }
+                    return `<tr onclick="openInsp(${i})">${cells}</tr>`;
+                }).join('');
+            }
+            setStatus(true);
+            document.getElementById('page-lbl').innerText = `Pág ${page}`;
+            document.getElementById('prev').disabled = page===1;
+            document.getElementById('next').disabled = rowData.length < 50;
+        } catch(e) { tb.innerHTML='<tr><td colspan="17" style="text-align:center;">Error</td></tr>'; setStatus(false); }
+    }
+
+    function openInsp(idx) {
+        const r = rowData[idx];
+        let h = '';
+        r.slice(0,-1).forEach((v, i) => {
+            let val=v; if(i===0 && val.includes('T')) val=val.split('T')[0];
+            h += `<div class="d-item ${i===14?'f-full':''}"><span class="d-lbl">${HEADERS[i]}</span><span class="d-val">${val||'-'}</span></div>`;
+        });
+        document.getElementById('insp-data').innerHTML = h;
+        
+        let btns = '';
+        const safe = JSON.stringify(r).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        const id = r[r.length-1];
+        if(currUser.perms.includes("EDIT")) btns += `<button class="btn-green" onclick='prepEdit(${safe})' style="flex:1">Editar</button>`;
+        if(currUser.perms.includes("DEL")) btns += `<button class="btn-ghost" style="color:var(--danger); border-color:var(--danger); flex:1" onclick="del(${id})">Borrar</button>`;
+        document.getElementById('insp-btns').innerHTML = btns;
+        document.getElementById('m-insp').style.display='flex';
+    }
+
+    function prepAdd() { isEdit=false; document.querySelectorAll('#m-form input, textarea').forEach(e=>e.value=''); document.getElementById('f-title').innerText = `Nuevo (${curCategory})`; document.getElementById('m-sel').style.display='flex'; }
+    function prepEdit(r) {
+        closeM('m-insp'); isEdit=true; document.getElementById('f-id').value = r[r.length-1];
+        let d=r[0]; if(d.match(/^\d{2}[\/-]\d{2}[\/-]\d{4}$/)) { let p=d.split(/[\/-]/); document.getElementById('i_fecha').value=`${p[2]}-${p[1]}-${p[0]}`; } else document.getElementById('i_fecha').value=d;
+        const ids=['i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año','i_coord','i_diag','i_colab','i_mat'];
+        ids.forEach((id,i) => document.getElementById(id).value = r[i+1]);
+        document.getElementById('f-title').innerText = `Editar (${curCategory})`; document.getElementById('m-form').style.display='flex';
+    }
+    function openForm(y) { curYear = y; closeM('m-sel'); document.getElementById('m-form').style.display='flex'; }
+
+    async function saveData() {
+        const btn=document.getElementById('btn-save'); btn.disabled=true; btn.innerText="...";
+        let sheetName = CAT_PREFIX[curCategory] + curYear;
+        const p = new URLSearchParams(); p.append('sheetName', sheetName); p.append('action', isEdit?'UPDATE':'CREATE'); p.append('rowId', document.getElementById('f-id').value);
+        const ids=['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_año','i_coord','i_diag','i_colab','i_mat'];
+        ids.forEach((id,i) => { let v=document.getElementById(id).value; if(!['ly','rut'].includes(id.replace('i_',''))) v=v.toUpperCase(); p.append(id.replace('i_',''), v); });
+        
+        await fetch(API, {method:'POST', body:p, mode:'no-cors'});
+        closeM('m-form'); showToast("Guardado"); loadData(curPage); btn.disabled=false; btn.innerText="GUARDAR";
+    }
+
+    async function del(id) { if(!confirm("Eliminar?")) return; closeM('m-insp'); let sheetName = CAT_PREFIX[curCategory] + curYear; await fetch(API, {method:'POST', body:new URLSearchParams({sheetName:sheetName, action:'DELETE', rowId:id}), mode:'no-cors'}); showToast("Eliminado", "err"); loadData(curPage); }
+
+    function openAdmin() {
+        document.getElementById('u-list').innerHTML = users.map(u => `<div class="user-row"><span>${u.user} <small>(${u.perms})</small></span>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--danger);" onclick="delUser(${u.id})"></i>`:''}</div>`).join('');
+        document.getElementById('m-admin').style.display='flex';
+    }
+    async function createUsr() {
+        const u=document.getElementById('n_u').value, p=document.getElementById('n_p').value; if(!u||!p) return;
+        let perms = document.getElementById('p_adm').checked ? "ALL" : [];
+        if(perms!=="ALL") { if(document.getElementById('p_add').checked) perms.push("ADD"); if(document.getElementById('p_edit').checked) perms.push("EDIT"); if(document.getElementById('p_del').checked) perms.push("DEL"); perms = perms.join(','); }
+        await fetch(API, {method:'POST', body:new URLSearchParams({type:'users', action:'CREATE', u_user:u, u_pass:p, u_perms:perms}), mode:'no-cors'}); showToast("Creado. Recargue.");
+    }
+    async function delUser(id) { if(confirm("Borrar?")) { await fetch(API, {method:'POST', body:new URLSearchParams({type:'users', action:'DELETE', rowId:id}), mode:'no-cors'}); location.reload(); } }
+
+    function showToast(m, t='ok') { const x=document.getElementById('toast'); x.innerText=m; x.style.color=t==='ok'?'var(--primary)':'var(--status-err)'; x.style.borderColor=x.style.color; x.style.display="block"; setTimeout(()=>x.style.display="none", 3000); }
+    function closeM(id) { document.getElementById(id).style.display='none'; }
+    function logout() { location.reload(); }
+    function search() { loadData(1); }
+    function movePage(d) { if(curPage+d > 0) loadData(curPage+d); }
+    function toggleAdm(c) { ['p_add','p_edit','p_del'].forEach(i=>document.getElementById(i).disabled=c.checked); }
+</script>
+</body>
+</html>
