@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solo Personal Autorizado | v30.0</title>
+    <title>Solo Personal Autorizado | v31.0</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
@@ -53,7 +53,6 @@
         .header-left { display: flex; align-items: center; gap: 15px; }
         .brand-logo { height: 35px; width: auto; object-fit: contain; }
         
-        /* BOTONES PC PEQUEÑOS */
         .cat-switch { display: flex; background: var(--bg-input); padding: 2px; border-radius: 6px; border: 1px solid var(--border); }
         .cat-btn { padding: 4px 10px; border-radius: 4px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .cat-btn:hover { color: var(--text-main); }
@@ -76,7 +75,7 @@
         .search-grp input { border: none; background: transparent; padding-left: 10px; height: 100%; color: var(--text-main); flex: 1; font-size: 0.85rem; }
         .search-btn { background: transparent; border: none; padding: 0 15px; color: var(--text-muted); cursor: pointer; }
 
-        /* --- MAIN TABLE --- */
+        /* --- MAIN TABLE (DESKTOP) --- */
         main { flex: 1; padding: 0 20px 20px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
         .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
         .t-scroll { overflow: auto; flex: 1; }
@@ -87,13 +86,11 @@
         tr:hover { background: rgba(255,255,255,0.03); }
         tr:hover td:first-child { color: var(--primary); font-weight: 700; }
 
-        /* PAGINACIÓN ESCRITORIO */
         .pagination { padding: 8px 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); font-size: 0.8rem; }
         .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; cursor: pointer; }
 
         /* FAB */
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.8rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; transition: 0.3s; }
-        .fab:active { transform: scale(0.9); }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; border: none; font-size: 1.8rem; display: grid; place-items: center; box-shadow: 0 5px 20px var(--primary-glow); z-index: 100; cursor: pointer; }
         .fab.hidden { display: none !important; }
 
         /* --- MODALS --- */
@@ -113,14 +110,13 @@
 
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 50px; z-index: 6000; display: none; font-size: 0.85rem; border-left: 4px solid var(--primary); }
 
-        /* --- MOBILE RESPONSIVE FIXES (v30.0) --- */
+        /* --- MOBILE RESPONSIVE ESSENTIALS (v31.0) --- */
         @media (max-width: 768px) {
             /* 1. Header en columna */
-            header { height: auto; flex-direction: column; padding: 15px; gap: 12px; }
+            header { height: auto; flex-direction: column; padding: 15px; gap: 15px; }
             .header-left { width: 100%; justify-content: space-between; }
             .header-right { width: 100%; justify-content: space-between; }
             .cat-switch { margin: 0; width: 100%; display: flex; order: 3; padding: 4px; height: 45px; }
-            /* Botones grandes en móvil */
             .cat-btn { flex: 1; justify-content: center; padding: 8px; font-size: 0.85rem; } 
             .abast-btn-logo { height: 18px; }
 
@@ -128,104 +124,121 @@
             .toolbar { padding: 10px; flex-direction: column; gap: 12px; }
             .tabs { width: 100%; justify-content: space-between; padding: 5px; }
             .tab-item { flex: 1; text-align: center; padding: 10px; }
-            
-            /* BUSCADOR MÁS GRANDE */
             .search-grp { width: 100%; height: 55px; border-radius: 12px; } 
             .search-grp select { font-size: 0.85rem; padding: 0 15px; max-width: 120px; }
             .search-grp input { font-size: 1.1rem; } 
             .search-btn { padding: 0 20px; font-size: 1.2rem; }
 
-            /* 3. Main container */
-            main { padding: 5px 10px 10px 10px; overflow-y: auto; display: block; } 
-            .panel { border: none; background: transparent; box-shadow: none; overflow: visible; }
-            .t-scroll { overflow: visible; height: auto; }
+            /* 3. Main Container */
+            main { padding: 5px 10px 100px 10px; } 
+            .panel { border: none; background: transparent; box-shadow: none; }
+            .t-scroll { overflow: visible; }
 
-            /* 4. TARJETAS MÓVILES - VISIBILIDAD TOTAL */
+            /* 4. TARJETAS MÓVILES - VISTA LIMPIA Y DIRECTA */
             thead { display: none; }
             table { display: block; width: 100%; }
             tbody { display: block; width: 100%; }
             
+            /* Contenedor Tarjeta */
             tr {
                 display: flex; 
                 flex-direction: column;
-                margin-bottom: 20px;
-                background: #1a1a1a; /* Fondo más claro que el negro puro */
+                margin-bottom: 15px;
+                background: #1a1a1a; 
                 border: 1px solid var(--border);
                 border-radius: 16px;
                 padding: 15px;
                 position: relative;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            }
+            
+            /* Indicador de "Click" (Flecha) */
+            tr::after {
+                content: '\f054'; /* FontAwesome Chevron Right */
+                font-family: "Font Awesome 6 Free";
+                font-weight: 900;
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--primary);
+                font-size: 1.2rem;
+                opacity: 0.5;
             }
 
+            /* Estilo Genérico de Celda Móvil */
             td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                text-align: right;
-                padding: 10px 0;
-                border-bottom: 1px solid #333;
-                font-size: 1rem;
-                color: #ffffff !important; /* TEXTO BLANCO FORZADO */
-            }
-            td:last-child { border-bottom: none; }
-
-            /* Etiquetas */
-            td::before {
-                content: attr(data-label);
-                float: left;
-                font-weight: 700;
-                text-transform: uppercase;
-                color: var(--text-muted);
-                font-size: 0.75rem;
-                margin-right: 10px;
+                display: block; /* Bloques para que nada se esconda */
+                padding: 2px 0;
+                border: none;
+                font-size: 0.95rem;
+                color: #ffffff !important; /* BLANCO PURO */
+                text-align: left;
+                width: 90%; /* Dejar espacio para la flecha */
             }
 
-            /* VALOR DEL DATO (FORZAR BLANCO) */
-            .mobile-val {
-                color: #ffffff !important;
-                font-weight: 500;
-                text-align: right;
-                max-width: 65%;
-                word-wrap: break-word;
+            /* OCULTAR DATOS NO VITALES EN LA VISTA TARJETA */
+            /* Se mostrarán SOLO en el modal al hacer click */
+            td[data-label="Sede"], td[data-label="Ficha"], td[data-label="RUT"], td[data-label="Celular"], 
+            td[data-label="Comuna"], td[data-label="KM"], td[data-label="Coord."], td[data-label="Materiales"],
+            td[data-label="Color"], td[data-label="Año"], td[data-label="Técnico"], td[data-label="Diagnóstico"] { 
+                display: none; 
             }
 
-            /* Patente Destacada */
+            /* DATOS VITALES: ESTILOS ESPECÍFICOS */
+            
+            /* 1. PATENTE (Cabecera Tarjeta) */
             td[data-label="Patente"] {
                 font-size: 1.6rem;
                 font-weight: 900;
                 color: var(--primary) !important;
-                text-align: center;
-                display: block;
-                border-bottom: 2px solid var(--primary);
-                margin-bottom: 12px;
-                padding-bottom: 10px;
+                margin-bottom: 5px;
+                letter-spacing: 1px;
             }
-            td[data-label="Patente"] .mobile-val {
-                width: 100%; max-width: 100%; text-align: center; color: var(--primary) !important;
-            }
-            td[data-label="Patente"]::before { display: none; }
+            td[data-label="Patente"] .mobile-val { color: var(--primary) !important; }
 
-            /* MOSTRAR TODO */
-            td { display: flex !important; }
+            /* 2. CLIENTE (Resaltado) */
+            td[data-label="Cliente"] {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #fff !important;
+                margin-bottom: 2px;
+            }
+
+            /* 3. MARCA / MODELO (Gris claro) */
+            td[data-label="Marca"], td[data-label="Modelo"] {
+                display: inline-block; /* Para ponerlos juntos */
+                width: auto;
+                color: #aaa !important;
+                font-size: 0.9rem;
+                margin-right: 5px;
+            }
+            
+            /* 4. FECHA (Pequeño arriba o abajo) */
+            td[data-label="Fecha"] {
+                font-size: 0.8rem;
+                color: var(--text-muted) !important;
+                margin-bottom: 10px;
+                order: -1; /* Poner fecha arriba del todo */
+            }
 
             /* 5. Modales Full Screen */
             .m-card { 
                 width: 100%; height: 100%; max-height: 100%; 
-                border-radius: 0; border: none; padding: 20px 20px 80px 20px;
+                border-radius: 0; border: none; padding: 20px 20px 100px 20px;
             }
             .f-grid { grid-template-columns: 1fr; gap: 15px; }
             .f-full { grid-column: span 1; }
-            .close { top: 20px; right: 20px; font-size: 2.2rem; padding: 10px; z-index: 10; }
+            .close { top: 15px; right: 15px; font-size: 2.2rem; padding: 10px; z-index: 10; background:rgba(0,0,0,0.5); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; }
 
-            /* 6. Paginación NORMAL al final */
+            /* 6. Paginación */
             .pagination { 
-                position: relative; /* Ya no es fixed */
-                margin-top: 20px;
-                background: transparent;
-                border: none;
-                padding-bottom: 100px; /* Espacio para el FAB */
+                justify-content: center; gap: 20px; 
+                position: fixed; bottom: 0; left: 0; width: 100%; 
+                background: rgba(10,10,10,0.95); border-top: 1px solid var(--border); 
+                padding: 20px; z-index: 90;
             }
-            .fab { bottom: 30px; right: 20px; width: 65px; height: 65px; font-size: 2rem; }
+            .fab { bottom: 90px; right: 20px; width: 65px; height: 65px; font-size: 2rem; }
         }
     </style>
 </head>
@@ -255,7 +268,7 @@
 <header>
     <div class="header-left">
         <div class="status-dot" id="dot" title="Estado"></div>
-        </div>
+    </div>
     <div class="header-right header-controls">
         <button class="btn-ghost" id="btn-admin" style="display:none" onclick="openAdmin()"><i class="fas fa-shield-halved"></i></button>
         <button class="btn-ghost" onclick="document.body.classList.toggle('light')"><i class="fas fa-adjust"></i></button>
@@ -326,7 +339,7 @@
 <div class="modal" id="m-insp">
     <div class="m-card">
         <i class="fas fa-times close" onclick="closeM('m-insp')"></i>
-        <h2 style="color:var(--primary); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;">Detalles</h2>
+        <h2 style="color:var(--primary); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;">Detalles Completos</h2>
         <div style="display:flex; gap:10px; margin-bottom:15px;" id="insp-btns"></div>
         <div class="f-grid" id="insp-data"></div>
     </div>
@@ -390,7 +403,7 @@
 </div>
 
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbyIC7hiCJfxK2Fk-4Qkf-r-BvM8qDNu3ULmHzJR5RSLrfyOxNpES3jyqY-7cQ4CkXU/exec";
+    const API = "https://script.google.com/macros/s/AKfycbyGCrsPV2R7SP5xvjM7W9zAVP8Nxwog9yczJ7BR-c1xfBFg8kQL_J8zVhj6giThXyCp/exec";
     let curCategory='TALLER', curYear='2026', curPage=1, users=[], currUser={}, rowData=[], isEdit=false;
     const CAT_PREFIX = { 'TALLER': 'Folios ', 'ABASTIBLE': 'ABASTIBLE ' };
     const HEADERS = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
@@ -458,7 +471,7 @@
             else {
                 tb.innerHTML = rowData.map((row, i) => {
                     let d = row[0]; if(d.includes('T')) d=d.split('T')[0];
-                    // CRUCIAL: USAR SPANS CON CLASE EXPLICITA PARA MÓVIL
+                    // MOVIL: ESTRUCTURA ROBUSTA CON SPAN PARA QUE EL CSS LO AGARRE BIEN
                     let cells = `<td data-label="Fecha"><span class="mobile-val" style="color:var(--primary); font-weight:bold">${d}</span></td>`;
                     for(let k=1; k<row.length-1; k++) {
                         let label = HEADERS[k] || "Info";
