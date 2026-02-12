@@ -2,577 +2,476 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sistema V3 | Gestión Integral</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JM Autogas | V18 Fixed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- VARIABLES --- */
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #161616;
-            --bg-input: #202020;
-            --primary: #00e676;
-            --primary-dark: #00b35c;
-            --text-main: #ececec;
-            --text-muted: #888;
-            --border: #333;
-            --danger: #ff4444;
-            --radius: 12px;
-            --safe-area-bottom: env(safe-area-inset-bottom);
+            --bg-body: #050505; --bg-panel: #111111; --bg-input: #1a1a1a; --bg-hover: #222222;
+            --primary: #00e676; --primary-dim: rgba(0, 230, 118, 0.2);
+            --text-main: #ffffff; --text-sec: #888888; --border: #333333;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2); --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+            --st-online: #00e676; --st-fetch: #ffea00; --st-recv: #2979ff; --st-off: #757575; --st-err: #ff1744;
+            --glass-bg: rgba(17, 17, 17, 0.9); --glass-blur: blur(12px);
         }
-
-        body.abastible-mode { --primary: #ff8f00; --primary-dark: #cc7200; }
-        body.light {
-            --bg-body: #f4f6f8; --bg-card: #ffffff; --bg-input: #eef0f2;
-            --text-main: #1a1a1a; --border: #dde1e6;
+        body.light-mode {
+            --bg-body: #f5f5f7; --bg-panel: #ffffff; --bg-input: #eef0f2; --bg-hover: #e0e0e0;
+            --text-main: #1d1d1f; --text-sec: #6e6e73; --border: #d2d2d7; --primary: #00a854;
+            --primary-dim: rgba(0, 168, 84, 0.15); --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-lg: 0 15px 40px rgba(0,0,0,0.1); --glass-bg: rgba(255, 255, 255, 0.9);
         }
+        body.abastible-mode { --primary: #ff6d00; --primary-dim: rgba(255, 109, 0, 0.2); }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        body { margin: 0; background: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
-
-        /* --- UTILIDADES --- */
-        .hidden { display: none !important; }
-        .flex { display: flex; align-items: center; }
-        .flex-col { display: flex; flex-direction: column; }
-        .gap-10 { gap: 10px; }
-        
-        /* --- LOGIN --- */
-        #login-overlay {
-            position: fixed; inset: 0; z-index: 9999; background: var(--bg-body);
-            display: grid; place-items: center; transition: opacity 0.4s;
-        }
-        .login-box {
-            width: 90%; max-width: 360px; text-align: center; padding: 2rem;
-            background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-        .login-logo { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
-        .inp-lg { 
-            width: 100%; padding: 15px; margin-bottom: 15px; background: var(--bg-input); 
-            border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-main); font-size: 1rem;
-        }
-        .btn-main {
-            width: 100%; padding: 15px; background: var(--primary); color: #000; font-weight: 700;
-            border: none; border-radius: var(--radius); cursor: pointer; font-size: 1rem; transition: 0.2s;
-        }
-        .btn-main:active { transform: scale(0.98); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-sec); }
 
         /* --- HEADER --- */
-        header {
-            height: 60px; padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--bg-card);
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 50;
-        }
-        .brand { font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); }
-        .status-dot.online { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
-
-        .h-actions { display: flex; gap: 10px; }
-        .icon-btn {
-            width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
-            background: transparent; color: var(--text-muted); display: grid; place-items: center; cursor: pointer;
-        }
-        .icon-btn:hover { color: var(--text-main); background: var(--bg-input); }
-        .user-pill {
-            background: var(--bg-input); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
-            border: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
-        }
-
-        /* --- CONTROLES (Toolbar) --- */
-        .toolbar {
-            padding: 15px 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;
-            background: var(--bg-body); flex-shrink: 0;
-        }
-        .seg-control {
-            background: var(--bg-card); padding: 4px; border-radius: 10px; border: 1px solid var(--border); display: flex;
-        }
-        .seg-btn {
-            padding: 6px 15px; border: none; background: transparent; color: var(--text-muted); 
-            font-size: 0.85rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.2s;
-        }
-        .seg-btn.active { background: var(--bg-input); color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        .search-bar {
-            flex: 1; display: flex; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 10px; height: 40px; align-items: center; overflow: hidden; min-width: 200px;
-        }
-        .search-bar select { background: transparent; border: none; color: var(--text-muted); padding: 0 10px; height: 100%; border-right: 1px solid var(--border); font-size: 0.8rem; }
-        .search-bar input { flex: 1; background: transparent; border: none; color: var(--text-main); padding: 0 10px; height: 100%; }
-
-        /* --- AREA PRINCIPAL (Grid Responsive) --- */
-        main { flex: 1; overflow-y: auto; padding: 0 20px 80px 20px; scroll-behavior: smooth; }
+        header { height: 60px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 20; box-shadow: var(--shadow-sm); }
+        .h-left { display: flex; align-items: center; gap: 15px; }
+        .brand { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px; color: var(--text-main); }
+        .brand span { color: var(--primary); }
         
-        /* Loader CSS Puro */
-        .loader-container { padding: 40px; text-align: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--bg-input); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .status-pill { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; background: var(--bg-input); padding: 4px 10px; border-radius: 50px; border: 1px solid var(--border); }
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .st-online .dot { background: var(--st-online); box-shadow: 0 0 5px var(--st-online); }
+        .st-fetch .dot { background: var(--st-fetch); animation: pulse 1s infinite; }
+        .st-recv .dot { background: var(--st-recv); animation: blink 0.5s infinite; }
+        .st-off .dot { background: var(--st-off); }
+        .st-err .dot { background: var(--st-err); }
+        @keyframes pulse { 0%{opacity:1} 50%{opacity:0.3} 100%{opacity:1} } 
+        @keyframes blink { 0%{opacity:1} 50%{opacity:0.5} 100%{opacity:1} }
 
-        /* --- SISTEMA DE VISUALIZACIÓN --- */
-        /* PC: Tabla */
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-        th { text-align: left; padding: 12px; font-size: 0.75rem; color: var(--text-muted); border-bottom: 2px solid var(--border); position: sticky; top: 0; background: var(--bg-body); z-index: 10; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; cursor: pointer; }
-        tr:hover td { background: rgba(255,255,255,0.03); color: var(--primary); }
+        .h-right { display: flex; align-items: center; gap: 8px; }
+        .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid transparent; display: grid; place-items: center; color: var(--text-sec); cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { background: var(--bg-input); color: var(--text-main); border-color: var(--border); }
+        .btn-danger:hover { color: var(--st-err); border-color: rgba(255, 23, 68, 0.3); }
 
-        /* MOBILE & TABLET: Cards Grid */
-        .grid-container { display: none; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
-        .card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 16px; cursor: pointer; position: relative; transition: transform 0.2s;
+        /* --- TOOLBAR FIXED (GRID SYSTEM) --- */
+        .toolbar { 
+            padding: 12px 20px; background: var(--bg-body); border-bottom: 1px solid var(--border);
+            display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; 
+            flex-shrink: 0; z-index: 10; 
         }
-        .card:active { transform: scale(0.98); }
-        .c-header { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .c-patente { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .c-fecha { font-size: 0.8rem; color: var(--text-muted); }
-        .c-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
-        .c-lbl { color: var(--text-muted); font-size: 0.8rem; }
+        
+        .toolbar-left { display: flex; gap: 10px; flex-wrap: nowrap; align-items: center; }
+        
+        .grp { 
+            background: var(--bg-panel); border-radius: 8px; padding: 3px; 
+            display: flex; border: 1px solid var(--border); height: 38px; align-items: center;
+        }
+        
+        .btn-cap { 
+            background: transparent; border: none; padding: 0 14px; height: 30px; border-radius: 6px; 
+            color: var(--text-sec); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: 0.2s; 
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .btn-cap.active { background: var(--primary); color: #000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .abast-logo { height: 14px; filter: grayscale(1) brightness(2); }
+        .btn-cap.active .abast-logo { filter: brightness(0); }
+        body.light-mode .btn-cap.active .abast-logo { filter: brightness(0); }
 
-        /* --- BREAKPOINTS --- */
-        @media (max-width: 1024px) {
-            table { display: none; } /* Ocultar tabla */
-            .grid-container { display: grid; } /* Mostrar Cards */
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .search-bar { width: 100%; }
+        .search-bar { 
+            display: flex; align-items: center; background: var(--bg-panel); border: 1px solid var(--border); 
+            border-radius: 8px; padding: 0 12px; height: 38px; width: 100%; transition: 0.3s;
+        }
+        .search-bar:focus-within { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+        .search-bar input { background: transparent; border: none; color: var(--text-main); flex: 1; margin-left: 10px; height: 100%; font-size: 0.9rem; }
+
+        /* --- LOADER --- */
+        .loader-line { position: fixed; top: 0; left: 0; height: 3px; width: 100%; background: transparent; z-index: 9999; overflow: hidden; display: none; }
+        .loader-bar { width: 100%; height: 100%; background: var(--primary); transform: translateX(-100%); animation: load 1.5s infinite; }
+        @keyframes load { 0% {transform: translateX(-100%)} 100% {transform: translateX(100%)} }
+
+        /* --- MAIN --- */
+        main { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 0 20px; position: relative; -webkit-overflow-scrolling: touch; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-row { animation: fadeInUp 0.3s ease-out forwards; opacity: 0; }
+
+        /* TABLA */
+        #v-pc { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; margin-bottom: 20px; }
+        #v-pc th { 
+            text-align: left; padding: 16px 12px; color: var(--text-sec); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; 
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg-body); z-index: 5;
+            cursor: pointer; user-select: none; transition: 0.2s;
+        }
+        #v-pc th:hover { color: var(--text-main); background: var(--bg-input); }
+        #v-pc th.active-sort { color: var(--primary); border-bottom-color: var(--primary); }
+        .sort-icon { margin-left: 5px; font-size: 0.8em; }
+        
+        #v-pc td { padding: 14px 12px; border-bottom: 1px solid var(--bg-input); font-size: 0.9rem; color: var(--text-main); vertical-align: middle; }
+        #v-pc tr:hover td { background: var(--bg-hover); color: var(--primary); cursor: pointer; }
+        .td-diag { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-sec); }
+        
+        .pc-only { display: none; }
+        @media (min-width: 1024px) { .pc-only { display: table; } .mob-only { display: none !important; } }
+
+        /* MÓVIL */
+        .mob-only { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; margin-top: 15px; }
+        .m-card { background: var(--bg-panel); padding: 15px; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .m-head { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 8px; }
+        .m-pat { color: var(--primary); font-weight: 800; font-family: monospace; font-size: 1.1rem; }
+
+        /* FOOTER */
+        .footer { height: 50px; background: var(--bg-panel); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; flex-shrink: 0; z-index: 20; font-size: 0.85rem; color: var(--text-sec); }
+        .pg-btn { width: 32px; height: 32px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); border-radius: 6px; cursor: pointer; display: grid; place-items: center; transition: 0.2s; }
+        .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+        .pg-btn:disabled { opacity: 0.3; cursor: default; }
+
+        /* FAB */
+        .fab { position: fixed; bottom: 70px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--primary); color: #000; display: grid; place-items: center; font-size: 1.5rem; box-shadow: 0 5px 20px var(--primary-dim); cursor: pointer; z-index: 100; transition: transform 0.2s; }
+        .fab:hover { transform: scale(1.1); }
+
+        /* RESPONSIVE TOOLBAR */
+        @media (max-width: 900px) {
+            .toolbar { grid-template-columns: 1fr; align-items: stretch; height: auto; gap: 10px; }
+            .toolbar-left { justify-content: space-between; width: 100%; overflow-x: auto; padding-bottom: 2px; }
+            /* En movil los grupos pueden encogerse un poco */
+            .grp { flex-shrink: 0; } 
         }
 
-        /* --- MODALES OPTIMIZADOS --- */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000;
-            display: none; justify-content: center; align-items: flex-end; /* Mobile: Bottom sheet */
-            backdrop-filter: blur(5px);
-        }
-        .m-content {
-            background: var(--bg-card); width: 100%; max-width: 600px;
-            border-radius: 20px 20px 0 0; border: 1px solid var(--border);
-            display: flex; flex-direction: column; max-height: 90vh;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
-        }
-        .m-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .m-body { padding: 20px; overflow-y: auto; flex: 1; }
-        .m-footer { padding: 20px; border-top: 1px solid var(--border); padding-bottom: calc(20px + var(--safe-area-bottom)); }
+        /* MODALES */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .m-box { background: var(--glass-bg); backdrop-filter: var(--glass-blur); width: 95%; max-width: 750px; max-height: 90vh; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow-lg); }
+        .m-head { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .m-body-form { padding: 20px; overflow-y: auto; }
+        .form-section { margin-bottom: 20px; }
+        .form-sec-title { font-size: 0.8rem; font-weight: 700; color: var(--text-sec); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .inp-grp { display: flex; flex-direction: column; }
+        .inp-lbl { font-size: 0.7rem; color: var(--text-sec); font-weight: 600; margin-bottom: 6px; }
+        .inp { width: 100%; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; transition: 0.2s; }
+        .inp:focus { border-color: var(--primary); background: var(--bg-body); box-shadow: 0 0 0 2px var(--primary-dim); }
+        textarea.inp { resize: vertical; }
+        .m-foot { padding: 15px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--bg-panel); border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+        .btn-act { flex: 1; padding: 12px; background: var(--primary); color: #000; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-act:active { transform: scale(0.98); }
+        .btn-del { background: transparent; border: 1px solid #ff4444; color: #ff4444; width: 50px; display: none; border-radius: 8px; cursor: pointer; }
+        
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; gap: 10px; } }
 
-        @media (min-width: 768px) {
-            .modal { align-items: center; }
-            .m-content { border-radius: 20px; max-height: 85vh; width: 90%; }
-        }
-
-        /* --- FORMULARIOS --- */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .span-2 { grid-column: span 2; }
-        label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
-        .inp-form {
-            width: 100%; padding: 12px; background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 8px; color: var(--text-main); font-size: 1rem;
-        }
-        .inp-form:focus { border-color: var(--primary); }
-
-        /* --- FAB (Botón flotante) --- */
-        .fab {
-            position: fixed; bottom: 30px; right: 30px; width: 56px; height: 56px;
-            background: var(--primary); color: #000; border-radius: 50%;
-            display: grid; place-items: center; font-size: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,230,118,0.4); cursor: pointer; z-index: 100;
-            transition: transform 0.2s;
-        }
-        .fab:hover { transform: scale(1.1) rotate(90deg); }
-
-        /* --- TOAST --- */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main);
-            padding: 12px 25px; border-radius: 50px; z-index: 2000; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px;
-        }
-        #toast.visible { transform: translateX(-50%) translateY(0); }
+        /* LOGIN */
+        #login-scr { position: fixed; inset: 0; background: var(--bg-body); z-index: 5000; display: flex; justify-content: center; align-items: center; }
+        .lg-card { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 30px; border-radius: 24px; border: 1px solid var(--border); width: 90%; max-width: 350px; text-align: center; box-shadow: var(--shadow-lg); }
+        
+        /* ADMIN LISTS */
+        .cfg-list-item, .usr-list-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); align-items: center; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="login-box">
-            <div class="login-logo"><i class="fas fa-fingerprint"></i></div>
-            <h2 style="margin:0 0 5px 0;">Acceso Seguro</h2>
-            <p style="color:var(--text-muted); margin-bottom:20px;">Sistema Gestión v3.0</p>
-            <input type="text" id="lg-user" class="inp-lg" placeholder="Usuario">
-            <input type="password" id="lg-pass" class="inp-lg" placeholder="Contraseña">
-            <button class="btn-main" onclick="doLogin()">INICIAR SESIÓN</button>
-            <p id="lg-msg" style="margin-top:15px; font-size:0.85rem; color:var(--danger); min-height:20px;"></p>
+    <div id="login-scr">
+        <div class="lg-card">
+            <i class="fas fa-bolt" style="font-size:3rem; color:var(--primary); margin-bottom:10px"></i>
+            <h2 style="color:var(--text-main); margin:0 0 20px;">Acceso JM</h2>
+            <input type="text" id="lg-u" class="inp" placeholder="Usuario" style="margin-bottom:10px; text-align:center">
+            <input type="password" id="lg-p" class="inp" placeholder="Clave" style="margin-bottom:20px; text-align:center">
+            <button class="btn-act" onclick="login()">ENTRAR</button>
+            <p id="lg-msg" style="color:var(--st-err); margin-top:15px; font-size:0.85rem; min-height:20px"></p>
         </div>
     </div>
 
-    <div id="toast"><i class="fas fa-info-circle" style="color:var(--primary)"></i> <span id="toast-msg">Mensaje</span></div>
+    <div class="loader-line" id="loader"><div class="loader-bar"></div></div>
 
     <header>
-        <div class="brand">
-            <div class="status-dot" id="net-stat"></div>
-            <span id="app-title">TALLER</span>
+        <div class="h-left">
+            <div class="brand">JM <span>PRO</span></div>
+            <div class="status-pill st-off" id="s-pill"><div class="dot"></div><span id="s-txt">Offline</span></div>
         </div>
-        <div class="h-actions">
-            <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="logout()"><i class="fas fa-power-off"></i></button>
-            <div class="user-pill"><i class="fas fa-user"></i> <span id="u-name">...</span></div>
+        <div class="h-right">
+            <span id="u-name" style="font-size:0.85rem; margin-right:10px; font-weight:600">...</span>
+            <div class="icon-btn" onclick="document.body.classList.toggle('light-mode')" title="Tema"><i class="fas fa-adjust"></i></div>
+            <div class="icon-btn" onclick="openCfg()" title="Configuración"><i class="fas fa-cog"></i></div>
+            <div class="icon-btn" id="btn-adm" style="display:none; color:var(--primary); border-color:var(--primary-dim)" onclick="openAdm()" title="Usuarios"><i class="fas fa-users-cog"></i></div>
+            <div class="icon-btn btn-danger" onclick="location.reload()" title="Salir"><i class="fas fa-power-off"></i></div>
         </div>
     </header>
 
     <div class="toolbar">
-        <div class="seg-control">
-            <button class="seg-btn active" onclick="setMode('TALLER', this)">TALLER</button>
-            <button class="seg-btn" onclick="setMode('ABASTIBLE', this)">ABASTIBLE</button>
-        </div>
-        <div class="seg-control">
-            <button class="seg-btn active" onclick="setYear('2026', this)">2026</button>
-            <button class="seg-btn" onclick="setYear('2025', this)">2025</button>
+        <div class="toolbar-left">
+            <div class="grp">
+                <button class="btn-cap active" onclick="setCat('TALLER', this)">TALLER</button>
+                <button class="btn-cap" onclick="setCat('ABASTIBLE', this)">
+                    <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-logo">
+                </button>
+            </div>
+            <div class="grp">
+                <button class="btn-cap active" onclick="setYear('2026', this)">2026</button>
+                <button class="btn-cap" onclick="setYear('2025', this)">2025</button>
+                <button class="btn-cap" onclick="setYear('2024', this)">2024</button>
+            </div>
         </div>
         <div class="search-bar">
-            <select id="s-col">
-                <option value="-1">Global</option>
-                <option value="9">Patente</option>
-                <option value="3">Cliente</option>
-                <option value="4">RUT</option>
-            </select>
-            <input type="text" id="s-term" placeholder="Buscar..." onkeyup="if(event.key==='Enter') loadData()">
-            <button class="icon-btn" style="border:none" onclick="loadData()"><i class="fas fa-search"></i></button>
+            <i class="fas fa-search" style="color:var(--text-sec)"></i>
+            <input type="text" placeholder="Buscar patente, cliente, rut..." onkeyup="doSearch(this.value)">
         </div>
     </div>
 
-    <main id="main-area">
-        <table id="pc-table">
+    <main>
+        <table id="v-pc" class="pc-only">
             <thead>
                 <tr>
-                    <th>FECHA</th><th>SEDE</th><th>FICHA</th><th>CLIENTE</th><th>PATENTE</th><th>MARCA</th><th>MODELO</th><th>DIAGNÓSTICO</th>
+                    <th onclick="setSort(0)">Fecha <i class="fas sort-icon" id="si-0"></i></th>
+                    <th onclick="setSort(1)">Sede <i class="fas sort-icon" id="si-1"></i></th>
+                    <th onclick="setSort(2)">Ficha <i class="fas sort-icon" id="si-2"></i></th>
+                    <th onclick="setSort(3)">Cliente <i class="fas sort-icon" id="si-3"></i></th>
+                    <th onclick="setSort(9)">Patente <i class="fas sort-icon" id="si-9"></i></th>
+                    <th>Vehículo</th>
+                    <th>Diagnóstico</th>
                 </tr>
             </thead>
-            <tbody id="t-body"></tbody>
+            <tbody id="tb-pc"></tbody>
         </table>
-
-        <div class="grid-container" id="mob-grid"></div>
-        
-        <div id="loader" class="loader-container"><div class="spinner"></div><p style="color:var(--text-muted); margin-top:10px">Cargando datos...</p></div>
+        <div id="v-mob" class="mob-only"></div>
     </main>
 
-    <div class="fab" id="fab-add" onclick="openForm()"><i class="fas fa-plus"></i></div>
+    <div class="footer">
+        <span id="pg-info">Cargando...</span>
+        <div style="display:flex; gap:10px">
+            <button class="pg-btn" id="bp" onclick="mv(-1)"><i class="fas fa-chevron-left"></i></button>
+            <button class="pg-btn" id="bn" onclick="mv(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
 
-    <div class="modal" id="m-detail">
-        <div class="m-content">
-            <div class="m-header">
-                <h3 style="margin:0">Detalle Ficha</h3>
-                <i class="fas fa-times" style="font-size:1.5rem; padding:10px; cursor:pointer" onclick="closeM('m-detail')"></i>
+    <div class="fab" id="fab" onclick="form()"><i class="fas fa-plus"></i></div>
+
+    <div class="modal" id="m-form">
+        <div class="m-box">
+            <div class="m-head">
+                <h3 style="margin:0; color:var(--primary)" id="f-ttl">Registro</h3>
+                <i class="fas fa-times" onclick="closeM('m-form')" style="cursor:pointer; font-size:1.2rem; color:var(--text-sec)"></i>
             </div>
-            <div class="m-body" id="det-body"></div>
-            <div class="m-footer" style="display:flex; gap:10px">
-                <button class="btn-main" id="btn-edit" style="background:var(--bg-input); border:1px solid var(--border); color:var(--text-main)">Editar</button>
-                <button class="btn-main" id="btn-del" style="background:transparent; border:1px solid var(--danger); color:var(--danger)">Eliminar</button>
+            <div class="m-body-form">
+                <input type="hidden" id="f-id">
+                <div class="form-section">
+                    <div class="form-sec-title">Datos</div>
+                    <div class="form-grid">
+                        <div class="inp-grp"><span class="inp-lbl">FECHA *</span><input type="date" id="i_fec" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">SEDE *</span><select id="i_sede" class="inp"></select></div>
+                        <div class="inp-grp"><span class="inp-lbl">FICHA</span><input type="text" id="i_fic" class="inp"></div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-sec-title">Vehículo</div>
+                    <div class="form-grid">
+                        <div class="inp-grp"><span class="inp-lbl">PATENTE *</span><input type="text" id="i_pat" class="inp" style="border-color:var(--primary); font-weight:700"></div>
+                        <div class="inp-grp" style="grid-column: span 2"><span class="inp-lbl">CLIENTE</span><input type="text" id="i_cli" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">RUT</span><input type="text" id="i_rut" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">CELULAR</span><input type="text" id="i_cel" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">MARCA</span><input type="text" id="i_mar" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">MODELO</span><input type="text" id="i_mod" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">AÑO</span><input type="number" id="i_ano" class="inp"></div>
+                    </div>
+                </div>
+                <div class="form-section" style="margin-bottom:0">
+                    <div class="form-sec-title">Detalle</div>
+                    <div class="form-grid">
+                        <div class="inp-grp"><span class="inp-lbl">TÉCNICO *</span><select id="i_tec" class="inp"></select></div>
+                        <div class="inp-grp"><span class="inp-lbl">KM</span><input type="text" id="i_km" class="inp"></div>
+                        <div class="inp-grp"><span class="inp-lbl">COLOR</span><input type="text" id="i_col" class="inp"></div>
+                        <div class="inp-grp" style="grid-column: span 3"><span class="inp-lbl">DIAGNÓSTICO</span><textarea id="i_dia" class="inp" rows="3"></textarea></div>
+                        <div class="inp-grp" style="grid-column: span 3"><span class="inp-lbl">MATERIALES</span><input type="text" id="i_mat" class="inp"></div>
+                        <input type="hidden" id="i_coo"><input type="hidden" id="i_com">
+                    </div>
+                </div>
+            </div>
+            <div class="m-foot">
+                <button class="btn-act" id="btn-s" onclick="save()">GUARDAR REGISTRO</button>
+                <button class="btn-del" id="btn-d" onclick="del()"><i class="fas fa-trash"></i></button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="m-form">
-        <div class="m-content">
-            <div class="m-header">
-                <h3 style="margin:0" id="form-ttl">Nueva Entrada</h3>
-                <i class="fas fa-times" style="font-size:1.5rem; padding:10px; cursor:pointer" onclick="closeM('m-form')"></i>
-            </div>
-            <div class="m-body">
-                <input type="hidden" id="f-id">
-                <div class="form-grid">
-                    <div><label>Fecha</label><input type="date" id="i_fecha" class="inp-form"></div>
-                    <div><label>Sede</label><select id="i_sede" class="inp-form"><option>CONCHALÍ</option><option>SAN BERNARDO</option></select></div>
-                    
-                    <div class="span-2"><label>Cliente</label><input type="text" id="i_cliente" class="inp-form"></div>
-                    
-                    <div><label>Ficha</label><input type="text" id="i_ficha" class="inp-form"></div>
-                    <div><label>RUT</label><input type="text" id="i_rut" class="inp-form"></div>
-                    
-                    <div><label>Patente</label><input type="text" id="i_patente" class="inp-form" style="border-color:var(--primary)"></div>
-                    <div><label>Celular</label><input type="number" id="i_cel" class="inp-form"></div>
-
-                    <div><label>Marca</label><input type="text" id="i_marca" class="inp-form"></div>
-                    <div><label>Modelo</label><input type="text" id="i_modelo" class="inp-form"></div>
-
-                    <div><label>Año</label><input type="number" id="i_ano" class="inp-form"></div>
-                    <div><label>KM</label><input type="text" id="i_km" class="inp-form"></div>
-
-                    <div><label>Color</label><input type="text" id="i_color" class="inp-form"></div>
-                    <div><label>Técnico</label><select id="i_colab" class="inp-form"><option>JIMMY</option><option>DAIR</option><option>JOSE</option></select></div>
-
-                    <div class="span-2"><label>Diagnóstico</label><textarea id="i_diag" class="inp-form" rows="3"></textarea></div>
-                    <div class="span-2"><label>Materiales</label><input type="text" id="i_mat" class="inp-form"></div>
-                    <div class="span-2"><label>Coordenadas</label><input type="text" id="i_coord" class="inp-form"></div>
-                    <div class="span-2"><label>Comuna</label><input type="text" id="i_comuna" class="inp-form"></div>
+    <div class="modal" id="m-cfg">
+        <div class="m-box" style="max-width:450px">
+            <div class="m-head"><h3 style="margin:0">Configuración</h3><i class="fas fa-times" onclick="closeM('m-cfg')" style="cursor:pointer"></i></div>
+            <div style="padding:20px">
+                <div style="display:flex; gap:10px; margin-bottom:15px">
+                    <select id="c-cat" class="inp" style="flex:1"><option value="SEDE">SEDE</option><option value="TECNICO">TECNICO</option></select>
+                    <input type="text" id="c-val" class="inp" placeholder="Nuevo valor..." style="flex:2">
+                    <button class="btn-act" style="width:60px" onclick="addCfg()">+</button>
                 </div>
+                <div id="cfg-list" style="max-height:250px; overflow:auto; border:1px solid var(--border); border-radius:8px; background:var(--bg-input)"></div>
             </div>
-            <div class="m-footer">
-                <button class="btn-main" onclick="saveData()" id="btn-save">GUARDAR</button>
+        </div>
+    </div>
+
+    <div class="modal" id="m-usr">
+        <div class="m-box" style="max-width:450px">
+            <div class="m-head"><h3 style="margin:0">Usuarios</h3><i class="fas fa-times" onclick="closeM('m-usr')" style="cursor:pointer"></i></div>
+            <div style="padding:20px">
+                <div style="background:var(--bg-input); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px">
+                    <input type="text" id="u-new" class="inp" placeholder="Usuario" style="margin-bottom:10px">
+                    <input type="text" id="p-new" class="inp" placeholder="Clave" style="margin-bottom:10px">
+                    <label style="font-size:0.85rem; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:5px">
+                        <input type="checkbox" id="adm-chk" style="accent-color:var(--primary)"> ADMIN TOTAL
+                    </label>
+                    <button class="btn-act" style="margin-top:15px; width:100%" onclick="addUsr()">Crear Usuario</button>
+                </div>
+                <div id="usr-list" style="border:1px solid var(--border); border-radius:8px; overflow:hidden"></div>
             </div>
         </div>
     </div>
 
 <script>
-    // --- CONFIGURACIÓN ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbyspK6xbzkZ-vvxpzJi-tjaR0ul_Qt-VuZYAWIep0gANonZ1sQiVREEZJffxBpWIcnT/exec";
-    
-    // --- ESTADO ---
-    let state = {
-        cat: 'TALLER',
-        year: '2026',
-        user: null,
-        data: [],
-        usersList: [] // Se llena al inicio
+    const API_URL = "https://script.google.com/macros/s/AKfycbz5VZoC03GYzHCOU16xEE-rS611-qS8qi83XeotLAQ07dGX9Q3HbC5GxxZTJuPTMpuk/exec";
+    let S = { 
+        cat:'TALLER', year:'2026', page:1, data:[], user:null, lists:[], users:[], q:'', timer:null,
+        sort: { col: null, asc: false }
     };
 
-    const HEADERS_MAP = ['Fecha','Sede','Ficha','Cliente','RUT','Celular','Comuna','Marca','Modelo','Patente','Color','KM','Año','Coord.','Diagnóstico','Técnico','Materiales'];
+    function st(c) {
+        let p=document.getElementById('s-pill'), t=document.getElementById('s-txt');
+        p.className = `status-pill st-${c}`;
+        t.innerText = c==='online'?'Online':(c==='fetch'?'Obteniendo':(c==='recv'?'Recibiendo':(c==='err'?'Error':'Offline')));
+    }
+    function ld(b) { document.getElementById('loader').style.display = b?'block':'none'; }
+    function closeM(id){ document.getElementById(id).style.display='none'; }
 
-    // --- INICIALIZACIÓN ---
-    window.onload = async () => {
-        // Verificar conexión básica
+    async function apiCall(params, body = null) {
+        st('fetch'); ld(true);
         try {
-            const r = await fetch(`${API_URL}?type=users`);
-            const j = await r.json();
-            if(j.status === 'success') {
-                state.usersList = j.data;
-                document.getElementById('net-stat').classList.add('online');
+            let url = new URL(API_URL);
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+            let opts = body ? { method: 'POST', body: body, mode: 'no-cors' } : {};
+            let r = await fetch(url, opts);
+            st('recv');
+            if (body && r.type === 'opaque') return { status: 'ok' };
+            return await r.json();
+        } catch (e) {
+            console.error(e); st('off'); throw e;
+        } finally { ld(false); }
+    }
+
+    async function login() {
+        let u_in=document.getElementById('lg-u').value, p_in=document.getElementById('lg-p').value;
+        try {
+            let [j_usr, j_cfg] = await Promise.all([apiCall({type:'users'}), apiCall({type:'config'})]);
+            S.users=j_usr.data; S.lists=j_cfg.data;
+            let f = S.users.find(x => x.user.toLowerCase() === u_in.toLowerCase() && x.pass == p_in);
+            if(f){
+                S.user=f; document.getElementById('login-scr').style.display='none';
+                document.getElementById('u-name').innerText = f.user;
+                if(f.perms==='ALL') document.getElementById('btn-adm').style.display='grid';
+                if(!f.perms.includes('ADD') && f.perms!=='ALL') document.getElementById('fab').style.display='none';
+                st('online'); load();
+            } else { st('online'); document.getElementById('lg-msg').innerText="Credenciales incorrectas"; }
+        } catch(e){}
+    }
+
+    function setCat(c,b){ S.cat=c; document.body.classList.toggle('abastible-mode', c==='ABASTIBLE'); upd(b,0); S.page=1; load(); }
+    function setYear(y,b){ S.year=y; upd(b,1); S.page=1; load(); }
+    function upd(b,g){ document.querySelectorAll('.grp')[g].querySelectorAll('.btn-cap').forEach(e=>e.classList.remove('active')); b.classList.add('active'); }
+
+    function setSort(col) {
+        if (S.sort.col === col) S.sort.asc = !S.sort.asc;
+        else { S.sort.col = col; S.sort.asc = true; }
+        updateSortIcons(); S.page = 1; load();
+    }
+
+    function updateSortIcons() {
+        document.querySelectorAll('.sort-icon').forEach(i => i.className = 'fas sort-icon');
+        document.querySelectorAll('#v-pc th').forEach(th => th.classList.remove('active-sort'));
+        if (S.sort.col !== null) {
+            let th = document.querySelectorAll('#v-pc th')[getIndexMap(S.sort.col)];
+            if(th) {
+                th.classList.add('active-sort');
+                let icon = th.querySelector('.sort-icon');
+                if(icon) icon.className = `fas sort-icon fa-sort-${S.sort.asc ? 'up' : 'down'}`;
             }
-        } catch(e) { showToast("Modo Offline / Error Conexión"); }
-        
-        // Verificar sesión guardada (opcional, por seguridad pedimos login siempre)
-    };
-
-    // --- AUTENTICACIÓN ---
-    function doLogin() {
-        const u = document.getElementById('lg-user').value.trim();
-        const p = document.getElementById('lg-pass').value.trim();
-        const msg = document.getElementById('lg-msg');
-        
-        // Validar contra lista descargada (si existe) o hard-fallback seguro
-        const userFound = state.usersList.find(x => x.user.toLowerCase() === u.toLowerCase() && x.pass == p);
-
-        if(userFound) {
-            state.user = userFound;
-            document.getElementById('u-name').innerText = userFound.user;
-            document.getElementById('login-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('login-overlay').classList.add('hidden'), 400);
-            
-            // Permisos
-            if(!userFound.perms.includes('ADD') && userFound.perms !== 'ALL') document.getElementById('fab-add').classList.add('hidden');
-            
-            loadData();
-        } else {
-            msg.innerText = "Credenciales incorrectas";
-            // Animación de error
-            document.querySelector('.login-box').animate([
-                { transform: 'translateX(0)' },
-                { transform: 'translateX(-10px)' },
-                { transform: 'translateX(10px)' },
-                { transform: 'translateX(0)' }
-            ], { duration: 300 });
         }
     }
+    function getIndexMap(col) {
+        if(col===0) return 0; if(col===1) return 1; if(col===2) return 2; if(col===3) return 3; if(col===9) return 4; return -1; 
+    }
 
-    function logout() { location.reload(); }
-
-    // --- CARGA DE DATOS ---
-    async function loadData() {
-        renderLoader(true);
-        const term = document.getElementById('s-term').value;
-        const col = document.getElementById('s-col').value;
-        const sheet = (state.cat === 'TALLER' ? 'Folios ' : 'ABASTIBLE ') + state.year;
-        
-        let url = `${API_URL}?sheetName=${encodeURIComponent(sheet)}&page=1`;
-        if(term) url += `&search=${encodeURIComponent(term)}&colIndex=${col}`;
-
+    async function load() {
+        document.getElementById('tb-pc').style.opacity = '0.5';
         try {
-            const r = await fetch(url);
-            const res = await r.json();
-            state.data = res.data || [];
-            renderData();
-        } catch(e) {
-            showToast("Error al cargar datos");
-        }
-        renderLoader(false);
+            let params = { sheetName: (S.cat==='TALLER'?'Folios ':'ABASTIBLE ')+S.year, page: S.page };
+            if(S.q) params.search = S.q;
+            if(S.sort.col !== null) { params.sortCol = S.sort.col; params.sortAsc = S.sort.asc; }
+            let j = await apiCall(params);
+            S.data=j.data; render(); st('online');
+        } catch(e){}
+        document.getElementById('tb-pc').style.opacity = '1';
     }
 
-    function renderLoader(show) {
-        document.getElementById('loader').style.display = show ? 'block' : 'none';
-        document.getElementById('pc-table').style.display = show ? 'none' : 'table';
-        document.getElementById('mob-grid').style.display = show ? 'none' : 'grid';
-        if(window.innerWidth < 1024) document.getElementById('pc-table').style.display='none'; // Force hide table on mobile
-    }
+    function render() {
+        let pc=document.getElementById('tb-pc'), mob=document.getElementById('v-mob');
+        pc.innerHTML=''; mob.innerHTML='';
+        if(S.data.length===0) { mob.innerHTML='<div style="text-align:center;color:var(--text-sec);padding:30px">Sin resultados</div>'; return; }
+        
+        S.data.forEach((r, i)=>{
+            let d=r[0]; if(d&&d.includes('T')) d=d.split('T')[0];
+            let delay = `animation-delay: ${i * 0.02}s`;
+            let tr=document.createElement('tr'); tr.className='animate-row'; tr.style=delay;
+            tr.innerHTML=`<td>${d}</td><td>${r[1]}</td><td>${r[2]}</td><td style="font-weight:600">${r[3]}</td><td style="color:var(--primary);font-family:monospace;font-weight:700">${r[9]}</td><td>${r[7]} ${r[8]}</td><td class="td-diag" title="${r[14]}">${r[14]||'-'}</td>`;
+            tr.onclick=()=>form(r); pc.appendChild(tr);
 
-    // --- RENDERIZADO (DUAL: TABLE & CARDS) ---
-    function renderData() {
-        const tb = document.getElementById('t-body');
-        const grid = document.getElementById('mob-grid');
-        tb.innerHTML = ''; grid.innerHTML = '';
-
-        if(state.data.length === 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--text-muted)">Sin resultados</div>';
-            return;
-        }
-
-        state.data.forEach((row, idx) => {
-            // Normalizar fecha
-            let fecha = row[0];
-            if(fecha.includes('T')) fecha = fecha.split('T')[0];
-
-            // Render PC Row
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${fecha}</td><td>${row[1]}</td><td>${row[2]}</td>
-                <td style="font-weight:bold; color:var(--text-main)">${row[3]}</td>
-                <td style="color:var(--primary); font-weight:800">${row[9]}</td>
-                <td>${row[7]}</td><td>${row[8]}</td>
-                <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${row[14]}</td>
-            `;
-            tr.onclick = () => openDetail(idx);
-            tb.appendChild(tr);
-
-            // Render Mobile Card
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="c-header">
-                    <span class="c-patente">${row[9] || 'S/P'}</span>
-                    <span class="c-fecha">${fecha}</span>
-                </div>
-                <div class="c-row"><span class="c-lbl">Cliente</span> <span>${row[3]}</span></div>
-                <div class="c-row"><span class="c-lbl">Vehículo</span> <span>${row[7]} ${row[8]}</span></div>
-                <div class="c-row"><span class="c-lbl">Ficha</span> <span>${row[2]}</span></div>
-                <div style="margin-top:10px; font-size:0.85rem; color:var(--text-muted); background:var(--bg-input); padding:8px; border-radius:6px">
-                    ${row[14] ? row[14].substring(0, 60) + '...' : 'Sin diagnóstico'}
-                </div>
-            `;
-            card.onclick = () => openDetail(idx);
-            grid.appendChild(card);
+            let c=document.createElement('div'); c.className='m-card animate-row'; c.style=delay;
+            c.innerHTML=`<div class="m-head"><span class="m-pat">${r[9]||'S/P'}</span><small>${d}</small></div><div style="font-weight:600;margin-bottom:5px">${r[3]}</div><div style="font-size:0.85rem;color:var(--text-sec)">${r[14]||'-'}</div>`;
+            c.onclick=()=>form(r); mob.appendChild(c);
         });
+        document.getElementById('pg-info').innerText=`Página ${S.page}`;
+        document.getElementById('bp').disabled=S.page===1; document.getElementById('bn').disabled=S.data.length<25;
+        document.querySelector('main').scrollTo({top:0, behavior:'smooth'});
     }
 
-    // --- DETALLE & CRUD ---
-    function openDetail(idx) {
-        const d = state.data[idx];
-        const html = HEADERS_MAP.map((h, i) => {
-            let val = d[i];
-            if(i===0 && val.includes('T')) val = val.split('T')[0];
-            return `<div style="margin-bottom:12px">
-                <div style="font-size:0.75rem; color:var(--primary); font-weight:700; text-transform:uppercase">${h}</div>
-                <div style="font-size:1rem; border-bottom:1px solid var(--border); padding-bottom:4px">${val || '-'}</div>
-            </div>`;
-        }).join('');
+    function doSearch(v){ clearTimeout(S.timer); S.timer=setTimeout(()=>{ S.q=v; S.page=1; load(); },600); }
+    function mv(d){ S.page+=d; load(); }
+
+    const MAP=['i_fec','i_sede','i_fic','i_cli','i_rut','i_cel','i_com','i_mar','i_mod','i_pat','i_col','i_km','i_ano','i_coo','i_dia','i_tec','i_mat'];
+    function form(d=null){
+        let isEd=!!d; document.getElementById('f-ttl').innerText=isEd?'Editar Folio':'Nuevo Folio';
+        document.getElementById('f-id').value=isEd?d[d.length-1]:'';
+        document.getElementById('btn-d').style.display=isEd&&(S.user.perms==='ALL'||S.user.perms.includes('DEL'))?'block':'none';
         
-        document.getElementById('det-body').innerHTML = html;
-        
-        // Setup botones acciones
-        const rowDataJSON = JSON.stringify(d).replace(/"/g, '&quot;');
-        const rowId = d[d.length-1]; // ID oculto al final
+        let fill = (id, cat) => {
+            let opts = S.lists.filter(x=>x.cat===cat).map(x=>`<option>${x.val}</option>`).join('');
+            document.getElementById(id).innerHTML = opts || '<option>Sin opciones</option>';
+        };
+        fill('i_sede','SEDE'); fill('i_tec','TECNICO');
 
-        const btnEdit = document.getElementById('btn-edit');
-        const btnDel = document.getElementById('btn-del');
-
-        btnEdit.onclick = () => { closeM('m-detail'); openForm(d); };
-        btnDel.onclick = () => deleteRow(rowId);
-
-        // Validar permisos
-        const p = state.user.perms;
-        btnEdit.style.display = (p === 'ALL' || p.includes('EDIT')) ? 'block' : 'none';
-        btnDel.style.display = (p === 'ALL' || p.includes('DEL')) ? 'block' : 'none';
-
-        document.getElementById('m-detail').style.display = 'flex';
+        MAP.forEach((id,i)=>{ let v=isEd?d[i]:''; if(i===0&&v&&v.includes('T'))v=v.split('T')[0]; document.getElementById(id).value=v; });
+        if(!isEd)document.getElementById('i_fec').valueAsDate=new Date();
+        document.getElementById('m-form').style.display='flex';
     }
 
-    function openForm(data = null) {
-        const isEdit = !!data;
-        document.getElementById('form-ttl').innerText = isEdit ? 'Editar Registro' : 'Nuevo Registro';
-        document.getElementById('f-id').value = isEdit ? data[data.length-1] : ''; // RowID
-        
-        // IDs Inputs
-        const fields = ['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_ano','i_coord','i_diag','i_colab','i_mat'];
-        
-        fields.forEach((id, i) => {
-            let val = isEdit ? data[i] : '';
-            if(i===0 && val) { // Fix fecha input date
-                if(val.includes('T')) val = val.split('T')[0];
-                else if(val.includes('/')) {
-                    const parts = val.split('/'); // asumir DD/MM/YYYY
-                    if(parts.length===3) val = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                }
-            }
-            document.getElementById(id).value = val;
+    async function save(){
+        if(!document.getElementById('i_fec').value || !document.getElementById('i_pat').value) return alert("Fecha y Patente obligatorios");
+        let b=document.getElementById('btn-s'); b.disabled=true; b.innerText="Guardando...";
+        let id=document.getElementById('f-id').value;
+        let p=new URLSearchParams();
+        p.append('sheetName',(S.cat==='TALLER'?'Folios ':'ABASTIBLE ')+S.year);
+        p.append('action',id?'UPDATE':'CREATE'); if(id)p.append('rowId',id);
+        MAP.forEach((id,i)=>{
+            let k=['ly','sede','ficha','cliente','rut','celular','comuna','marca','modelo','patente','color','km','fabricacion','coord','diag','colab','mat'];
+            p.append(k[i], document.getElementById(id).value.toUpperCase());
         });
-
-        // Auto-set fecha hoy si es nuevo
-        if(!isEdit) document.getElementById('i_fecha').valueAsDate = new Date();
-
-        document.getElementById('m-form').style.display = 'flex';
+        await apiCall({}, p); closeM('m-form'); load(); b.disabled=false; b.innerText="GUARDAR REGISTRO";
     }
+    async function del(){ if(confirm("¿Eliminar este registro permanentemente?")){ await apiCall({}, new URLSearchParams({sheetName:(S.cat==='TALLER'?'Folios ':'ABASTIBLE ')+S.year, action:'DELETE', rowId:document.getElementById('f-id').value})); closeM('m-form'); load(); }}
 
-    async function saveData() {
-        const btn = document.getElementById('btn-save');
-        btn.disabled = true; btn.innerText = "GUARDANDO...";
-        
-        const rowId = document.getElementById('f-id').value;
-        const sheet = (state.cat === 'TALLER' ? 'Folios ' : 'ABASTIBLE ') + state.year;
-        
-        const params = new URLSearchParams();
-        params.append('sheetName', sheet);
-        params.append('action', rowId ? 'UPDATE' : 'CREATE');
-        if(rowId) params.append('rowId', rowId);
+    function openCfg(){
+        document.getElementById('cfg-list').innerHTML=S.lists.map(x=>`<div class="cfg-list-item"><span><b>${x.cat}</b>: ${x.val}</span><i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delCfg(${x.id})"></i></div>`).join('');
+        document.getElementById('m-cfg').style.display='flex';
+    }
+    async function addCfg(){ let c=document.getElementById('c-cat').value, v=document.getElementById('c-val').value; if(!v)return; await apiCall({},new URLSearchParams({type:'config',action:'ADD',cat:c,val:v})); location.reload(); }
+    async function delCfg(id){ if(!confirm("Eliminar?"))return; await apiCall({},new URLSearchParams({type:'config',action:'DEL',rowId:id})); location.reload(); }
 
-        // Recolectar datos
-        const fields = ['i_fecha','i_sede','i_ficha','i_cliente','i_rut','i_cel','i_comuna','i_marca','i_modelo','i_patente','i_color','i_km','i_ano','i_coord','i_diag','i_colab','i_mat'];
-        const keys = ['ly','sede','ficha','cliente','rut','celular','comuna','marca','modelo','patente','color','km','fabricacion','coord','diag','colab','mat'];
-        
-        fields.forEach((id, i) => {
-            let val = document.getElementById(id).value;
-            if(keys[i] !== 'ly') val = val.toUpperCase(); // Todo mayus menos fecha
-            params.append(keys[i], val);
-        });
-
-        try {
-            await fetch(API_URL, { method: 'POST', body: params, mode: 'no-cors' });
-            showToast("Guardado con éxito");
-            closeM('m-form');
-            loadData();
-        } catch(e) { showToast("Error al guardar"); }
-        
-        btn.disabled = false; btn.innerText = "GUARDAR";
+    function openAdm(){
+        document.getElementById('usr-list').innerHTML=S.users.map(u=>`<div class="usr-list-item"><div><b style="color:var(--primary)">${u.user}</b> <small style="color:var(--text-sec)">[${u.perms}]</small></div>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delUsr(${u.id})"></i>`:''}</div>`).join('');
+        document.getElementById('m-usr').style.display='flex';
     }
-
-    async function deleteRow(id) {
-        if(!confirm("¿Estás seguro de eliminar este registro?")) return;
-        const sheet = (state.cat === 'TALLER' ? 'Folios ' : 'ABASTIBLE ') + state.year;
-        const p = new URLSearchParams({ sheetName: sheet, action: 'DELETE', rowId: id });
-        
-        try {
-            await fetch(API_URL, { method: 'POST', body: p, mode: 'no-cors' });
-            showToast("Registro eliminado");
-            closeM('m-detail');
-            loadData();
-        } catch(e) { showToast("Error al eliminar"); }
-    }
-
-    // --- UI HELPERS ---
-    function setMode(m, btn) {
-        state.cat = m;
-        document.querySelectorAll('.seg-control:first-child .seg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.body.className = m === 'ABASTIBLE' ? 'abastible-mode' : '';
-        document.getElementById('app-title').innerText = m;
-        loadData();
-    }
-    function setYear(y, btn) {
-        state.year = y;
-        document.querySelectorAll('.seg-control:nth-child(2) .seg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        loadData();
-    }
-    function toggleTheme() {
-        document.body.classList.toggle('light');
-    }
-    function closeM(id) { document.getElementById(id).style.display = 'none'; }
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        document.getElementById('toast-msg').innerText = msg;
-        t.classList.add('visible');
-        setTimeout(() => t.classList.remove('visible'), 3000);
-    }
+    async function addUsr(){ let u=document.getElementById('u-new').value, p=document.getElementById('p-new').value; if(!u||!p)return; let perm=document.getElementById('adm-chk').checked?'ALL':'ADD,EDIT'; await apiCall({},new URLSearchParams({type:'users',action:'CREATE',u_user:u,u_pass:p,u_perms:perm})); location.reload(); }
+    async function delUsr(id){ if(confirm("Eliminar usuario?")){ await apiCall({},new URLSearchParams({type:'users',action:'DELETE',rowId:id})); location.reload(); }}
 </script>
 </body>
 </html>
