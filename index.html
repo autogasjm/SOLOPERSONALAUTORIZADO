@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JM Autogas | V31.3 Fix Visuals</title>
+    <title>JM Autogas | V32 Responsive & Performance</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -11,6 +11,7 @@
         :root {
             --bg-body: #050507; 
             --bg-panel: rgba(22, 22, 24, 0.65);
+            --bg-panel-solid: #161618; /* Fallback Modo Rendimiento */
             --bg-input: rgba(255, 255, 255, 0.05);
             --bg-hover: rgba(255, 255, 255, 0.1);
             --primary: #00e676;
@@ -29,6 +30,7 @@
         body.light-mode {
             --bg-body: #f2f2f7; 
             --bg-panel: rgba(255, 255, 255, 0.75);
+            --bg-panel-solid: #ffffff; /* Fallback Modo Rendimiento */
             --bg-input: rgba(0, 0, 0, 0.04);
             --bg-hover: rgba(0, 0, 0, 0.08);
             --text-main: #1d1d1f;
@@ -48,9 +50,7 @@
             position: relative;
         }
 
-        body::before, body::after {
-            content: ''; position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; transition: background 0.8s ease;
-        }
+        body::before, body::after { content: ''; position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; transition: background 0.8s ease; }
         body::before { width: 50vw; height: 50vw; background: rgba(0, 230, 118, 0.12); top: -15vw; left: -10vw; }
         body::after { width: 40vw; height: 40vw; background: rgba(41, 121, 255, 0.08); bottom: 10vw; right: -10vw; }
         body.light-mode::before { background: rgba(0, 168, 84, 0.15); }
@@ -101,7 +101,10 @@
         .icon-btn{width:36px;height:36px;border-radius:10px;background:transparent;border:1px solid transparent;display:grid;place-items:center;color:var(--text-sec);cursor:pointer;transition:all 0.2s;position:relative;font-size:1.1rem} .icon-btn:hover{background:var(--bg-hover);color:var(--text-main);transform:translateY(-1px)} .icon-btn:active{transform:scale(0.95)} .icon-btn.active-mode{color:var(--primary);background:var(--primary-dim);border-color:var(--primary);box-shadow:0 0 15px var(--primary-dim)}
         
         .toolbar{padding:15px 20px;background: var(--bg-panel); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex-shrink:0;z-index:10} 
-        .grp{background:var(--bg-input);border-radius:12px;padding:4px;display:flex;border:1px solid var(--border);height:42px;align-items:center;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)} 
+        
+        /* SCROLLABLE TOOLBAR GROUPS FOR MOBILE */
+        .toolbar-scroll-wrapper { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
+        .grp{background:var(--bg-input);border-radius:12px;padding:4px;display:flex;border:1px solid var(--border);height:42px;align-items:center;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);flex-shrink:0} 
         .btn-cap{background:transparent;border:none;padding:0 16px;height:32px;border-radius:8px;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap} 
         .btn-cap:hover:not(.active){color:var(--text-main)}
         .btn-cap.active{background:var(--primary);color:#000;box-shadow:0 4px 10px var(--primary-dim)} 
@@ -133,20 +136,44 @@
         
         #context-menu{position:absolute;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);display:none;flex-direction:column;padding:8px;z-index:4000;min-width:180px;animation:fadeSlideUp 0.2s var(--ease)} .cm-item{padding:12px 16px;font-size:0.9rem;color:var(--text-main);display:flex;align-items:center;gap:12px;cursor:pointer;border-radius:10px;transition:all 0.2s;font-weight:600} .cm-item:hover{background:var(--bg-hover);color:var(--primary)} .cm-item.cm-danger:hover{color:var(--st-err);background:rgba(255,23,68,0.1)}
         
-        @media (min-width:1024px){.pc-only{display:table} .mob-only{display:none !important}}
-        @media (max-width:768px){
+        .mob-only{display:none;flex-direction:column;gap:15px;padding-bottom:100px;margin-top:15px} .m-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:18px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light);position:relative;cursor:pointer;user-select:none;transition:all 0.2s} .m-card:active{transform:scale(0.96)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.08) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:10px;margin-bottom:10px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.2rem;letter-spacing:1px} body.light-mode .m-head{border-bottom:1px solid rgba(0,0,0,0.05)} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
+
+        /* MEDIA QUERIES OPTIMIZADAS */
+        @media (min-width: 1024px) { 
+            .pc-only { display: table; } 
+            .mob-only { display: none !important; } 
+        }
+        
+        /* TABLET OPTIMIZATION (768px - 1023px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .pc-only { display: none !important; }
+            .mob-only { display: grid !important; grid-template-columns: repeat(2, 1fr); gap: 15px; } /* Grid layout for tablets */
+            .toolbar-scroll-wrapper { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+            .toolbar-scroll-wrapper::-webkit-scrollbar { display: none; }
+            .search-bar { width: 100%; margin-top: 10px; }
+            .m-box { width: 85%; max-height: 85vh; }
+            .form-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* MOBILE OPTIMIZATION (< 768px) */
+        @media (max-width: 767px) {
+            .pc-only { display: none !important; }
+            .mob-only { display: flex !important; }
             .form-grid{grid-template-columns:1fr;gap:12px} 
-            .toolbar{justify-content:space-between; padding:12px 15px;} 
-            .search-bar{width:100%}
+            .toolbar{padding:12px 15px; flex-direction: column; align-items: stretch;} 
+            .toolbar-scroll-wrapper { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; width: 100%; display: flex; }
+            .toolbar-scroll-wrapper::-webkit-scrollbar { display: none; }
+            .search-bar{width:100%; margin-top: 5px;}
             .itunes-display { padding: 4px 12px; gap: 8px; min-width: auto; }
             .display-user span.u-text { display: none; } 
             header { padding: 0 15px; }
-            .m-box { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
+            
+            /* Full screen modal for mobile */
+            .m-box { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; border: none; }
+            .m-body-form { padding: 15px; }
         }
-
-        .mob-only{display:flex;flex-direction:column;gap:15px;padding-bottom:100px;margin-top:15px} .m-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:18px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light);position:relative;cursor:pointer;user-select:none;transition:all 0.2s} .m-card:active{transform:scale(0.96)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.08) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:10px;margin-bottom:10px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.2rem;letter-spacing:1px} body.light-mode .m-head{border-bottom:1px solid rgba(0,0,0,0.05)} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
         
-        .chip-btn{display:inline-block;padding:4px 10px;background:var(--bg-hover);border:1px solid var(--border);border-radius:15px;font-size:0.7rem;color:var(--text-sec);cursor:pointer;margin-right:5px;margin-top:5px;transition:0.2s;user-select:none} .chip-btn:hover,.chip-btn.active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary)}
+        .chip-btn{display:inline-block;padding:6px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;font-size:0.75rem;color:var(--text-sec);cursor:pointer;margin-right:6px;margin-top:6px;transition:all 0.2s;user-select:none;font-weight:600} .chip-btn:hover,.chip-btn.active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary)}
         
         .footer{height:60px;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;flex-shrink:0;z-index:20;font-size:0.9rem;color:var(--text-sec)} .pg-btn{width:36px;height:36px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:10px;cursor:pointer;display:grid;place-items:center;transition:all 0.2s;font-size:1.1rem} .pg-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)} .pg-btn:disabled{opacity:0.3;cursor:default}
         .fab{position:fixed;bottom:70px;right:20px;width:55px;height:55px;border-radius:50%;background:var(--primary);color:#000;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 5px 20px var(--primary-dim);cursor:pointer;z-index:100;transition:transform 0.2s} .fab:hover{transform:scale(1.1)}
@@ -156,13 +183,13 @@
         .m-box{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);width:95%;max-width:800px;max-height:92vh;border-radius:24px;border:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);overflow:hidden;animation:scalePop 0.4s var(--spring)} 
         .m-head-m{padding:20px 25px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:transparent}
         
-        .tabs-nav{display:flex;background:var(--bg-input);border-radius:12px;margin:20px 25px 5px 25px;padding:4px;overflow-x:auto} .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;border-radius:8px;white-space:nowrap} .tab-btn:hover{color:var(--text-main)} .tab-btn.active{color:var(--text-main);background:var(--bg-hover);box-shadow:var(--shadow-sm)}
+        .tabs-nav{display:flex;background:var(--bg-input);border-radius:12px;margin:20px 25px 5px 25px;padding:4px;overflow-x:auto; scrollbar-width: none;} .tabs-nav::-webkit-scrollbar{display:none;} .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;border-radius:8px;white-space:nowrap} .tab-btn:hover{color:var(--text-main)} .tab-btn.active{color:var(--text-main);background:var(--bg-hover);box-shadow:var(--shadow-sm)}
         body.light-mode .tabs-nav{background:rgba(0,0,0,0.05)} body.light-mode .tab-btn.active{background:#fff; color:#000}
 
         .m-body-form{padding:25px;overflow-y:auto;flex-grow:1} .tab-pane{display:none;opacity:0} .tab-pane.active{display:block;animation:fadeSlideUp 0.3s ease forwards}
-        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .inp-grp{display:flex;flex-direction:column;position:relative} .inp-lbl{font-size:0.75rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+        .inp-grp{display:flex;flex-direction:column;position:relative} .inp-lbl{font-size:0.75rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
         
-        .inp{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:8px;transition:all 0.3s;font-size:0.9rem} .inp:focus{border-color:var(--primary);background:var(--bg-body);box-shadow:0 0 0 2px var(--primary-dim)} .inp:disabled{opacity:0.6;cursor:not-allowed} textarea.inp{resize:vertical}
+        .inp{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:8px;transition:all 0.3s;font-size:0.9rem} .inp:focus{border-color:var(--primary);background:var(--bg-body);box-shadow:0 0 0 2px var(--primary-dim)} .inp:disabled{opacity:0.5; cursor:not-allowed; pointer-events:none;} textarea.inp{resize:vertical}
         
         .save-indicator{font-size:0.7rem;color:var(--st-fetch);margin-left:10px;font-weight:600;opacity:0;transition:0.3s} .save-indicator.show{opacity:1}
 
@@ -180,6 +207,11 @@
         
         /* MANUAL DE AYUDA */
         .help-section { margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; } .help-section:last-child { border-bottom: none; } .help-title { color: var(--primary); font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; } .help-item { font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; } .help-item i { color: var(--text-sec); margin-top: 4px; font-size: 1rem; width: 20px; text-align: center; } .help-tag { background: var(--bg-hover); border: 1px solid var(--border); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; color: var(--primary); font-family: monospace; font-weight:700 }
+
+        /* PERFORMANCE MODE CLASSES */
+        body.perf-mode * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none !important; transition: none !important; animation-duration: 0.01ms !important; }
+        body.perf-mode::before, body.perf-mode::after { display: none !important; }
+        body.perf-mode .m-box, body.perf-mode header, body.perf-mode .toolbar, body.perf-mode .footer, body.perf-mode .m-card, body.perf-mode .kb-col { background: var(--bg-panel-solid) !important; border: 1px solid var(--border) !important; }
 
         /* IMPRESION (NUEVO MÉTODO ANTI BLANK PAGE) */
         @media print {
@@ -213,7 +245,7 @@
         <div class="lg-card" id="lg-card">
             <i class="fas fa-fingerprint lg-icon"></i>
             <h2 style="color:var(--text-main); margin:0 0 5px 0; font-weight:800">Bienvenido</h2>
-            <p style="color:var(--text-sec); margin-bottom:25px; font-size:0.95rem">JM Autogas V31.2</p>
+            <p style="color:var(--text-sec); margin-bottom:25px; font-size:0.95rem">JM Autogas V32</p>
             <input type="text" id="lg-u" class="lg-inp" placeholder="Usuario" autocomplete="off">
             <input type="tel" id="lg-p" class="lg-inp" placeholder="PIN (Números)" inputmode="numeric" pattern="[0-9]*" maxlength="8" style="-webkit-text-security: disc;">
             <label class="lg-chk-lbl"><input type="checkbox" id="lg-rem"> Recordar mi sesión</label>
@@ -246,6 +278,7 @@
         
         <div class="h-right">
             <div class="icon-btn" onclick="openHelp()" title="Manual de Uso"><i class="fas fa-question-circle" style="color:var(--primary)"></i></div>
+            <div class="icon-btn" onclick="togglePerformance()" title="Modo Rendimiento (Dispositivos Lentos)" id="btn-perf"><i class="fas fa-bolt"></i></div>
             <div class="icon-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></div>
             <div class="icon-btn" onclick="toggleFullScreen()" title="Pantalla Completa"><i class="fas fa-expand" id="ic-fs"></i></div>
             <div class="icon-btn" onclick="openCfg()" title="Configuración"><i class="fas fa-cog"></i></div>
@@ -255,23 +288,25 @@
     </header>
 
     <div class="toolbar">
-        <div class="grp">
-            <button class="btn-cap active" onclick="setCat('TALLER', this)">
-                <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" class="taller-logo" alt="Taller">
-            </button>
-            <button class="btn-cap" onclick="setCat('ABASTIBLE', this)">
-                <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-logo" alt="Abastible">
-            </button>
-        </div>
-        <div class="grp">
-            <button class="btn-cap active" onclick="setYear('2026', this)">2026</button>
-            <button class="btn-cap" onclick="setYear('2025', this)">2025</button>
-            <button class="btn-cap" onclick="setYear('2024', this)">2024</button>
-        </div>
-        <div class="grp">
-            <button class="btn-cap sede-btn active" onclick="setSedeFilter('Todas', this)">Todas</button>
-            <button class="btn-cap sede-btn" onclick="setSedeFilter('Conchalí', this)">Conchalí</button>
-            <button class="btn-cap sede-btn" onclick="setSedeFilter('San Bernardo', this)">San B.</button>
+        <div class="toolbar-scroll-wrapper">
+            <div class="grp">
+                <button class="btn-cap active" onclick="setCat('TALLER', this)">
+                    <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" class="taller-logo" alt="Taller">
+                </button>
+                <button class="btn-cap" onclick="setCat('ABASTIBLE', this)">
+                    <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-logo" alt="Abastible">
+                </button>
+            </div>
+            <div class="grp">
+                <button class="btn-cap active" onclick="setYear('2026', this)">2026</button>
+                <button class="btn-cap" onclick="setYear('2025', this)">2025</button>
+                <button class="btn-cap" onclick="setYear('2024', this)">2024</button>
+            </div>
+            <div class="grp">
+                <button class="btn-cap sede-btn active" onclick="setSedeFilter('Todas', this)">Todas</button>
+                <button class="btn-cap sede-btn" onclick="setSedeFilter('Conchalí', this)">Conchalí</button>
+                <button class="btn-cap sede-btn" onclick="setSedeFilter('San Bernardo', this)">San B.</button>
+            </div>
         </div>
         
         <div class="search-bar" style="position:relative">
@@ -328,14 +363,14 @@
 
     <div class="modal" id="m-help" onclick="closeM('m-help')">
         <div class="m-box" onclick="event.stopPropagation()">
-            <div class="m-head-m"><h3 style="margin:0; color:var(--primary); font-size:1.3rem"><i class="fas fa-book"></i> Manual de Usuario V31</h3><div class="icon-btn" onclick="closeM('m-help')"><i class="fas fa-times"></i></div></div>
+            <div class="m-head-m"><h3 style="margin:0; color:var(--primary); font-size:1.3rem"><i class="fas fa-book"></i> Manual de Usuario V32</h3><div class="icon-btn" onclick="closeM('m-help')"><i class="fas fa-times"></i></div></div>
             <div class="m-body-form" style="padding-top:10px">
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-shield-alt"></i> 1. Acceso y General</h4><div class="help-item"><i class="fas fa-fingerprint"></i> <b>Recordar Sesión:</b> Marca la casilla al iniciar sesión para entrar automáticamente la próxima vez.</div><div class="help-item"><i class="fas fa-wifi"></i> <b>Modo Offline (Bandeja Inteligente):</b> Si pierdes internet, puedes seguir guardando folios. Se irán a una "Bandeja Local" y se sincronizarán solos al recuperar la señal.</div><div class="help-item"><i class="fas fa-adjust"></i> <b>Memoria de Tema:</b> El botón de Luna/Sol guarda tu preferencia para siempre en el dispositivo actual.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-search"></i> 2. Buscador y Filtros Profesionales</h4><div class="help-item"><i class="fas fa-microphone"></i> <b>Búsqueda por Voz:</b> Toca el ícono del micrófono en la barra de búsqueda y dicta el nombre o patente.</div><div class="help-item"><i class="fas fa-minus-circle"></i> <b>Filtro Negativo:</b> Escribe un guion <span class="help-tag">-</span> antes de una palabra para EXCLUIRLA. <i>(Ej: "-Pendiente" muestra todos los autos excepto los pendientes).</i></div><div class="help-item"><i class="fas fa-bolt"></i> <b>Búsqueda Rápida:</b> Presiona <i>"Enter"</i> en el buscador para buscar sin esperar.</div><div class="help-item"><i class="fas fa-tags"></i> <b>Píldoras Rápidas:</b> Toca los botones "⏳ Pendientes" o "✅ Entregados" bajo el buscador para filtrar al instante.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-columns"></i> 3. Vistas y Tablero</h4><div class="help-item"><i class="fas fa-table"></i> <b>Modo Kanban vs Tabla:</b> Toca el botón de columnas en la cabecera (arriba a la izquierda) para alternar entre la tabla clásica y un panel de tarjetas arrastrables por estado.</div><div class="help-item"><i class="fas fa-expand"></i> <b>Pantalla Completa:</b> Toca el ícono de las 4 flechas arriba a la derecha para usar la app como un software de escritorio y evitar distracciones.</div><div class="help-item"><i class="fas fa-sort-amount-up"></i> <b>Paginación y Scroll:</b> Al cambiar de página, la tabla te devuelve al inicio automáticamente bloqueando el scroll para evitar saltos molestos. Abajo verás el Total Histórico real.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-mouse-pointer"></i> 4. Menú Contextual (Clic Derecho / Tocar Fila)</h4><div class="help-item"><i class="fas fa-star"></i> <b>Fijar Arriba (Pin):</b> Ancla un vehículo a la parte superior de la lista sin importar su fecha. Ideal para los que siguen en el taller.</div><div class="help-item"><i class="fab fa-whatsapp"></i> <b>WhatsApp Rápido:</b> Abre un chat directo con el cliente sin agendar su número.</div><div class="help-item"><i class="fas fa-link"></i> <b>Link de Cobro:</b> Copia al portapapeles un mensaje formal de cobro listo para pegar en WhatsApp.</div><div class="help-item"><i class="fas fa-undo"></i> <b>Eliminación Segura (Undo):</b> Al borrar un folio, tienes 5 segundos para arrepentirte tocando "Deshacer" en la alerta inferior.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-edit"></i> 5. Formulario de Folios (Superpoderes)</h4><div class="help-item"><i class="fas fa-lock-open"></i> <b>Modo Candado:</b> Arriba a la derecha del formulario. Úsalo para bloquear la pantalla si solo vas a leer y no quieres borrar nada por error.</div><div class="help-item"><i class="fas fa-save"></i> <b>Borrador Automático:</b> Si se te cierra la ventana por error, al abrir "Nuevo Folio" se recuperará todo. Cierra tocando la parte oscura fuera del cuadro.</div><div class="help-item"><i class="fas fa-font"></i> <b>Auto-Mayúsculas y Autocompletado:</b> Nombres, Marcas y Comunas se formatean solos. Además, el sistema "aprende" de tu base de datos para sugerírtelas.</div><div class="help-item"><i class="fas fa-magic"></i> <b>Varita Mágica (Año):</b> Ingresa una Patente chilena válida, toca la varita y la IA estimará el año del auto. Si es menor a 2010, te lanzará una advertencia.</div><div class="help-item"><i class="fas fa-palette"></i> <b>Punto de Color:</b> Al escribir "Rojo, Blanco, Plata...", aparece un círculo con el color real para una confirmación visual rápida.</div><div class="help-item"><i class="fas fa-camera"></i> <b>Cámara Local:</b> Permite tomar una foto de recepción. <i>Nota: Se borra al recargar la app.</i></div><div class="help-item"><i class="fas fa-stopwatch"></i> <b>Cronómetro:</b> Registra el tiempo exacto que le toma al técnico realizar el trabajo (Play/Pause).</div><div class="help-item"><i class="fas fa-stamp"></i> <b>Auto-Sello de Estado:</b> Al tocar "Entregado" o "Pendiente" en las píldoras de diagnóstico, se añade automáticamente la fecha del día al texto.</div><div class="help-item"><i class="fas fa-signature"></i> <b>Firma Digital:</b> El cliente puede firmar con el dedo en la pantalla para validarlo en la Orden de Trabajo.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-chart-line"></i> 6. Herramientas Extra y Exportación</h4><div class="help-item"><i class="fas fa-chart-pie"></i> <b>Dashboard:</b> Analiza la efectividad, suma el KM de la flota, y grafica el rendimiento de los técnicos.</div><div class="help-item"><i class="fas fa-gas-pump"></i> <b>Calculadora ROI GLP:</b> Calcula el ahorro mensual y le dice al cliente en cuántos meses recuperará su inversión.</div><div class="help-item"><i class="fas fa-file-excel"></i> <b>Selección Múltiple (Excel/Borrar):</b> Marca los cuadritos de la tabla para exportar o borrar masivamente y de manera rápida.</div><div class="help-item"><i class="fas fa-file-pdf"></i> <b>Exportador PDF:</b> Genera un reporte limpio de la tabla actual, listo para imprimir.</div><div class="help-item"><i class="fas fa-print"></i> <b>Impresión de OT y Garantía:</b> Genera la Orden de Trabajo o el Certificado de Garantía directamente desde el botón gris del formulario.</div><div class="help-item"><i class="fas fa-download"></i> <b>Respaldo JSON:</b> En configuración, descarga la base de datos completa de forma local por seguridad.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-shield-alt"></i> 1. Acceso y General</h4><div class="help-item"><i class="fas fa-fingerprint"></i> <b>Recordar Sesión:</b> Marca la casilla al iniciar sesión para entrar automáticamente la próxima vez.</div><div class="help-item"><i class="fas fa-wifi"></i> <b>Modo Offline:</b> Si pierdes internet, puedes seguir guardando folios en tu "Bandeja Local".</div><div class="help-item"><i class="fas fa-bolt"></i> <b>Modo Rendimiento:</b> (Nuevo) Toca el icono de rayo ⚡ si la app va lenta. Desactiva animaciones y fondos pesados.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-search"></i> 2. Buscador y Filtros Profesionales</h4><div class="help-item"><i class="fas fa-microphone"></i> <b>Búsqueda por Voz:</b> Toca el ícono del micrófono en la barra de búsqueda y dicta el nombre o patente.</div><div class="help-item"><i class="fas fa-minus-circle"></i> <b>Filtro Negativo:</b> Escribe un guion <span class="help-tag">-</span> antes de una palabra para EXCLUIRLA.</div><div class="help-item"><i class="fas fa-bolt"></i> <b>Búsqueda Rápida:</b> Presiona <i>"Enter"</i> en el buscador para buscar sin esperar.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-columns"></i> 3. Vistas y Tablero</h4><div class="help-item"><i class="fas fa-tablet-alt"></i> <b>Optimización Tablet:</b> Las tarjetas ahora se acomodan en columnas dobles en iPads y Tablets.</div><div class="help-item"><i class="fas fa-table"></i> <b>Modo Kanban vs Tabla:</b> Alterna entre la tabla clásica y un panel de tarjetas por estado.</div><div class="help-item"><i class="fas fa-expand"></i> <b>Pantalla Completa:</b> Usa la app como un software de escritorio y evita distracciones.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-mouse-pointer"></i> 4. Menú Contextual (Clic Derecho / Tocar Fila)</h4><div class="help-item"><i class="fas fa-star"></i> <b>Fijar Arriba (Pin):</b> Ancla un vehículo a la parte superior de la lista sin importar su fecha.</div><div class="help-item"><i class="fas fa-undo"></i> <b>Eliminación Segura (Undo):</b> Al borrar un folio, tienes 5 segundos para arrepentirte tocando "Deshacer".</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-edit"></i> 5. Formulario de Folios</h4><div class="help-item"><i class="fas fa-lock-open"></i> <b>Modo Candado:</b> Úsalo para bloquear la pantalla si solo vas a leer y no quieres borrar nada por error.</div><div class="help-item"><i class="fas fa-magic"></i> <b>Varita Mágica (Año):</b> Ingresa una Patente chilena, toca la varita y estimará el año del auto.</div><div class="help-item"><i class="fas fa-camera"></i> <b>Cámara Local:</b> Permite tomar una foto de recepción. <i>Nota: Se borra al recargar la app.</i></div><div class="help-item"><i class="fas fa-stopwatch"></i> <b>Cronómetro:</b> Registra el tiempo exacto que le toma al técnico realizar el trabajo (Play/Pause).</div><div class="help-item"><i class="fas fa-signature"></i> <b>Firma Digital:</b> El cliente puede firmar con el dedo en la pantalla para validarlo en la Orden de Trabajo.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-chart-line"></i> 6. Herramientas Extra</h4><div class="help-item"><i class="fas fa-chart-pie"></i> <b>Dashboard:</b> Analiza la efectividad, suma el KM de la flota, y grafica el rendimiento de los técnicos.</div><div class="help-item"><i class="fas fa-gas-pump"></i> <b>Calculadora ROI GLP:</b> Calcula el ahorro mensual y el retorno de inversión.</div><div class="help-item"><i class="fas fa-file-pdf"></i> <b>Exportador y Print:</b> Genera reportes PDF limpios o imprime la Orden de Trabajo y Garantía.</div></div>
             </div>
         </div>
     </div>
@@ -348,8 +383,8 @@
                     <span id="save-ind" class="save-indicator"><i class="fas fa-check"></i> Borrador</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px">
-                    <div class="icon-btn" onclick="toggleReadOnly()" title="Modo Seguro">
-                        <i class="fas fa-lock-open" id="btn-lock"></i>
+                    <div class="icon-btn" onclick="toggleReadOnly()" title="Modo Seguro" id="btn-lock-wrapper">
+                        <i class="fas fa-lock-open" id="btn-lock-icon"></i>
                     </div>
                     <div class="icon-btn" onclick="closeM('m-form')" title="Cerrar"><i class="fas fa-times"></i></div>
                 </div>
@@ -401,7 +436,7 @@
                         
                         <div class="inp-grp"><span class="inp-lbl">KM</span><input type="number" id="i_km" class="inp" onchange="doSaveDraft()" style="font-family:monospace; font-weight:600"></div>
                         
-                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-hover); padding:15px; border-radius:12px; border:1px solid var(--border)">
+                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-input); padding:15px; border-radius:12px; border:1px solid var(--border)">
                             <span class="inp-lbl">FOTO RECEPCIÓN (Modo Local)</span>
                             <div style="display:flex; gap:15px; align-items:center; margin-top:5px">
                                 <label style="background:var(--primary); color:#000; padding:10px 20px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:800; transition:all 0.3s var(--ease); box-shadow:0 4px 10px var(--primary-dim)"><i class="fas fa-camera" style="margin-right:5px"></i> Tomar Foto <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleCam(this)"></label>
@@ -461,7 +496,7 @@
 
     <div class="modal" id="m-calc" onclick="closeM('m-calc')">
         <div class="m-box" style="max-width:420px" onclick="event.stopPropagation()">
-            <div class="m-head-m"><h3 style="margin:0; color:var(--text-main); font-size:1.3rem"><i class="fas fa-gas-pump" style="color:var(--primary)"></i> Retorno GLP</h3><div class="icon-btn" onclick="closeM('m-calc')"><i class="fas fa-times"></i></div></div>
+            <div class="m-head-m"><h3 style="margin:0; color:var(--primary); font-size:1.3rem"><i class="fas fa-gas-pump"></i> Retorno GLP</h3><div class="icon-btn" onclick="closeM('m-calc')"><i class="fas fa-times"></i></div></div>
             <div style="padding:25px; overflow-y:auto">
                 <div class="inp-grp" style="margin-bottom:20px"><span class="inp-lbl">VALOR INSTALACIÓN ($)</span><input type="number" id="calc_val" class="inp" value="850000" oninput="calcAhorro()" style="font-size:1.2rem; font-weight:700"></div>
                 <div class="inp-grp" style="margin-bottom:20px"><span class="inp-lbl">KM MENSUALES: <span id="v_km" style="color:var(--text-main); font-size:1rem">1500</span></span><input type="range" id="calc_km" min="500" max="10000" step="100" value="1500" oninput="document.getElementById('v_km').innerText=this.value; calcAhorro()"></div>
@@ -488,6 +523,18 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbxWikUL6ErRmzZJNWVikLp2g3AtwL0QCM8DXkJuTZ6baBGUYGm8wwKt98lGoycdwty6/exec";
     let S = { cat:'TALLER', year:'2026', page:1, data:[], user:null, lists:[], users:[], q:'', timer:null, sort: { col: null, asc: false }, sedeFilter: 'Todas', pinned: [], viewMode: 'table', qFilter: null, totalHist: null };
     const MAP=['i_fec','i_sede','i_fic','i_cli','i_rut','i_cel','i_com','i_mar','i_mod','i_pat','i_col','i_km','i_ano','i_coo','i_dia','i_tec','i_mat'];
+
+    // --- MODO RENDIMIENTO (NUEVO) ---
+    function initPerformanceMode() {
+        if(localStorage.getItem('perf_mode') === 'true') { document.body.classList.add('perf-mode'); document.getElementById('btn-perf').classList.add('active-mode'); }
+    }
+    function togglePerformance() {
+        document.body.classList.toggle('perf-mode');
+        let isActive = document.body.classList.contains('perf-mode');
+        localStorage.setItem('perf_mode', isActive);
+        document.getElementById('btn-perf').classList.toggle('active-mode', isActive);
+        showToast(isActive ? "⚡ Modo Rendimiento Activo (Efectos reducidos)" : "✨ Modo Visual Activo (Efectos completos)");
+    }
 
     // --- UTILIDADES GLOBALES ---
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
@@ -545,6 +592,7 @@
 
     // --- LOGIN SEGURO PARA NÚMEROS Y TEXTO ---
     document.addEventListener("DOMContentLoaded", async () => { 
+        initPerformanceMode();
         let sc = localStorage.getItem('jm_auth'); 
         if(sc) { let c = JSON.parse(atob(sc)); document.getElementById('lg-u').value = c.u; document.getElementById('lg-p').value = c.p; login(); } 
     });
@@ -751,11 +799,12 @@
     
     // VISUAL DE LECTURA BLOQUEADA CORREGIDA (SOLO OPACIDAD)
     function toggleReadOnly() { 
-        let icon = document.getElementById('btn-lock');
+        let icon = document.getElementById('btn-lock-icon');
+        let wrapper = document.getElementById('btn-lock-wrapper');
         let isLocked = icon.classList.contains('fa-lock'); 
         
         icon.className = isLocked ? 'fas fa-lock-open' : 'fas fa-lock'; 
-        icon.parentElement.style.color = isLocked ? 'var(--text-sec)' : 'var(--st-err)'; 
+        wrapper.style.color = isLocked ? 'var(--text-sec)' : 'var(--st-err)'; 
         
         document.querySelectorAll('.m-body-form .inp, .chip-btn').forEach(el => { 
             el.disabled = !isLocked; 
@@ -782,7 +831,7 @@
             let bw = document.getElementById('btn-warr'); if(bw) bw.style.display=isEd?'flex':'none';
             
             switchTab(1); if(typeof clearSignature==='function') clearSignature(); 
-            let iconL = document.getElementById('btn-lock'); if(iconL && iconL.classList.contains('fa-lock')) toggleReadOnly();
+            let iconL = document.getElementById('btn-lock-icon'); if(iconL && iconL.classList.contains('fa-lock')) toggleReadOnly();
             
             let fill = (id, cat) => { let el=document.getElementById(id); if(!el)return; let opts = S.lists.filter(x=>x.cat===cat).map(x=>`<option value="${x.val}">${x.val}</option>`).join(''); el.innerHTML = opts || '<option>Sin opciones</option>'; };
             fill('i_sede','SEDE'); fill('i_tec','TECNICO');
@@ -824,7 +873,6 @@
     
     function addChipWithDate(id, t) { let e = document.getElementById(id); if(!e)return; let c = e.value.trim(); let dateStr = new Date().toLocaleDateString('es-CL',{month:'short',day:'numeric'}); let entry = `${t} (${dateStr})`; e.value = c ? c+'\n'+entry : entry; let dc=document.getElementById('dia-count'); if(dc) dc.innerText = e.value.length + '/300'; doSaveDraft(); showToast("Estado actualizado"); }
     function addChip(id, t) { let e = document.getElementById(id); if(!e)return; let c = e.value.trim(); e.value = c ? c+'\n'+t : t; let dc=document.getElementById('dia-count'); if(dc) dc.innerText = e.value.length + '/300'; doSaveDraft(); showToast("Agregado al detalle"); }
-    function sendWspTpl(msg) { let c=document.getElementById('i_cel'); if(!c||!c.value) return showToast("Falta el celular"); let cCel = c.value.toString().replace(/\s+/g,''); cCel = cCel.startsWith('+') ? cCel : '+569' + cCel.slice(-8); let cl=document.getElementById('i_cli'); window.open(`https://wa.me/${cCel.replace('+','')}?text=${encodeURIComponent('Hola '+(cl?cl.value:'')+', JM Autogas informa: '+msg)}`, '_blank'); }
 
     let tInterval;
     function updateTimerUI(id) { clearInterval(tInterval); let st = localStorage.getItem('tt_start_'+id); let btn = document.getElementById('btn-tt'); if(!btn)return; if(st) { btn.innerHTML = '<i class="fas fa-pause"></i>'; btn.style.color = '#ff1744'; btn.style.borderColor = '#ff1744'; tInterval = setInterval(()=>drawTime(id), 1000); } else { btn.innerHTML = '<i class="fas fa-play" style="margin-left:3px"></i>'; btn.style.color = 'var(--primary)'; btn.style.borderColor = 'var(--primary)'; drawTime(id); } }
@@ -852,7 +900,7 @@
         let iFec = document.getElementById('i_fec'), iPat = document.getElementById('i_pat');
         if(!iFec || !iPat || !iFec.value || !iPat.value) {
             if(iFec && !iFec.value) { iFec.style.borderColor = 'var(--st-err)'; setTimeout(()=>iFec.style.borderColor='var(--border)', 2000); }
-            if(iPat && !iPat.value) { iPat.style.borderColor = 'var(--st-err)'; setTimeout(()=>iPat.style.borderColor='var(--border)', 2000); }
+            if(iPat && !iPat.value) { iPat.style.borderColor = 'var(--st-err)'; setTimeout(()=>iPat.style.borderColor='var(--primary)', 2000); }
             return showToast("Falta Fecha o Patente");
         }
         
