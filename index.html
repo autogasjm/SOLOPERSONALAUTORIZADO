@@ -3,105 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOLIOS Mecanica JM Autogas SPA</title>
+    <title>JM Autogas | V31.3 Fix Visuals</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* CORE & VARIABLES */
-        :root{--bg-body:#050505;--bg-panel:#111111;--bg-input:#1a1a1a;--bg-hover:#222222;--primary:#00e676;--primary-dim:rgba(0,230,118,0.2);--text-main:#ffffff;--text-sec:#888888;--border:#333333;--shadow-sm:0 2px 8px rgba(0,0,0,0.2);--shadow-lg:0 20px 60px rgba(0,0,0,0.5);--st-online:#00e676;--st-fetch:#ffea00;--st-recv:#2979ff;--st-off:#757575;--st-err:#ff1744;--glass-bg:rgba(17,17,17,0.95);--glass-blur:blur(12px);--ease-out-expo:cubic-bezier(0.16,1,0.3,1)}
-        body.light-mode{--bg-body:#f5f5f7;--bg-panel:#ffffff;--bg-input:#eef0f2;--bg-hover:#e0e0e0;--text-main:#1d1d1f;--text-sec:#6e6e73;--border:#d2d2d7;--primary:#00a854;--primary-dim:rgba(0,168,84,0.15);--shadow-sm:0 2px 8px rgba(0,0,0,0.05);--shadow-lg:0 15px 40px rgba(0,0,0,0.1);--glass-bg:rgba(255,255,255,0.95)}
-        body.abastible-mode{--primary:#ff6d00;--primary-dim:rgba(255,109,0,0.2)}
-        *{box-sizing:border-box;font-family:'Inter',sans-serif;outline:none;-webkit-tap-highlight-color:transparent}
-        body{margin:0;background:var(--bg-body);color:var(--text-main);height:100dvh;overflow:hidden;display:flex;flex-direction:column;transition:background 0.3s,color 0.3s}
-        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--bg-body)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+        /* CORE & VARIABLES (iOS GLASSMORPHISM) */
+        :root {
+            --bg-body: #050507; 
+            --bg-panel: rgba(22, 22, 24, 0.65);
+            --bg-input: rgba(255, 255, 255, 0.05);
+            --bg-hover: rgba(255, 255, 255, 0.1);
+            --primary: #00e676;
+            --primary-dim: rgba(0, 230, 118, 0.25);
+            --text-main: #ffffff;
+            --text-sec: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-light: rgba(255, 255, 255, 0.05);
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.2);
+            --shadow-lg: 0 25px 50px rgba(0,0,0,0.6);
+            --glass-blur: blur(24px) saturate(180%);
+            --st-online: #00e676; --st-fetch: #ffea00; --st-recv: #2979ff; --st-off: #757575; --st-err: #ff1744;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        body.light-mode {
+            --bg-body: #f2f2f7; 
+            --bg-panel: rgba(255, 255, 255, 0.75);
+            --bg-input: rgba(0, 0, 0, 0.04);
+            --bg-hover: rgba(0, 0, 0, 0.08);
+            --text-main: #1d1d1f;
+            --text-sec: #86868b;
+            --border: rgba(0, 0, 0, 0.1);
+            --border-light: rgba(255, 255, 255, 0.5);
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.05);
+            --shadow-lg: 0 25px 50px rgba(0,0,0,0.12);
+        }
+        body.abastible-mode { --primary: #ff6d00; --primary-dim: rgba(255, 109, 0, 0.25); }
         
-        /* BANNERS Y NOTIFICACIONES */
-        #offline-banner,#sync-banner{display:none;color:#fff;text-align:center;padding:5px;font-size:0.8rem;font-weight:bold;position:fixed;top:0;width:100%;z-index:99999} #offline-banner{background:var(--st-err)} #sync-banner{background:var(--st-fetch);color:#000;cursor:pointer;z-index:99998}
-        #toast-container{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-        .toast{background:var(--glass-bg);backdrop-filter:var(--glass-blur);color:var(--text-main);padding:12px 20px;border-radius:50px;font-size:0.85rem;font-weight:600;box-shadow:var(--shadow-lg);border:1px solid var(--border);display:flex;align-items:center;gap:10px;animation:fadeInUp 0.3s ease-out forwards;pointer-events:auto;white-space:nowrap}
-        .toast-undo{background:var(--primary);color:#000;border:none;padding:4px 12px;border-radius:15px;cursor:pointer;font-size:0.75rem;margin-left:10px}
-        .save-indicator{font-size:0.7rem;color:var(--st-fetch);margin-left:10px;font-weight:600;opacity:0;transition:0.3s} .save-indicator.show{opacity:1}
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        /* LOGIN */
-        #login-scr{position:fixed;inset:0;z-index:5000;background:#000;display:flex;justify-content:center;align-items:center;transition:opacity 0.8s var(--ease-out-expo),transform 0.8s var(--ease-out-expo)} #login-scr.login-exit{opacity:0;transform:scale(1.1);pointer-events:none}
-        .lg-card{background:linear-gradient(145deg,#151515,#000);padding:40px 30px;border-radius:24px;border:1px solid #333;width:90%;max-width:360px;text-align:center;box-shadow:0 20px 80px rgba(0,0,0,0.9);transition:transform 0.3s}
-        .lg-icon{font-size:3rem;color:var(--primary);margin-bottom:10px;filter:drop-shadow(0 0 15px var(--primary-dim))}
-        .lg-inp{width:100%;padding:16px;margin-bottom:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:1.1rem;text-align:center;transition:0.3s} .lg-inp:focus{border-color:var(--primary);background:rgba(0,0,0,0.5);box-shadow:0 0 15px var(--primary-dim)}
-        .btn-lg{width:100%;padding:16px;background:var(--primary);color:#000;font-weight:800;border:none;border-radius:12px;cursor:pointer;font-size:1rem;margin-top:15px;transition:0.2s;box-shadow:0 0 20px var(--primary-dim)} .btn-lg:hover{transform:translateY(-2px);filter:brightness(1.1)} .btn-lg:active{transform:scale(0.98)}
-        .lg-chk-lbl{color:var(--text-sec);font-size:0.85rem;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;cursor:pointer} .lg-chk-lbl input{accent-color:var(--primary);width:16px;height:16px;cursor:pointer}
-        
-        #lg-status-area{min-height:25px;margin-top:15px;font-size:0.85rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transform:translateY(5px);transition:all 0.3s}
-        #lg-status-area.visible{opacity:1;transform:translateY(0)}
-        .shake{animation:shake 0.4s both} @keyframes shake{10%,90%{transform:translate3d(-1px,0,0)} 20%,80%{transform:translate3d(2px,0,0)} 30%,50%,70%{transform:translate3d(-4px,0,0)} 40%,60%{transform:translate3d(4px,0,0)}}
+        body { 
+            margin: 0; background-color: var(--bg-body); color: var(--text-main); height: 100dvh; overflow: hidden; 
+            display: flex; flex-direction: column; transition: background-color 0.5s ease, color 0.5s ease;
+            position: relative;
+        }
 
-        /* LAYOUT & HEADER */
-        header,.toolbar,main,.footer,.fab{opacity:0;transform:translateY(20px);transition:opacity 0.8s 0.2s var(--ease-out-expo),transform 0.8s 0.2s var(--ease-out-expo)} body.app-ready header,body.app-ready .toolbar,body.app-ready main,body.app-ready .footer,body.app-ready .fab{opacity:1;transform:translateY(0)}
-        header{height:60px;background:var(--bg-panel);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;z-index:20;box-shadow:var(--shadow-sm)} .h-left,.h-right{display:flex;align-items:center;gap:10px}
-        .status-pill{display:flex;align-items:center;gap:6px;font-size:0.65rem;font-weight:700;text-transform:uppercase;background:var(--bg-input);padding:4px 10px;border-radius:50px;border:1px solid var(--border)} .dot{width:6px;height:6px;border-radius:50%} .st-online .dot{background:var(--st-online);box-shadow:0 0 5px var(--st-online)} .st-fetch .dot{background:var(--st-fetch);animation:pulse 1s infinite} .st-off .dot{background:var(--st-off)} .st-err .dot{background:var(--st-err)}
-        .icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid transparent;display:grid;place-items:center;color:var(--text-sec);cursor:pointer;transition:0.2s;position:relative} .icon-btn:hover{background:var(--bg-input);color:var(--text-main);border-color:var(--border)} .icon-btn.active-mode{color:var(--primary);background:var(--primary-dim);border-color:var(--primary)}
+        body::before, body::after {
+            content: ''; position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; transition: background 0.8s ease;
+        }
+        body::before { width: 50vw; height: 50vw; background: rgba(0, 230, 118, 0.12); top: -15vw; left: -10vw; }
+        body::after { width: 40vw; height: 40vw; background: rgba(41, 121, 255, 0.08); bottom: 10vw; right: -10vw; }
+        body.light-mode::before { background: rgba(0, 168, 84, 0.15); }
+        body.light-mode::after { background: rgba(41, 121, 255, 0.1); }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.5); }
+
+        header, .toolbar, main, .footer { position: relative; z-index: 10; }
+
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scalePop { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         
-        /* TOOLBAR */
-        .toolbar{padding:12px 20px;background:var(--bg-body);border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex-shrink:0;z-index:10} .grp{background:var(--bg-panel);border-radius:8px;padding:3px;display:flex;border:1px solid var(--border);height:38px;align-items:center} .btn-cap{background:transparent;border:none;padding:0 14px;height:30px;border-radius:6px;color:var(--text-sec);font-weight:600;font-size:0.8rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:6px;white-space:nowrap} .btn-cap.active{background:var(--primary);color:#000;box-shadow:0 2px 5px rgba(0,0,0,0.2)} .btn-cap.active.sede-btn{background:var(--bg-hover);color:var(--text-main);border:1px solid var(--border);box-shadow:none} .abast-logo{height:14px;filter:grayscale(1) brightness(2)} .btn-cap.active .abast-logo{filter:brightness(0)} body.light-mode .btn-cap.active .abast-logo{filter:brightness(0)}
-        .search-bar{display:flex;align-items:center;background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;padding:0 12px;height:38px;flex-grow:1;transition:0.3s;min-width:200px} .search-bar:focus-within{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)} .search-bar input{background:transparent;border:none;color:var(--text-main);flex:1;margin-left:10px;height:100%;font-size:0.9rem} mark{background:rgba(255,234,0,0.3);color:inherit;padding:0;border-radius:2px;font-weight:bold}
+        #offline-banner,#sync-banner{display:none;color:#fff;text-align:center;padding:8px;font-size:0.8rem;font-weight:600;position:fixed;top:0;width:100%;z-index:99999;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur)} #offline-banner{background:rgba(255, 23, 68, 0.8)} #sync-banner{background:rgba(255, 234, 0, 0.8);color:#000;cursor:pointer;z-index:99998}
+        
+        #toast-container{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;flex-direction:column;gap:12px;pointer-events:none}
+        .toast{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);color:var(--text-main);padding:14px 24px;border-radius:30px;font-size:0.9rem;font-weight:600;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);border:1px solid var(--border);display:flex;align-items:center;gap:12px;animation:fadeSlideUp 0.4s var(--spring) forwards;pointer-events:auto;white-space:nowrap}
+        .toast-undo{background:var(--primary);color:#000;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:0.8rem;font-weight:700;margin-left:10px;transition:all 0.2s} .toast-undo:hover{transform:scale(1.05)}
+        
+        #login-scr{position:fixed;inset:0;z-index:5000;background:var(--bg-body);display:flex;justify-content:center;align-items:center;transition:opacity 0.8s var(--ease-out-expo),transform 0.8s var(--ease-out-expo)} #login-scr.login-exit{opacity:0;transform:scale(1.05);pointer-events:none}
+        .lg-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:40px 35px;border-radius:32px;border:1px solid var(--border);width:90%;max-width:380px;text-align:center;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);transition:transform 0.3s;animation:scalePop 0.6s var(--spring)}
+        .lg-icon{font-size:3.5rem;color:var(--primary);margin-bottom:15px;filter:drop-shadow(0 0 15px var(--primary-dim))}
+        .lg-inp{width:100%;padding:16px;margin-bottom:15px;background:var(--bg-input);border:1px solid var(--border);border-radius:14px;color:var(--text-main);font-size:1.1rem;text-align:center;transition:all 0.3s;box-shadow:inset 0 2px 4px rgba(0,0,0,0.1)} .lg-inp:focus{border-color:var(--primary);background:rgba(0,0,0,0.1);box-shadow:0 0 0 3px var(--primary-dim);transform:translateY(-2px)}
+        .btn-lg{width:100%;padding:18px;background:var(--primary);color:#000;font-weight:800;border:none;border-radius:14px;cursor:pointer;font-size:1.05rem;margin-top:20px;transition:all 0.3s;box-shadow:0 8px 20px var(--primary-dim)} .btn-lg:hover{transform:translateY(-2px);filter:brightness(1.1)} .btn-lg:active{transform:scale(0.97)}
+        .lg-chk-lbl{color:var(--text-sec);font-size:0.9rem;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:15px;cursor:pointer;font-weight:500} .lg-chk-lbl input{accent-color:var(--primary);width:18px;height:18px;cursor:pointer}
+        
+        #lg-status-area{min-height:25px;margin-top:15px;font-size:0.85rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transform:translateY(5px);transition:all 0.3s} #lg-status-area.visible{opacity:1;transform:translateY(0)}
+
+        header,.toolbar,main,.footer,.fab{opacity:0;transform:translateY(20px);transition:opacity 0.8s 0.2s var(--ease-out-expo),transform 0.8s 0.2s var(--ease-out-expo)} body.app-ready header,body.app-ready .toolbar,body.app-ready main,body.app-ready .footer,body.app-ready .fab{opacity:1;transform:translateY(0)}
+        
+        header { height: 65px; background: var(--bg-panel); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 20; }
+        .h-left { flex: 1; display: flex; align-items: center; gap: 10px; justify-content: flex-start; }
+        .h-center { flex: 2; display: flex; justify-content: center; align-items: center; min-width: 0; }
+        .h-right { flex: 1; display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+        
+        .itunes-display { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 20px; height: 40px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); max-width: 100%; overflow: hidden; }
+        .display-user { font-size: 0.85rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+        .display-divider { width: 1px; height: 16px; background: var(--border); opacity: 0.5; }
+        
+        .status-pill { display:flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px}
+        .itunes-display .status-pill { background: transparent; border: none; padding: 0; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow:0 0 8px currentColor}
+        .st-online .dot { background: var(--st-online); color: var(--st-online)} .st-fetch .dot { background: var(--st-fetch); animation: pulse 1s infinite; color:var(--st-fetch)} .st-off .dot { background: var(--st-off); color:transparent; box-shadow:none} .st-err .dot { background: var(--st-err); color:var(--st-err)}
+        @keyframes pulse { 0%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} 100%{opacity:1;transform:scale(1)} }
+        
+        .icon-btn{width:36px;height:36px;border-radius:10px;background:transparent;border:1px solid transparent;display:grid;place-items:center;color:var(--text-sec);cursor:pointer;transition:all 0.2s;position:relative;font-size:1.1rem} .icon-btn:hover{background:var(--bg-hover);color:var(--text-main);transform:translateY(-1px)} .icon-btn:active{transform:scale(0.95)} .icon-btn.active-mode{color:var(--primary);background:var(--primary-dim);border-color:var(--primary);box-shadow:0 0 15px var(--primary-dim)}
+        
+        .toolbar{padding:15px 20px;background: var(--bg-panel); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex-shrink:0;z-index:10} 
+        .grp{background:var(--bg-input);border-radius:12px;padding:4px;display:flex;border:1px solid var(--border);height:42px;align-items:center;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)} 
+        .btn-cap{background:transparent;border:none;padding:0 16px;height:32px;border-radius:8px;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap} 
+        .btn-cap:hover:not(.active){color:var(--text-main)}
+        .btn-cap.active{background:var(--primary);color:#000;box-shadow:0 4px 10px var(--primary-dim)} 
+        .btn-cap.active.sede-btn{background:var(--bg-panel);color:var(--text-main);border:1px solid var(--border);box-shadow:var(--shadow-sm)} 
+        
+        .taller-logo { height: 16px; object-fit: contain; filter: grayscale(1) opacity(0.5) brightness(1.5); transition: 0.3s; }
+        .btn-cap.active .taller-logo { filter: none; opacity: 1; }
+        body.light-mode .taller-logo { filter: grayscale(1) opacity(0.5) brightness(0); }
+        body.light-mode .btn-cap.active .taller-logo { filter: none; opacity: 1; }
+        
+        .abast-logo { height: 14px; filter: grayscale(1) brightness(2); } .btn-cap.active .abast-logo { filter: brightness(0); } body.light-mode .btn-cap.active .abast-logo { filter: brightness(0); }
+        
+        .search-bar{display:flex;align-items:center;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:0 15px;height:42px;flex-grow:1;transition:all 0.3s;min-width:200px;box-shadow:inset 0 2px 4px rgba(0,0,0,0.1)} .search-bar:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim);transform:translateY(-1px)} .search-bar input{background:transparent;border:none;color:var(--text-main);flex:1;margin-left:10px;height:100%;font-size:0.95rem;font-weight:500} mark{background:rgba(255,234,0,0.3);color:inherit;padding:0 2px;border-radius:4px;font-weight:bold}
         
         .loader-line{position:fixed;top:0;left:0;height:4px;width:100%;background:transparent;z-index:9999;overflow:hidden;display:none} .loader-bar{width:100%;height:100%;background:var(--primary);transform:translateX(-100%);animation:load 1.2s infinite;box-shadow:0 0 10px var(--primary)} @keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
         
-        /* MAIN & TABLAS */
-        main{flex-grow:1;overflow-y:auto;overflow-x:auto;padding:0 20px;position:relative;-webkit-overflow-scrolling:touch} @keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}} .animate-row{animation:fadeInUp 0.3s ease-out forwards;opacity:0}
+        main{flex-grow:1;overflow-y:auto;overflow-x:auto;padding:0 20px;position:relative;-webkit-overflow-scrolling:touch} 
+        .animate-row{animation:fadeSlideUp 0.4s var(--spring) forwards;opacity:0}
         
-        #v-pc{width:100%;border-collapse:separate;border-spacing:0;min-width:1050px;margin-bottom:20px} #v-pc th{text-align:left;padding:16px 12px;color:var(--text-sec);font-size:0.7rem;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-body);z-index:5;cursor:pointer;user-select:none} #v-pc th:hover{color:var(--text-main);background:var(--bg-input)} #v-pc th.active-sort{color:var(--primary);border-bottom-color:var(--primary)} .sort-icon{margin-left:5px;font-size:0.8em} #v-pc td{padding:14px 12px;border-bottom:1px solid var(--bg-input);font-size:0.9rem;color:var(--text-main);vertical-align:middle;transition:background 0.2s} #v-pc tr:hover td{background:var(--bg-hover);cursor:pointer} #v-pc tr.pinned td{background:rgba(0,230,118,0.05)} .td-diag{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-sec)} .pc-only{display:none}
+        #v-pc{width:100%;border-collapse:collapse;min-width:1050px;margin-bottom:20px;margin-top:10px} 
+        #v-pc th{text-align:left;padding:18px 15px;color:var(--text-sec);font-size:0.75rem;font-weight:700;text-transform:uppercase;border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);z-index:5;cursor:pointer;user-select:none;transition:all 0.3s;letter-spacing:0.5px} 
+        #v-pc th:hover{color:var(--text-main);background:var(--bg-hover)} #v-pc th.active-sort{color:var(--primary)} .sort-icon{margin-left:5px;font-size:0.8em;opacity:0.5} #v-pc th.active-sort .sort-icon{opacity:1}
+        #v-pc td{padding:16px 15px;border-bottom:1px solid var(--border);font-size:0.95rem;color:var(--text-main);vertical-align:middle;transition:all 0.2s} 
+        #v-pc tr:hover td{background:var(--bg-hover);cursor:pointer;color:var(--primary)} #v-pc tr.pinned td{background:rgba(0,230,118,0.05)} .td-diag{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-sec)} .pc-only{display:none}
         
-        /* KANBAN */
-        #v-kanban{display:none;gap:20px;padding:20px 0;height:100%;align-items:flex-start} .kb-col{flex:1;background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;min-width:300px;max-height:100%} .kb-head{padding:15px;border-bottom:1px solid var(--border);font-weight:700;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg-panel);border-radius:12px 12px 0 0;z-index:2} .kb-body{padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;flex-grow:1} .kb-card{background:var(--bg-body);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:0.2s;box-shadow:var(--shadow-sm)} .kb-card:hover{border-color:var(--primary-dim);transform:translateY(-2px)} .kb-card.pinned{border-color:var(--primary)}
+        #v-kanban{display:none;gap:20px;padding:20px 0;height:100%;align-items:flex-start} .kb-col{flex:1;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--border);border-radius:20px;display:flex;flex-direction:column;min-width:300px;max-height:100%;box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light)} .kb-head{padding:18px 20px;border-bottom:1px solid var(--border);font-weight:700;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:transparent;z-index:2;font-size:1.05rem} .kb-body{padding:15px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;flex-grow:1} .kb-card{background:var(--bg-input);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all 0.3s var(--spring)} .kb-card:hover{border-color:var(--primary-dim);transform:translateY(-3px);background:var(--bg-hover);box-shadow:var(--shadow-sm)} .kb-card.pinned{border-color:var(--primary)}
         
-        .badge{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px} .b-green{background:#00e676;box-shadow:0 0 5px #00e676} .b-yellow{background:#ffea00;box-shadow:0 0 5px #ffea00} .b-red{background:#ff1744;box-shadow:0 0 5px #ff1744}
+        .badge{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px} .b-green{background:#00e676;box-shadow:0 0 8px #00e676} .b-yellow{background:#ffea00;box-shadow:0 0 8px #ffea00} .b-red{background:#ff1744;box-shadow:0 0 8px #ff1744}
         
-        /* MENU CONTEXTUAL */
-        #context-menu{position:absolute;background:var(--glass-bg);backdrop-filter:var(--glass-blur);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);display:none;flex-direction:column;padding:8px;z-index:4000;min-width:180px} .cm-item{padding:10px 15px;font-size:0.85rem;color:var(--text-main);display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px;transition:0.2s;font-weight:600} .cm-item:hover{background:var(--bg-hover);color:var(--primary)} .cm-item.cm-danger:hover{color:var(--st-err)}
+        #context-menu{position:absolute;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);display:none;flex-direction:column;padding:8px;z-index:4000;min-width:180px;animation:fadeSlideUp 0.2s var(--ease)} .cm-item{padding:12px 16px;font-size:0.9rem;color:var(--text-main);display:flex;align-items:center;gap:12px;cursor:pointer;border-radius:10px;transition:all 0.2s;font-weight:600} .cm-item:hover{background:var(--bg-hover);color:var(--primary)} .cm-item.cm-danger:hover{color:var(--st-err);background:rgba(255,23,68,0.1)}
         
         @media (min-width:1024px){.pc-only{display:table} .mob-only{display:none !important}}
-        .mob-only{display:flex;flex-direction:column;gap:10px;padding-bottom:80px;margin-top:15px} .m-card{background:var(--bg-panel);padding:15px;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;cursor:pointer;user-select:none;transition:0.2s} .m-card:active{transform:scale(0.98)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.05) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:8px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.1rem} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
+        @media (max-width:768px){
+            .form-grid{grid-template-columns:1fr;gap:12px} 
+            .toolbar{justify-content:space-between; padding:12px 15px;} 
+            .search-bar{width:100%}
+            .itunes-display { padding: 4px 12px; gap: 8px; min-width: auto; }
+            .display-user span.u-text { display: none; } 
+            header { padding: 0 15px; }
+            .m-box { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
+        }
+
+        .mob-only{display:flex;flex-direction:column;gap:15px;padding-bottom:100px;margin-top:15px} .m-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:18px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light);position:relative;cursor:pointer;user-select:none;transition:all 0.2s} .m-card:active{transform:scale(0.96)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.08) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:10px;margin-bottom:10px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.2rem;letter-spacing:1px} body.light-mode .m-head{border-bottom:1px solid rgba(0,0,0,0.05)} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
         
         .chip-btn{display:inline-block;padding:4px 10px;background:var(--bg-hover);border:1px solid var(--border);border-radius:15px;font-size:0.7rem;color:var(--text-sec);cursor:pointer;margin-right:5px;margin-top:5px;transition:0.2s;user-select:none} .chip-btn:hover,.chip-btn.active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary)}
         
-        .footer{height:50px;background:var(--bg-panel);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;flex-shrink:0;z-index:20;font-size:0.85rem;color:var(--text-sec)} .pg-btn{width:32px;height:32px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:6px;cursor:pointer;display:grid;place-items:center;transition:0.2s} .pg-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)} .pg-btn:disabled{opacity:0.3;cursor:default}
+        .footer{height:60px;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;flex-shrink:0;z-index:20;font-size:0.9rem;color:var(--text-sec)} .pg-btn{width:36px;height:36px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:10px;cursor:pointer;display:grid;place-items:center;transition:all 0.2s;font-size:1.1rem} .pg-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)} .pg-btn:disabled{opacity:0.3;cursor:default}
         .fab{position:fixed;bottom:70px;right:20px;width:55px;height:55px;border-radius:50%;background:var(--primary);color:#000;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 5px 20px var(--primary-dim);cursor:pointer;z-index:100;transition:transform 0.2s} .fab:hover{transform:scale(1.1)}
         
         /* MODALES Y FORMS */
-        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;display:none;justify-content:center;align-items:center;backdrop-filter:blur(5px)} .m-box{background:var(--glass-bg);backdrop-filter:var(--glass-blur);width:95%;max-width:750px;max-height:90vh;border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow:hidden} .m-head-m{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg-panel)}
-        .tabs-nav{display:flex;border-bottom:1px solid var(--border);background:var(--bg-input);overflow-x:auto} .tab-btn{flex:1;padding:12px;background:none;border:none;color:var(--text-sec);font-weight:600;font-size:0.8rem;cursor:pointer;transition:0.2s;border-bottom:3px solid transparent;white-space:nowrap} .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);background:var(--bg-panel)}
-        .m-body-form{padding:20px;overflow-y:auto;flex-grow:1} .tab-pane{display:none;animation:fadeInUp 0.3s ease-out forwards} .tab-pane.active{display:block}
-        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .inp-grp{display:flex;flex-direction:column;position:relative} .inp-lbl{font-size:0.7rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:3000;display:none;justify-content:center;align-items:center;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)} 
+        .m-box{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);width:95%;max-width:800px;max-height:92vh;border-radius:24px;border:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);overflow:hidden;animation:scalePop 0.4s var(--spring)} 
+        .m-head-m{padding:20px 25px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:transparent}
+        
+        .tabs-nav{display:flex;background:var(--bg-input);border-radius:12px;margin:20px 25px 5px 25px;padding:4px;overflow-x:auto} .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;border-radius:8px;white-space:nowrap} .tab-btn:hover{color:var(--text-main)} .tab-btn.active{color:var(--text-main);background:var(--bg-hover);box-shadow:var(--shadow-sm)}
+        body.light-mode .tabs-nav{background:rgba(0,0,0,0.05)} body.light-mode .tab-btn.active{background:#fff; color:#000}
+
+        .m-body-form{padding:25px;overflow-y:auto;flex-grow:1} .tab-pane{display:none;opacity:0} .tab-pane.active{display:block;animation:fadeSlideUp 0.3s ease forwards}
+        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} .inp-grp{display:flex;flex-direction:column;position:relative} .inp-lbl{font-size:0.75rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+        
         .inp{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:8px;transition:all 0.3s;font-size:0.9rem} .inp:focus{border-color:var(--primary);background:var(--bg-body);box-shadow:0 0 0 2px var(--primary-dim)} .inp:disabled{opacity:0.6;cursor:not-allowed} textarea.inp{resize:vertical}
         
-        .sig-container{border:2px dashed var(--border);border-radius:12px;background:var(--bg-body);position:relative} canvas#sig-pad{width:100%;height:200px;touch-action:none;border-radius:12px;cursor:crosshair} .sig-clear{position:absolute;top:10px;right:10px;background:var(--bg-panel);border:1px solid var(--border);color:var(--text-sec);padding:5px 10px;border-radius:6px;font-size:0.7rem;cursor:pointer}
-        .mic-btn{position:absolute;right:10px;top:32px;color:var(--text-sec);cursor:pointer;transition:0.2s} .mic-btn.recording{color:#ff1744;animation:pulse 1s infinite} .inp.recording{border-color:#00e676 !important;box-shadow:0 0 10px rgba(0,230,118,0.2) !important}
-        
-        .m-foot{padding:15px 20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;background:var(--bg-panel)} .btn-act{flex:1;min-width:140px;padding:12px;background:var(--primary);color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:0.2s;display:flex;justify-content:center;align-items:center;gap:8px} .btn-act:active{transform:scale(0.98)} .btn-sec{background:var(--bg-input);color:var(--text-main);border:1px solid var(--border);flex:0.5;font-size:0.85rem}
-        
-        .timer-display{font-family:monospace;font-size:1.2rem;font-weight:800;color:var(--primary);background:var(--bg-input);padding:5px 10px;border-radius:8px;border:1px solid var(--border);text-align:center;letter-spacing:2px}
-        .quick-wsp-btn{background:rgba(37,211,102,0.1);color:#25D366;border:1px solid rgba(37,211,102,0.3);padding:4px 8px;border-radius:6px;font-size:0.7rem;cursor:pointer;transition:0.2s} .quick-wsp-btn:hover{background:#25D366;color:#000}
-        .color-dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid var(--text-sec);background:transparent;margin-left:5px;vertical-align:middle;box-shadow:0 0 5px rgba(255,255,255,0.1)}
+        .save-indicator{font-size:0.7rem;color:var(--st-fetch);margin-left:10px;font-weight:600;opacity:0;transition:0.3s} .save-indicator.show{opacity:1}
 
-        @media (max-width:768px){.form-grid{grid-template-columns:1fr;gap:10px} .toolbar{justify-content:space-between} .search-bar{width:100%}}
+        .sig-container{border:2px dashed var(--border);border-radius:16px;background:var(--bg-input);position:relative;transition:all 0.3s} .sig-container:hover{border-color:var(--text-sec)} canvas#sig-pad{width:100%;height:200px;touch-action:none;border-radius:16px;cursor:crosshair} .sig-clear{position:absolute;top:10px;right:10px;background:var(--bg-panel);border:1px solid var(--border);color:var(--text-main);padding:5px 10px;border-radius:6px;font-size:0.7rem;cursor:pointer;transition:all 0.2s} .sig-clear:hover{background:var(--st-err);border-color:var(--st-err)}
+        .mic-btn{position:absolute;right:10px;top:32px;color:var(--text-sec);cursor:pointer;transition:all 0.3s;font-size:1.1rem} .mic-btn:hover{color:var(--primary);transform:scale(1.2)} .mic-btn.recording{color:#ff1744;animation:pulse 1s infinite;transform:scale(1.2)} .inp.recording{border-color:#00e676 !important;box-shadow:0 0 15px rgba(0,230,118,0.3) !important}
         
+        .m-foot{padding:15px 20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;background:transparent} .btn-act{flex:1;min-width:140px;padding:12px;background:var(--primary);color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;justify-content:center;align-items:center;gap:8px;font-size:0.95rem} .btn-act:active{transform:scale(0.98)} .btn-sec{background:var(--bg-input);color:var(--text-main);border:1px solid var(--border);flex:0.5;font-size:0.85rem} .btn-sec:hover{border-color:var(--primary);color:var(--primary)}
+        
+        .timer-display{font-family:monospace;font-size:1.2rem;font-weight:800;color:var(--primary);background:var(--bg-input);padding:5px 10px;border-radius:8px;border:1px solid var(--border);text-align:center;letter-spacing:2px;box-shadow:inset 0 2px 5px rgba(0,0,0,0.5)}
+        .color-dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg-panel);background:transparent;margin-left:8px;vertical-align:middle;box-shadow:0 0 8px rgba(255,255,255,0.2), 0 0 0 1px var(--text-sec)}
+
         /* DASHBOARD BARS */
         .bar-wrap{width:100%;background:var(--bg-input);border-radius:10px;height:8px;margin-top:5px;overflow:hidden} .bar-fill{height:100%;background:var(--primary);transition:width 1s ease-out} .stat-row{display:flex;justify-content:space-between;font-size:0.8rem;margin-top:10px}
         input[type=range]{-webkit-appearance:none;width:100%;background:transparent;margin:10px 0} input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:16px;width:16px;border-radius:50%;background:var(--primary);cursor:pointer;margin-top:-6px;box-shadow:0 0 10px var(--primary-dim)} input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;cursor:pointer;background:var(--border);border-radius:2px}
         
-        /* IMPRESION */
-        @media print{
-            body *{visibility:hidden} #print-area,#print-area *{visibility:visible}
-            #print-area{position:absolute;left:0;top:0;width:100%;color:#000;background:#fff;font-family:sans-serif;padding:20px}
-            .pr-head{border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:20px;text-align:center} .pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px} .pr-box{border:1px solid #000;padding:8px;border-radius:4px} .pr-lbl{font-size:0.7rem;color:#444;font-weight:bold;text-transform:uppercase} .pr-val{font-size:1rem;font-weight:bold;margin-top:2px} .pr-sign{text-align:center;border-top:1px solid #000;width:250px;padding-top:5px;margin:40px auto 0 auto} .pr-sign img{max-width:200px;max-height:80px;margin-top:-80px;display:block;margin-left:auto;margin-right:auto}
-            .pr-warr{font-size:0.85rem;line-height:1.5;margin-top:20px;border:1px solid #ccc;padding:15px;border-radius:8px;background:#f9f9f9} .pr-warr h3{margin-top:0;text-align:center;text-decoration:underline}
+        /* MANUAL DE AYUDA */
+        .help-section { margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; } .help-section:last-child { border-bottom: none; } .help-title { color: var(--primary); font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; } .help-item { font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; } .help-item i { color: var(--text-sec); margin-top: 4px; font-size: 1rem; width: 20px; text-align: center; } .help-tag { background: var(--bg-hover); border: 1px solid var(--border); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; color: var(--primary); font-family: monospace; font-weight:700 }
+
+        /* IMPRESION (NUEVO MÉTODO ANTI BLANK PAGE) */
+        @media print {
+            body, html { height: auto !important; overflow: visible !important; display: block !important; background: #fff !important; color: #000 !important; }
+            body > *:not(#print-area) { display: none !important; }
+            * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none !important; }
+            #print-area { display: block !important; position: relative !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            .pr-head { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; text-align: center; } .pr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; } .pr-box { border: 1px solid #000; padding: 8px; border-radius: 4px; break-inside: avoid; } .pr-lbl { font-size: 0.7rem; color: #444; font-weight: bold; text-transform: uppercase; } .pr-val { font-size: 1rem; font-weight: bold; margin-top: 2px; } .pr-sign { text-align: center; border-top: 1px solid #000; width: 250px; padding-top: 5px; margin: 40px auto 0 auto; break-inside: avoid; } .pr-sign img { max-width: 200px; max-height: 80px; margin-top: -80px; display: block; margin-left: auto; margin-right: auto; } .pr-warr { font-size: 0.85rem; line-height: 1.5; margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px; background: #f9f9f9; } .pr-warr h3 { margin-top: 0; text-align: center; text-decoration: underline; }
         }
     </style>
 </head>
 <body>
 
     <div id="offline-banner"><i class="fas fa-wifi"></i> Sin Conexión. Guardando localmente...</div>
-    <div id="sync-banner" onclick="syncOfflineQueue()"><i class="fas fa-sync"></i> Registros pendientes de sincronizar. Toca para enviar.</div>
+    <div id="sync-banner" onclick="syncOfflineQueue()"><i class="fas fa-sync fa-spin"></i> Registros pendientes de sincronizar. Toca para enviar.</div>
     <div id="toast-container"></div>
     
     <div id="context-menu">
@@ -119,8 +212,8 @@
     <div id="login-scr">
         <div class="lg-card" id="lg-card">
             <i class="fas fa-fingerprint lg-icon"></i>
-            <h2 style="color:#fff; margin:0 0 5px 0;">Bienvenido</h2>
-            <p style="color:var(--text-sec); margin-bottom:20px; font-size:0.9rem">JM Autogas V29.1</p>
+            <h2 style="color:var(--text-main); margin:0 0 5px 0; font-weight:800">Bienvenido</h2>
+            <p style="color:var(--text-sec); margin-bottom:25px; font-size:0.95rem">JM Autogas V31.2</p>
             <input type="text" id="lg-u" class="lg-inp" placeholder="Usuario" autocomplete="off">
             <input type="tel" id="lg-p" class="lg-inp" placeholder="PIN (Números)" inputmode="numeric" pattern="[0-9]*" maxlength="8" style="-webkit-text-security: disc;">
             <label class="lg-chk-lbl"><input type="checkbox" id="lg-rem"> Recordar mi sesión</label>
@@ -133,13 +226,26 @@
 
     <header>
         <div class="h-left">
-            <div class="status-pill st-off" id="s-pill"><div class="dot"></div><span id="s-txt">Offline</span></div>
             <div class="icon-btn" onclick="openCalc()" title="Calculadora GLP"><i class="fas fa-gas-pump"></i></div>
             <div class="icon-btn" onclick="openDash()" title="Dashboard"><i class="fas fa-chart-pie"></i></div>
             <div class="icon-btn" id="btn-kanban" onclick="toggleViewMode()" title="Vista Kanban"><i class="fas fa-columns"></i></div>
         </div>
+        
+        <div class="h-center">
+            <div class="itunes-display">
+                <div class="display-user" title="Usuario Activo">
+                    <i class="fas fa-user-circle"></i> 
+                    <span class="u-text" id="u-name">...</span>
+                </div>
+                <div class="display-divider"></div>
+                <div class="status-pill st-off" id="s-pill">
+                    <div class="dot"></div><span id="s-txt">Offline</span>
+                </div>
+            </div>
+        </div>
+        
         <div class="h-right">
-            <span id="u-name" style="font-size:0.85rem; margin-right:5px; font-weight:600">...</span>
+            <div class="icon-btn" onclick="openHelp()" title="Manual de Uso"><i class="fas fa-question-circle" style="color:var(--primary)"></i></div>
             <div class="icon-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></div>
             <div class="icon-btn" onclick="toggleFullScreen()" title="Pantalla Completa"><i class="fas fa-expand" id="ic-fs"></i></div>
             <div class="icon-btn" onclick="openCfg()" title="Configuración"><i class="fas fa-cog"></i></div>
@@ -150,8 +256,12 @@
 
     <div class="toolbar">
         <div class="grp">
-            <button class="btn-cap active" onclick="setCat('TALLER', this)">TALLER</button>
-            <button class="btn-cap" onclick="setCat('ABASTIBLE', this)"><img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-logo"></button>
+            <button class="btn-cap active" onclick="setCat('TALLER', this)">
+                <img src="https://ss-cnt-001c.esmsv.com/r/content/host1/5fd8685c621f8af6003145adde3cf37b/img/LOGO.webp" class="taller-logo" alt="Taller">
+            </button>
+            <button class="btn-cap" onclick="setCat('ABASTIBLE', this)">
+                <img src="https://storage.googleapis.com/web-abastible-prod/2025/03/Logo_Abastible.png" class="abast-logo" alt="Abastible">
+            </button>
         </div>
         <div class="grp">
             <button class="btn-cap active" onclick="setYear('2026', this)">2026</button>
@@ -165,16 +275,17 @@
         </div>
         
         <div class="search-bar" style="position:relative">
-            <i class="fas fa-microphone" style="color:var(--primary); cursor:pointer; margin-right:5px" onclick="toggleSearchDictation()" id="btn-search-mic"></i>
+            <i class="fas fa-microphone" style="color:var(--primary); cursor:pointer; margin-right:8px; font-size:1.1rem" onclick="toggleSearchDictation()" id="btn-search-mic"></i>
             <input type="text" placeholder="Buscar... (Usa '-' para excluir)" id="q-inp" onkeyup="if(event.key==='Enter'){doSearch(this.value, true)}else{doSearch(this.value, false)}">
         </div>
         
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
             <span class="chip-btn" onclick="quickFilter('Pendiente', this)">⏳ Pendientes</span>
             <span class="chip-btn" onclick="quickFilter('Entregado', this)">✅ Entregados</span>
-            <button class="btn-act btn-sec" id="btn-batch" onclick="exportSelected()" style="display:none; padding:8px"><i class="fas fa-file-excel"></i> Sel.</button>
-            <div class="icon-btn" onclick="exportToCSV()" title="Exportar Excel"><i class="fas fa-file-excel"></i></div>
-            <div class="icon-btn" onclick="exportPDFTable()" title="Exportar PDF" style="color:#ff1744; border-color:rgba(255,23,68,0.3)"><i class="fas fa-file-pdf"></i></div>
+            <button class="btn-act btn-sec" id="btn-batch-del" onclick="deleteSelected()" style="display:none; padding:8px 15px; height:38px; color:#ff1744; border-color:rgba(255,23,68,0.3)"><i class="fas fa-trash"></i> Sel.</button>
+            <button class="btn-act btn-sec" id="btn-batch" onclick="exportSelected()" style="display:none; padding:8px 15px; height:38px"><i class="fas fa-file-excel"></i> Sel.</button>
+            <div class="icon-btn" onclick="exportToCSV()" title="Exportar Excel" style="height:38px; width:38px; background:var(--bg-input)"><i class="fas fa-file-excel"></i></div>
+            <div class="icon-btn" onclick="exportPDFTable()" title="Exportar PDF" style="height:38px; width:38px; background:var(--bg-input); color:#ff1744; border-color:rgba(255,23,68,0.3)"><i class="fas fa-file-pdf"></i></div>
         </div>
     </div>
 
@@ -182,7 +293,7 @@
         <table id="v-pc" class="pc-only">
             <thead>
                 <tr>
-                    <th style="width:30px"><input type="checkbox" id="chk-all" onchange="toggleAllChk(this)"></th>
+                    <th style="width:40px; text-align:center"><input type="checkbox" id="chk-all" onchange="toggleAllChk(this)" style="cursor:pointer; width:16px; height:16px; accent-color:var(--primary)"></th>
                     <th onclick="setSort(0)">Fecha <i class="fas sort-icon" id="si-0"></i></th>
                     <th class="col-1" onclick="setSort(1)">Sede</th>
                     <th class="col-2" onclick="setSort(2)">Ficha</th>
@@ -206,8 +317,8 @@
     </main>
 
     <div class="footer">
-        <div><span id="pg-info">Cargando...</span> <span id="today-count" style="margin-left:10px; color:var(--primary); font-weight:700"></span></div>
-        <div style="display:flex; gap:10px">
+        <div><span id="pg-info">Cargando...</span> <span id="today-count" style="margin-left:15px; color:var(--primary); font-weight:800; font-size:0.95rem"></span></div>
+        <div style="display:flex; gap:12px">
             <button class="pg-btn" id="bp" onclick="mv(-1)"><i class="fas fa-chevron-left"></i></button>
             <button class="pg-btn" id="bn" onclick="mv(1)"><i class="fas fa-chevron-right"></i></button>
         </div>
@@ -215,16 +326,32 @@
 
     <div class="fab" id="fab" onclick="openFormById('new')" title="Nuevo Folio" style="display:none"><i class="fas fa-plus"></i></div>
 
+    <div class="modal" id="m-help" onclick="closeM('m-help')">
+        <div class="m-box" onclick="event.stopPropagation()">
+            <div class="m-head-m"><h3 style="margin:0; color:var(--primary); font-size:1.3rem"><i class="fas fa-book"></i> Manual de Usuario V31</h3><div class="icon-btn" onclick="closeM('m-help')"><i class="fas fa-times"></i></div></div>
+            <div class="m-body-form" style="padding-top:10px">
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-shield-alt"></i> 1. Acceso y General</h4><div class="help-item"><i class="fas fa-fingerprint"></i> <b>Recordar Sesión:</b> Marca la casilla al iniciar sesión para entrar automáticamente la próxima vez.</div><div class="help-item"><i class="fas fa-wifi"></i> <b>Modo Offline (Bandeja Inteligente):</b> Si pierdes internet, puedes seguir guardando folios. Se irán a una "Bandeja Local" y se sincronizarán solos al recuperar la señal.</div><div class="help-item"><i class="fas fa-adjust"></i> <b>Memoria de Tema:</b> El botón de Luna/Sol guarda tu preferencia para siempre en el dispositivo actual.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-search"></i> 2. Buscador y Filtros Profesionales</h4><div class="help-item"><i class="fas fa-microphone"></i> <b>Búsqueda por Voz:</b> Toca el ícono del micrófono en la barra de búsqueda y dicta el nombre o patente.</div><div class="help-item"><i class="fas fa-minus-circle"></i> <b>Filtro Negativo:</b> Escribe un guion <span class="help-tag">-</span> antes de una palabra para EXCLUIRLA. <i>(Ej: "-Pendiente" muestra todos los autos excepto los pendientes).</i></div><div class="help-item"><i class="fas fa-bolt"></i> <b>Búsqueda Rápida:</b> Presiona <i>"Enter"</i> en el buscador para buscar sin esperar.</div><div class="help-item"><i class="fas fa-tags"></i> <b>Píldoras Rápidas:</b> Toca los botones "⏳ Pendientes" o "✅ Entregados" bajo el buscador para filtrar al instante.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-columns"></i> 3. Vistas y Tablero</h4><div class="help-item"><i class="fas fa-table"></i> <b>Modo Kanban vs Tabla:</b> Toca el botón de columnas en la cabecera (arriba a la izquierda) para alternar entre la tabla clásica y un panel de tarjetas arrastrables por estado.</div><div class="help-item"><i class="fas fa-expand"></i> <b>Pantalla Completa:</b> Toca el ícono de las 4 flechas arriba a la derecha para usar la app como un software de escritorio y evitar distracciones.</div><div class="help-item"><i class="fas fa-sort-amount-up"></i> <b>Paginación y Scroll:</b> Al cambiar de página, la tabla te devuelve al inicio automáticamente bloqueando el scroll para evitar saltos molestos. Abajo verás el Total Histórico real.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-mouse-pointer"></i> 4. Menú Contextual (Clic Derecho / Tocar Fila)</h4><div class="help-item"><i class="fas fa-star"></i> <b>Fijar Arriba (Pin):</b> Ancla un vehículo a la parte superior de la lista sin importar su fecha. Ideal para los que siguen en el taller.</div><div class="help-item"><i class="fab fa-whatsapp"></i> <b>WhatsApp Rápido:</b> Abre un chat directo con el cliente sin agendar su número.</div><div class="help-item"><i class="fas fa-link"></i> <b>Link de Cobro:</b> Copia al portapapeles un mensaje formal de cobro listo para pegar en WhatsApp.</div><div class="help-item"><i class="fas fa-undo"></i> <b>Eliminación Segura (Undo):</b> Al borrar un folio, tienes 5 segundos para arrepentirte tocando "Deshacer" en la alerta inferior.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-edit"></i> 5. Formulario de Folios (Superpoderes)</h4><div class="help-item"><i class="fas fa-lock-open"></i> <b>Modo Candado:</b> Arriba a la derecha del formulario. Úsalo para bloquear la pantalla si solo vas a leer y no quieres borrar nada por error.</div><div class="help-item"><i class="fas fa-save"></i> <b>Borrador Automático:</b> Si se te cierra la ventana por error, al abrir "Nuevo Folio" se recuperará todo. Cierra tocando la parte oscura fuera del cuadro.</div><div class="help-item"><i class="fas fa-font"></i> <b>Auto-Mayúsculas y Autocompletado:</b> Nombres, Marcas y Comunas se formatean solos. Además, el sistema "aprende" de tu base de datos para sugerírtelas.</div><div class="help-item"><i class="fas fa-magic"></i> <b>Varita Mágica (Año):</b> Ingresa una Patente chilena válida, toca la varita y la IA estimará el año del auto. Si es menor a 2010, te lanzará una advertencia.</div><div class="help-item"><i class="fas fa-palette"></i> <b>Punto de Color:</b> Al escribir "Rojo, Blanco, Plata...", aparece un círculo con el color real para una confirmación visual rápida.</div><div class="help-item"><i class="fas fa-camera"></i> <b>Cámara Local:</b> Permite tomar una foto de recepción. <i>Nota: Se borra al recargar la app.</i></div><div class="help-item"><i class="fas fa-stopwatch"></i> <b>Cronómetro:</b> Registra el tiempo exacto que le toma al técnico realizar el trabajo (Play/Pause).</div><div class="help-item"><i class="fas fa-stamp"></i> <b>Auto-Sello de Estado:</b> Al tocar "Entregado" o "Pendiente" en las píldoras de diagnóstico, se añade automáticamente la fecha del día al texto.</div><div class="help-item"><i class="fas fa-signature"></i> <b>Firma Digital:</b> El cliente puede firmar con el dedo en la pantalla para validarlo en la Orden de Trabajo.</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-chart-line"></i> 6. Herramientas Extra y Exportación</h4><div class="help-item"><i class="fas fa-chart-pie"></i> <b>Dashboard:</b> Analiza la efectividad, suma el KM de la flota, y grafica el rendimiento de los técnicos.</div><div class="help-item"><i class="fas fa-gas-pump"></i> <b>Calculadora ROI GLP:</b> Calcula el ahorro mensual y le dice al cliente en cuántos meses recuperará su inversión.</div><div class="help-item"><i class="fas fa-file-excel"></i> <b>Selección Múltiple (Excel/Borrar):</b> Marca los cuadritos de la tabla para exportar o borrar masivamente y de manera rápida.</div><div class="help-item"><i class="fas fa-file-pdf"></i> <b>Exportador PDF:</b> Genera un reporte limpio de la tabla actual, listo para imprimir.</div><div class="help-item"><i class="fas fa-print"></i> <b>Impresión de OT y Garantía:</b> Genera la Orden de Trabajo o el Certificado de Garantía directamente desde el botón gris del formulario.</div><div class="help-item"><i class="fas fa-download"></i> <b>Respaldo JSON:</b> En configuración, descarga la base de datos completa de forma local por seguridad.</div></div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="m-form" onclick="closeM('m-form')">
         <div class="m-box" onclick="event.stopPropagation()">
             <div class="m-head-m">
                 <div style="display:flex; align-items:center; gap:10px">
-                    <h3 style="margin:0; color:var(--primary)" id="f-ttl">Registro</h3>
+                    <h3 style="margin:0; color:var(--text-main); font-size:1.4rem" id="f-ttl">Registro</h3>
                     <span id="save-ind" class="save-indicator"><i class="fas fa-check"></i> Borrador</span>
                 </div>
-                <div style="display:flex; align-items:center; gap:15px">
-                    <i class="fas fa-lock-open" id="btn-lock" onclick="toggleReadOnly()" style="cursor:pointer; font-size:1.1rem; color:var(--text-sec)" title="Modo Seguro"></i>
-                    <i class="fas fa-times" onclick="closeM('m-form')" style="cursor:pointer; font-size:1.2rem; color:var(--text-sec)"></i>
+                <div style="display:flex; align-items:center; gap:8px">
+                    <div class="icon-btn" onclick="toggleReadOnly()" title="Modo Seguro">
+                        <i class="fas fa-lock-open" id="btn-lock"></i>
+                    </div>
+                    <div class="icon-btn" onclick="closeM('m-form')" title="Cerrar"><i class="fas fa-times"></i></div>
                 </div>
             </div>
             
@@ -240,22 +367,15 @@
                 
                 <div class="tab-pane active" id="tab-1">
                     <div class="form-grid">
-                        <div class="inp-grp">
-                            <span class="inp-lbl">FECHA *</span>
-                            <input type="date" id="i_fec" class="inp" onchange="doSaveDraft()">
-                        </div>
+                        <div class="inp-grp"><span class="inp-lbl">FECHA *</span><input type="date" id="i_fec" class="inp" onchange="doSaveDraft()"></div>
                         <div class="inp-grp"><span class="inp-lbl">SEDE *</span><select id="i_sede" class="inp" onchange="doSaveDraft()"></select></div>
                         <div class="inp-grp"><span class="inp-lbl">FICHA</span><input type="text" id="i_fic" class="inp" onchange="doSaveDraft()"></div>
+                        
                         <div class="inp-grp" style="grid-column: span 2">
-                            <span class="inp-lbl">CLIENTE 
-                                <span style="display:flex; gap:5px; align-items:center">
-                                    <i class="fab fa-whatsapp" style="color:#25D366"></i> 
-                                    <span class="quick-wsp-btn" onclick="sendWspTpl('Su vehículo está listo para retiro.')">Listo</span>
-                                    <span class="quick-wsp-btn" onclick="sendWspTpl('Su presupuesto ha sido generado.')">Ppto</span>
-                                </span>
-                            </span>
+                            <span class="inp-lbl">CLIENTE</span>
                             <input type="text" id="i_cli" class="inp" onblur="toTitleCase(this)" onchange="doSaveDraft()">
                         </div>
+
                         <div class="inp-grp"><span class="inp-lbl">RUT</span><input type="text" id="i_rut" class="inp" oninput="formatRut(this)" onchange="doSaveDraft()"></div>
                         <div class="inp-grp"><span class="inp-lbl">CELULAR</span><input type="text" id="i_cel" class="inp" oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')" placeholder="+569..." onchange="doSaveDraft()"></div>
                         <div class="inp-grp" style="grid-column: span 2"><span class="inp-lbl">COMUNA</span><input type="text" id="i_com" class="inp" list="list-comunas" onblur="toTitleCase(this)" onchange="doSaveDraft()"></div>
@@ -265,8 +385,8 @@
                 <div class="tab-pane" id="tab-2">
                     <div class="form-grid">
                         <div class="inp-grp">
-                            <span class="inp-lbl">PATENTE * <i class="fas fa-magic" style="color:var(--primary); cursor:pointer" onclick="guessYear()" title="Estimar Año"></i></span>
-                            <input type="text" id="i_pat" class="inp" style="border-color:var(--primary); font-weight:700; text-transform:uppercase" oninput="formatPat(this)" onchange="doSaveDraft()">
+                            <span class="inp-lbl">PATENTE * <i class="fas fa-magic" style="color:var(--primary); cursor:pointer; font-size:1.1rem; transition:transform 0.3s" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onclick="guessYear()" title="Estimar Año"></i></span>
+                            <input type="text" id="i_pat" class="inp" style="border-color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:2px; font-size:1.1rem" oninput="formatPat(this)" onchange="doSaveDraft()">
                         </div>
                         <div class="inp-grp"><span class="inp-lbl">MARCA</span><input type="text" id="i_mar" class="inp" list="list-marcas" onblur="toTitleCase(this)" onchange="doSaveDraft()"></div>
                         <div class="inp-grp"><span class="inp-lbl">MODELO</span><input type="text" id="i_mod" class="inp" onblur="toTitleCase(this)" onchange="doSaveDraft()"></div>
@@ -274,18 +394,18 @@
                         <div class="inp-grp">
                             <span class="inp-lbl">AÑO</span>
                             <input type="number" id="i_ano" class="inp" onchange="doSaveDraft()">
-                            <div id="alert-old-car" style="background:rgba(255,234,0,0.1);border:1px solid var(--st-fetch);color:var(--st-fetch);padding:8px;border-radius:8px;font-size:0.75rem;margin-top:5px;display:none;align-items:center;gap:5px"><i class="fas fa-exclamation-triangle"></i> Año &lt; 2010. Sugerir revisión profunda.</div>
+                            <div id="alert-old-car" style="background:rgba(255,234,0,0.1);border:1px solid var(--st-fetch);color:var(--st-fetch);padding:10px;border-radius:8px;font-size:0.75rem;margin-top:8px;display:none;align-items:center;gap:8px;animation:fadeSlideUp 0.3s var(--ease)"><i class="fas fa-exclamation-triangle" style="font-size:1.1rem"></i> Año &lt; 2010. Sugerir revisión profunda.</div>
                         </div>
                         
                         <div class="inp-grp"><span class="inp-lbl">COLOR <span class="color-dot" id="c-dot"></span></span><input type="text" id="i_col" class="inp" onblur="toTitleCase(this)" oninput="updateColorDot(this.value)" onchange="doSaveDraft()"></div>
                         
-                        <div class="inp-grp"><span class="inp-lbl">KM</span><input type="number" id="i_km" class="inp" onchange="doSaveDraft()"></div>
+                        <div class="inp-grp"><span class="inp-lbl">KM</span><input type="number" id="i_km" class="inp" onchange="doSaveDraft()" style="font-family:monospace; font-weight:600"></div>
                         
-                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-hover); padding:10px; border-radius:8px; border:1px solid var(--border)">
+                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-hover); padding:15px; border-radius:12px; border:1px solid var(--border)">
                             <span class="inp-lbl">FOTO RECEPCIÓN (Modo Local)</span>
-                            <div style="display:flex; gap:10px; align-items:center">
-                                <label style="background:var(--primary); color:#000; padding:8px 15px; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:700"><i class="fas fa-camera"></i> Tomar <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleCam(this)"></label>
-                                <img id="cam-preview" src="" style="display:none; height:40px; border-radius:4px; border:1px solid var(--border)">
+                            <div style="display:flex; gap:15px; align-items:center; margin-top:5px">
+                                <label style="background:var(--primary); color:#000; padding:10px 20px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:800; transition:all 0.3s var(--ease); box-shadow:0 4px 10px var(--primary-dim)"><i class="fas fa-camera" style="margin-right:5px"></i> Tomar Foto <input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleCam(this)"></label>
+                                <img id="cam-preview" src="" style="display:none; height:50px; border-radius:6px; border:2px solid var(--primary); box-shadow:var(--shadow-sm)">
                             </div>
                         </div>
                     </div>
@@ -295,14 +415,14 @@
                     <div class="form-grid">
                         <div class="inp-grp" style="grid-column: span 2"><span class="inp-lbl">TÉCNICO *</span><select id="i_tec" class="inp" onchange="doSaveDraft()"></select></div>
                         
-                        <div class="inp-grp" style="grid-column: span 2; display:flex; flex-direction:row; align-items:center; gap:15px; background:var(--bg-input); border-radius:8px; padding:5px 15px; border:1px solid var(--border)">
-                            <div style="flex:1"><span class="inp-lbl" style="margin:0">TIEMPO REPARACIÓN</span><div class="timer-display" id="tt-disp">00:00:00</div></div>
-                            <button class="btn-act btn-sec" style="padding:8px; flex:0" id="btn-tt" onclick="toggleTimer()"><i class="fas fa-play"></i></button>
+                        <div class="inp-grp" style="grid-column: span 2; display:flex; flex-direction:row; align-items:center; gap:20px; background:var(--bg-input); border-radius:12px; padding:8px 20px; border:1px solid var(--border)">
+                            <div style="flex:1"><span class="inp-lbl" style="margin:0; font-size:0.7rem">TIEMPO REPARACIÓN</span><div class="timer-display" id="tt-disp">00:00:00</div></div>
+                            <button class="btn-act btn-sec" style="padding:12px; flex:0; width:50px; height:50px; border-radius:50%; border:2px solid var(--primary); color:var(--primary)" id="btn-tt" onclick="toggleTimer()"><i class="fas fa-play" style="margin-left:3px"></i></button>
                         </div>
                         
-                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border)">
-                            <span class="inp-lbl" style="margin-bottom:8px">INSPECCIÓN VISUAL</span>
-                            <div style="display:flex; gap:8px; flex-wrap:wrap">
+                        <div class="inp-grp" style="grid-column: span 3; background:var(--bg-input); padding:15px; border-radius:12px; border:1px solid var(--border)">
+                            <span class="inp-lbl" style="margin-bottom:12px">INSPECCIÓN VISUAL RÁPIDA</span>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap">
                                 <span class="chip-btn" onclick="addChip('i_dia', '🟢 Aceite OK')">🟢 Aceite OK</span>
                                 <span class="chip-btn" onclick="addChip('i_dia', '🔴 Sin Aceite')">🔴 Sin Aceite</span>
                                 <span class="chip-btn" onclick="addChip('i_dia', '🟢 Agua OK')">🟢 Agua OK</span>
@@ -311,10 +431,10 @@
                         </div>
 
                         <div class="inp-grp" style="grid-column: span 3">
-                            <span class="inp-lbl">DIAGNÓSTICO ESTADO <span id="dia-count" style="font-weight:normal; text-transform:none">0/300</span></span>
-                            <textarea id="i_dia" class="inp" rows="3" maxlength="300" oninput="document.getElementById('dia-count').innerText=this.value.length+'/300'; doSaveDraft()"></textarea>
-                            <i class="fas fa-microphone mic-btn" id="btn-mic" onclick="toggleDictation('i_dia')" title="Dictar"></i>
-                            <div>
+                            <span class="inp-lbl">DIAGNÓSTICO ESTADO <span id="dia-count" style="font-weight:normal; text-transform:none; font-family:monospace">0/300</span></span>
+                            <textarea id="i_dia" class="inp" rows="4" maxlength="300" oninput="document.getElementById('dia-count').innerText=this.value.length+'/300'; doSaveDraft()"></textarea>
+                            <i class="fas fa-microphone mic-btn" id="btn-mic" onclick="toggleDictation('i_dia')" title="Dictar por voz"></i>
+                            <div style="margin-top:10px">
                                 <span class="chip-btn" onclick="addChipWithDate('i_dia', '⏳ Pendiente')">⏳ Pendiente</span>
                                 <span class="chip-btn" onclick="addChipWithDate('i_dia', '🔍 En Revisión')">🔍 En Revisión</span>
                                 <span class="chip-btn" onclick="addChipWithDate('i_dia', '✅ Entregado')">✅ Entregado</span>
@@ -326,40 +446,40 @@
                 </div>
 
                 <div class="tab-pane" id="tab-4">
-                    <p style="font-size:0.85rem; color:var(--text-sec); margin-top:0">Firma del cliente para impresión de OT.</p>
-                    <div class="sig-container"><canvas id="sig-pad"></canvas><button class="sig-clear" onclick="clearSignature()"><i class="fas fa-eraser"></i></button></div>
+                    <p style="font-size:0.9rem; color:var(--text-sec); margin-top:0; font-weight:600">Firma del cliente para impresión de OT.</p>
+                    <div class="sig-container"><canvas id="sig-pad"></canvas><button class="sig-clear" onclick="clearSignature()"><i class="fas fa-eraser"></i> Borrar</button></div>
                 </div>
             </div>
             
             <div class="m-foot">
-                <button class="btn-act btn-sec" id="btn-print" onclick="printOT()" style="display:none; flex:0.2" title="Imprimir OT"><i class="fas fa-print"></i> OT</button>
-                <button class="btn-act btn-sec" id="btn-warr" onclick="printGarantia()" style="display:none; flex:0.2" title="Garantía"><i class="fas fa-certificate"></i></button>
-                <button class="btn-act" id="btn-s" onclick="save()"><i class="fas fa-save"></i> GUARDAR</button>
+                <button class="btn-act btn-sec" id="btn-print" onclick="printOT()" style="display:none; flex:0.3" title="Imprimir OT"><i class="fas fa-print"></i> Orden Trabajo</button>
+                <button class="btn-act btn-sec" id="btn-warr" onclick="printGarantia()" style="display:none; flex:0.3" title="Garantía"><i class="fas fa-certificate"></i> Garantía</button>
+                <button class="btn-act" id="btn-s" onclick="save()"><i class="fas fa-save"></i> GUARDAR REGISTRO</button>
             </div>
         </div>
     </div>
 
     <div class="modal" id="m-calc" onclick="closeM('m-calc')">
-        <div class="m-box" style="max-width:400px" onclick="event.stopPropagation()">
-            <div class="m-head-m"><h3 style="margin:0; color:var(--primary)"><i class="fas fa-gas-pump"></i> Retorno GLP</h3><i class="fas fa-times" onclick="closeM('m-calc')" style="cursor:pointer"></i></div>
-            <div style="padding:20px; overflow-y:auto">
-                <div class="inp-grp" style="margin-bottom:15px"><span class="inp-lbl">VALOR INSTALACIÓN ($)</span><input type="number" id="calc_val" class="inp" value="850000" oninput="calcAhorro()"></div>
-                <div class="inp-grp" style="margin-bottom:15px"><span class="inp-lbl">KM MENSUALES: <span id="v_km" style="color:var(--text-main)">1500</span></span><input type="range" id="calc_km" min="500" max="10000" step="100" value="1500" oninput="document.getElementById('v_km').innerText=this.value; calcAhorro()"></div>
-                <div class="inp-grp" style="margin-bottom:15px"><span class="inp-lbl">RENDIMIENTO (KM/L): <span id="v_rend" style="color:var(--text-main)">10</span></span><input type="range" id="calc_rend" min="4" max="25" step="0.5" value="10" oninput="document.getElementById('v_rend').innerText=this.value; calcAhorro()"></div>
-                <div style="background:var(--bg-input); padding:15px; border-radius:12px; text-align:center; border:1px solid var(--primary-dim)">
-                    <div style="font-size:0.8rem; color:var(--text-sec); font-weight:700">Ahorro Mensual Estimado</div>
-                    <div id="calc_res" style="font-size:2rem; font-weight:800; color:var(--primary)">$0</div>
-                    <div id="calc_roi" style="font-size:0.85rem; color:var(--st-fetch); margin-top:5px; font-weight:600">...</div>
+        <div class="m-box" style="max-width:420px" onclick="event.stopPropagation()">
+            <div class="m-head-m"><h3 style="margin:0; color:var(--text-main); font-size:1.3rem"><i class="fas fa-gas-pump" style="color:var(--primary)"></i> Retorno GLP</h3><div class="icon-btn" onclick="closeM('m-calc')"><i class="fas fa-times"></i></div></div>
+            <div style="padding:25px; overflow-y:auto">
+                <div class="inp-grp" style="margin-bottom:20px"><span class="inp-lbl">VALOR INSTALACIÓN ($)</span><input type="number" id="calc_val" class="inp" value="850000" oninput="calcAhorro()" style="font-size:1.2rem; font-weight:700"></div>
+                <div class="inp-grp" style="margin-bottom:20px"><span class="inp-lbl">KM MENSUALES: <span id="v_km" style="color:var(--text-main); font-size:1rem">1500</span></span><input type="range" id="calc_km" min="500" max="10000" step="100" value="1500" oninput="document.getElementById('v_km').innerText=this.value; calcAhorro()"></div>
+                <div class="inp-grp" style="margin-bottom:20px"><span class="inp-lbl">RENDIMIENTO (KM/L): <span id="v_rend" style="color:var(--text-main); font-size:1rem">10</span></span><input type="range" id="calc_rend" min="4" max="25" step="0.5" value="10" oninput="document.getElementById('v_rend').innerText=this.value; calcAhorro()"></div>
+                <div style="background:var(--bg-input); padding:20px; border-radius:16px; text-align:center; border:2px solid var(--primary-dim); box-shadow:0 10px 30px rgba(0,0,0,0.3)">
+                    <div style="font-size:0.85rem; color:var(--text-sec); font-weight:800; text-transform:uppercase; letter-spacing:1px">Ahorro Mensual Estimado</div>
+                    <div id="calc_res" style="font-size:2.8rem; font-weight:800; color:var(--primary); margin:10px 0; text-shadow:0 0 20px var(--primary-dim)">$0</div>
+                    <div id="calc_roi" style="font-size:0.95rem; color:var(--st-fetch); margin-top:5px; font-weight:700; background:rgba(255,234,0,0.1); padding:5px; border-radius:6px">...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="m-dash" onclick="closeM('m-dash')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0"><i class="fas fa-chart-pie" style="color:var(--primary)"></i> Dashboard</h3><i class="fas fa-times" onclick="closeM('m-dash')" style="cursor:pointer"></i></div><div style="padding:20px" id="dash-body"></div></div></div>
+    <div class="modal" id="m-dash" onclick="closeM('m-dash')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0; font-size:1.3rem"><i class="fas fa-chart-pie" style="color:var(--primary)"></i> Dashboard</h3><div class="icon-btn" onclick="closeM('m-dash')"><i class="fas fa-times"></i></div></div><div style="padding:25px" id="dash-body"></div></div></div>
     
-    <div class="modal" id="m-cfg" onclick="closeM('m-cfg')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0">Configuración</h3><i class="fas fa-times" onclick="closeM('m-cfg')" style="cursor:pointer"></i></div><div style="padding:20px"><div style="display:flex; gap:10px; margin-bottom:15px"><select id="c-cat" class="inp" style="flex:1"><option value="SEDE">SEDE</option><option value="TECNICO">TECNICO</option></select><input type="text" id="c-val" class="inp" placeholder="Nuevo valor..." style="flex:2"><button class="btn-act" style="width:60px" onclick="addCfg()">+</button></div><div id="cfg-list" style="max-height:250px; overflow:auto; border:1px solid var(--border); border-radius:8px; background:var(--bg-input)"></div><button class="btn-act btn-sec" style="margin-top:15px; width:100%" onclick="exportBackupJSON()"><i class="fas fa-download"></i> Respaldar JSON Local</button></div></div></div>
+    <div class="modal" id="m-cfg" onclick="closeM('m-cfg')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0; font-size:1.3rem"><i class="fas fa-cog" style="color:var(--text-sec)"></i> Configuración</h3><div class="icon-btn" onclick="closeM('m-cfg')"><i class="fas fa-times"></i></div></div><div style="padding:25px"><div style="display:flex; gap:12px; margin-bottom:20px"><select id="c-cat" class="inp" style="flex:1"><option value="SEDE">SEDE</option><option value="TECNICO">TECNICO</option></select><input type="text" id="c-val" class="inp" placeholder="Nuevo valor..." style="flex:2"><button class="btn-act" style="width:60px" onclick="addCfg()">+</button></div><div id="cfg-list" style="max-height:300px; overflow:auto; border:1px solid var(--border); border-radius:12px; background:var(--bg-input); padding:5px"></div><button class="btn-act btn-sec" style="margin-top:20px; width:100%" onclick="exportBackupJSON()"><i class="fas fa-download"></i> Respaldar Base (JSON)</button></div></div></div>
 
-    <div class="modal" id="m-usr" onclick="closeM('m-usr')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0">Usuarios</h3><i class="fas fa-times" onclick="closeM('m-usr')" style="cursor:pointer"></i></div><div style="padding:20px"><div style="background:var(--bg-input); padding:15px; border-radius:12px; border:1px solid var(--border); margin-bottom:15px"><input type="text" id="u-new" class="inp" placeholder="Usuario" style="margin-bottom:10px"><input type="text" id="p-new" class="inp" placeholder="Clave (Números)" style="margin-bottom:10px"><label style="font-size:0.85rem; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:5px"><input type="checkbox" id="adm-chk" style="accent-color:var(--primary)"> ADMIN TOTAL</label><button class="btn-act" style="margin-top:15px; width:100%" onclick="addUsr()">Crear Usuario</button></div><div id="usr-list" style="border:1px solid var(--border); border-radius:8px; overflow:hidden"></div></div></div></div>
+    <div class="modal" id="m-usr" onclick="closeM('m-usr')"><div class="m-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="m-head-m"><h3 style="margin:0; font-size:1.3rem"><i class="fas fa-users-cog" style="color:var(--primary)"></i> Usuarios</h3><div class="icon-btn" onclick="closeM('m-usr')"><i class="fas fa-times"></i></div></div><div style="padding:25px"><div style="background:var(--bg-input); padding:20px; border-radius:16px; border:1px solid var(--border); margin-bottom:20px"><input type="text" id="u-new" class="inp" placeholder="Usuario" style="margin-bottom:12px"><input type="text" id="p-new" class="inp" placeholder="Clave (Números)" style="margin-bottom:12px"><label style="font-size:0.9rem; color:var(--text-main); font-weight:700; display:flex; align-items:center; gap:8px"><input type="checkbox" id="adm-chk" style="accent-color:var(--primary); width:18px; height:18px"> ADMIN TOTAL</label><button class="btn-act" style="margin-top:20px; width:100%" onclick="addUsr()">Crear Usuario</button></div><div id="usr-list" style="border:1px solid var(--border); border-radius:12px; overflow:hidden"></div></div></div></div>
 
     <div id="print-area" style="display:none;"></div>
 
@@ -371,6 +491,7 @@
 
     // --- UTILIDADES GLOBALES ---
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
+    function openHelp() { document.getElementById('m-help').style.display = 'flex'; }
     if(localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) document.body.classList.add('light-mode');
     function toggleTheme() { document.body.classList.toggle('light-mode'); localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); }
     function toggleFullScreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err=>{}); document.getElementById('ic-fs').className='fas fa-compress'; } else { document.exitFullscreen(); document.getElementById('ic-fs').className='fas fa-expand'; } }
@@ -401,7 +522,6 @@
         if(activeReqs < 0) activeReqs = 0;
         let l = document.getElementById('loader');
         if(l) l.style.display = activeReqs > 0 ? 'block' : 'none'; 
-        
         let m = document.querySelector('main');
         if(m) { m.style.overflowY = activeReqs > 0 ? 'hidden' : 'auto'; m.style.overflowX = activeReqs > 0 ? 'hidden' : 'auto'; }
     }
@@ -448,7 +568,11 @@
                 setTimeout(() => {
                     document.getElementById('login-scr').classList.add('login-exit'); document.body.classList.add('app-ready');
                     setTimeout(() => {
-                        document.getElementById('login-scr').style.display='none'; document.getElementById('u-name').innerText = f.user;
+                        document.getElementById('login-scr').style.display='none'; 
+                        
+                        let userNameDisplay = String(f.user).split(' ')[0];
+                        let uSpan = document.getElementById('u-name');
+                        if(uSpan) uSpan.innerText = userNameDisplay;
                         
                         if(f.perms === 'ALL' || (typeof f.perms === 'string' && f.perms.includes('ADD'))) { document.getElementById('fab').style.display = 'grid'; }
                         if(f.perms === 'ALL') document.getElementById('btn-adm').style.display='grid';
@@ -513,7 +637,7 @@
         return {b: '<span class="badge b-red"></span>', s: 'pend'};
     }
 
-    // --- MENU CONTEXTUAL ---
+    // --- MENU CONTEXTUAL ANTI-ROTURAS ---
     function showCtx(e, id) {
         e.preventDefault(); e.stopPropagation();
         document.getElementById('context-menu').setAttribute('data-target-id', id);
@@ -548,6 +672,22 @@
         } catch(e) { console.error("Error abriendo form:", e); showToast("Error al abrir el folio."); }
     };
 
+    // DELEGACION MODO TABLA
+    document.addEventListener('click', (e) => { 
+        let row = e.target.closest('.animate-row');
+        if(row && row.hasAttribute('data-id') && !e.target.closest('.row-chk') && !e.target.closest('td:first-child')) {
+            let id = row.getAttribute('data-id'); 
+            window.openFormById(id);
+        }
+    });
+    document.addEventListener('contextmenu', (e) => {
+        let row = e.target.closest('.animate-row');
+        if(row && row.hasAttribute('data-id')) {
+            e.preventDefault(); let id = row.getAttribute('data-id');
+            showCtx(e, id);
+        }
+    });
+
     function render() {
         try {
             let pc=document.getElementById('tb-pc'), mob=document.getElementById('v-mob'), kP=document.getElementById('k-pend'), kR=document.getElementById('k-rev'), kO=document.getElementById('k-ok');
@@ -572,28 +712,25 @@
                 
                 if(S.viewMode === 'table') {
                     if(window.innerWidth >= 1024) {
-                        let tr=document.createElement('tr'); tr.className = `animate-row ${isP?'pinned':''}`; 
-                        tr.setAttribute('onclick', `openFormById('${id}')`);
-                        tr.setAttribute('oncontextmenu', `showCtx(event, '${id}')`);
-                        tr.innerHTML=`<td onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" value="${id}" onclick="event.stopPropagation()"></td>
-                        <td>${isP?'<i class="fas fa-star" style="color:var(--primary); font-size:0.6rem"></i> ':''}${hl(d)}</td><td class="col-1">${hl(r[1])}</td><td class="col-2">${hl(r[2])}</td><td class="col-3" style="font-weight:600">${hl(r[3])}</td><td style="color:var(--primary);font-family:monospace;font-weight:700">${hl(r[9])}</td><td class="col-5">${hl(r[7])} ${hl(r[8])}</td><td class="col-6" style="color:var(--text-sec);font-size:0.85rem">${hl(r[13])}</td><td class="col-7 td-diag" title="${r[14]}">${stat.b}${hl(r[14])}</td>`;
+                        let tr=document.createElement('tr'); tr.className = `animate-row ${isP?'pinned':''}`; tr.setAttribute('data-id', id);
+                        // ALINEACION CHECKBOX REPARADA (td width:40px; text-align:center)
+                        tr.innerHTML=`<td style="width:40px; text-align:center" onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" value="${id}" onclick="event.stopPropagation()" style="cursor:pointer; width:16px; height:16px; accent-color:var(--primary)"></td>
+                        <td>${isP?'<i class="fas fa-star" style="color:var(--primary); font-size:0.7rem"></i> ':''}${hl(d)}</td><td class="col-1">${hl(r[1])}</td><td class="col-2">${hl(r[2])}</td><td class="col-3" style="font-weight:700">${hl(r[3])}</td><td style="color:var(--primary);font-family:monospace;font-weight:800">${hl(r[9])}</td><td class="col-5">${hl(r[7])} ${hl(r[8])}</td><td class="col-6" style="color:var(--text-sec);font-size:0.85rem">${hl(r[13])}</td><td class="col-7 td-diag" title="${r[14]}">${stat.b}${hl(r[14])}</td>`;
                         pc.appendChild(tr);
                     } else if(i < 15) {
-                        let c=document.createElement('div'); c.className=`m-card animate-row ${isP?'pinned':''}`; 
-                        c.setAttribute('onclick', `openFormById('${id}')`);
-                        c.setAttribute('oncontextmenu', `showCtx(event, '${id}')`);
-                        c.innerHTML=`<div class="m-head"><span class="m-pat">${isP?'<i class="fas fa-star" style="font-size:0.8rem"></i> ':''}${hl(r[9])}</span><small>${hl(d)}</small></div><div style="font-weight:600; margin-bottom:5px;">${hl(r[3])}</div><div style="font-size:0.85rem;color:var(--text-sec);">${stat.b}${hl(r[14])}</div>`;
+                        let c=document.createElement('div'); c.className=`m-card animate-row ${isP?'pinned':''}`; c.setAttribute('data-id', id);
+                        c.innerHTML=`<div class="m-head"><span class="m-pat">${isP?'<i class="fas fa-star" style="font-size:0.9rem"></i> ':''}${hl(r[9])}</span><small style="font-weight:600">${hl(d)}</small></div><div style="font-weight:700; margin-bottom:6px; font-size:1.05rem">${hl(r[3])}</div><div style="font-size:0.9rem;color:var(--text-sec);">${stat.b}${hl(r[14])}</div>`;
                         mob.appendChild(c);
                     }
                 } else {
-                    let kCard = `<div class="kb-card animate-row ${isP?'pinned':''}" onclick="openFormById('${id}')" oncontextmenu="showCtx(event, '${id}')"><div style="display:flex; justify-content:space-between; margin-bottom:5px"><span style="font-family:monospace; font-weight:700; color:var(--primary)">${hl(r[9])}</span><span style="font-size:0.7rem; color:var(--text-sec)">${hl(d)}</span></div><div style="font-weight:600; font-size:0.9rem">${hl(r[3])}</div><div style="font-size:0.8rem; color:var(--text-sec); margin-top:5px">${hl(r[7])} ${hl(r[8])}</div><div style="font-size:0.75rem; margin-top:5px; padding-top:5px; border-top:1px solid var(--border)">${hl(r[14])}</div></div>`;
+                    let kCard = `<div class="kb-card animate-row ${isP?'pinned':''}" data-id="${id}"><div style="display:flex; justify-content:space-between; margin-bottom:5px"><span style="font-family:monospace; font-weight:800; color:var(--primary)">${hl(r[9])}</span><span style="font-size:0.75rem; font-weight:600; color:var(--text-sec)">${hl(d)}</span></div><div style="font-weight:700; font-size:0.95rem">${hl(r[3])}</div><div style="font-size:0.85rem; color:var(--text-sec); margin-top:5px">${hl(r[7])} ${hl(r[8])}</div><div style="font-size:0.8rem; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); font-weight:600">${hl(r[14])}</div></div>`;
                     if(stat.s === 'pend') { kP.innerHTML += kCard; kpC++; } else if(stat.s === 'rev') { kR.innerHTML += kCard; krC++; } else { kO.innerHTML += kCard; koC++; }
                 }
             });
             
             document.getElementById('k-c1').innerText = kpC; document.getElementById('k-c2').innerText = krC; document.getElementById('k-c3').innerText = koC;
             
-            let totTxt = S.totalHist ? ` | Total Folios: ${S.totalHist}` : '';
+            let totTxt = S.totalHist ? ` | Total Histórico: ${S.totalHist}` : '';
             document.getElementById('pg-info').innerText = `Página ${S.page}${totTxt}`;
             
             document.getElementById('bp').disabled=S.page===1; document.getElementById('bn').disabled=S.data.length<25;
@@ -611,11 +748,31 @@
     }
     
     function switchTab(idx) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); let btn = document.getElementById('tb-'+idx); if(btn) btn.classList.add('active'); document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); document.getElementById('tab-'+idx).classList.add('active'); }
-    function toggleReadOnly() { let isLocked = document.getElementById('btn-lock').classList.contains('fa-lock'); document.getElementById('btn-lock').className = isLocked ? 'fas fa-lock-open' : 'fas fa-lock'; document.getElementById('btn-lock').style.color = isLocked ? 'var(--text-sec)' : 'var(--st-err)'; document.querySelectorAll('.m-body-form .inp, .chip-btn').forEach(el => { el.disabled = !isLocked; if(!isLocked) el.style.pointerEvents='none'; else el.style.pointerEvents='auto'; }); document.getElementById('btn-s').style.display = isLocked ? 'flex' : 'none'; showToast(isLocked ? "Edición habilitada" : "Modo Seguro Activo"); }
+    
+    // VISUAL DE LECTURA BLOQUEADA CORREGIDA (SOLO OPACIDAD)
+    function toggleReadOnly() { 
+        let icon = document.getElementById('btn-lock');
+        let isLocked = icon.classList.contains('fa-lock'); 
+        
+        icon.className = isLocked ? 'fas fa-lock-open' : 'fas fa-lock'; 
+        icon.parentElement.style.color = isLocked ? 'var(--text-sec)' : 'var(--st-err)'; 
+        
+        document.querySelectorAll('.m-body-form .inp, .chip-btn').forEach(el => { 
+            el.disabled = !isLocked; 
+            if(!isLocked) {
+                el.style.opacity = '0.5';
+                el.style.pointerEvents = 'none';
+            } else {
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            }
+        }); 
+        document.getElementById('btn-s').style.display = isLocked ? 'flex' : 'none'; 
+        showToast(isLocked ? "Edición habilitada" : "Modo Seguro Activo"); 
+    }
 
     function updateColorDot(val) { let v = (val||'').toLowerCase(); let c = 'transparent'; if(v.includes('rojo')) c = '#ff1744'; else if(v.includes('azul')) c = '#2979ff'; else if(v.includes('blanco')) c = '#ffffff'; else if(v.includes('negro')) c = '#000000'; else if(v.includes('gris')||v.includes('plata')) c = '#9e9e9e'; else if(v.includes('verde')) c = '#00e676'; let dot=document.getElementById('c-dot'); if(dot) dot.style.background = c; }
 
-    // --- FORMULARIO REPARADO ---
     function form(d=null){
         try {
             let isEd=!!d; document.getElementById('f-ttl').innerText=isEd?'Editar Folio':'Nuevo Folio';
@@ -625,7 +782,7 @@
             let bw = document.getElementById('btn-warr'); if(bw) bw.style.display=isEd?'flex':'none';
             
             switchTab(1); if(typeof clearSignature==='function') clearSignature(); 
-            let bl = document.getElementById('btn-lock'); if(bl && bl.classList.contains('fa-lock')) toggleReadOnly();
+            let iconL = document.getElementById('btn-lock'); if(iconL && iconL.classList.contains('fa-lock')) toggleReadOnly();
             
             let fill = (id, cat) => { let el=document.getElementById(id); if(!el)return; let opts = S.lists.filter(x=>x.cat===cat).map(x=>`<option value="${x.val}">${x.val}</option>`).join(''); el.innerHTML = opts || '<option>Sin opciones</option>'; };
             fill('i_sede','SEDE'); fill('i_tec','TECNICO');
@@ -670,7 +827,7 @@
     function sendWspTpl(msg) { let c=document.getElementById('i_cel'); if(!c||!c.value) return showToast("Falta el celular"); let cCel = c.value.toString().replace(/\s+/g,''); cCel = cCel.startsWith('+') ? cCel : '+569' + cCel.slice(-8); let cl=document.getElementById('i_cli'); window.open(`https://wa.me/${cCel.replace('+','')}?text=${encodeURIComponent('Hola '+(cl?cl.value:'')+', JM Autogas informa: '+msg)}`, '_blank'); }
 
     let tInterval;
-    function updateTimerUI(id) { clearInterval(tInterval); let st = localStorage.getItem('tt_start_'+id); let btn = document.getElementById('btn-tt'); if(!btn)return; if(st) { btn.innerHTML = '<i class="fas fa-pause"></i>'; btn.style.background = 'var(--st-fetch)'; btn.style.color = '#000'; tInterval = setInterval(()=>drawTime(id), 1000); } else { btn.innerHTML = '<i class="fas fa-play"></i>'; btn.style.background = 'var(--bg-input)'; btn.style.color = 'var(--text-main)'; drawTime(id); } }
+    function updateTimerUI(id) { clearInterval(tInterval); let st = localStorage.getItem('tt_start_'+id); let btn = document.getElementById('btn-tt'); if(!btn)return; if(st) { btn.innerHTML = '<i class="fas fa-pause"></i>'; btn.style.color = '#ff1744'; btn.style.borderColor = '#ff1744'; tInterval = setInterval(()=>drawTime(id), 1000); } else { btn.innerHTML = '<i class="fas fa-play" style="margin-left:3px"></i>'; btn.style.color = 'var(--primary)'; btn.style.borderColor = 'var(--primary)'; drawTime(id); } }
     function drawTime(id) { let acc = parseInt(localStorage.getItem('tt_acc_'+id) || 0); let st = localStorage.getItem('tt_start_'+id); if(st) acc += Math.floor((Date.now() - parseInt(st))/1000); let h = String(Math.floor(acc/3600)).padStart(2,'0'), m = String(Math.floor((acc%3600)/60)).padStart(2,'0'), s = String(acc%60).padStart(2,'0'); let td=document.getElementById('tt-disp'); if(td) td.innerText = `${h}:${m}:${s}`; }
     function toggleTimer() { let f=document.getElementById('f-id'); let id = f?f.value||'new':'new'; let st = localStorage.getItem('tt_start_'+id); if(st) { let acc = parseInt(localStorage.getItem('tt_acc_'+id) || 0) + Math.floor((Date.now() - parseInt(st))/1000); localStorage.setItem('tt_acc_'+id, acc); localStorage.removeItem('tt_start_'+id); } else { localStorage.setItem('tt_start_'+id, Date.now()); } updateTimerUI(id); }
 
@@ -695,7 +852,7 @@
         let iFec = document.getElementById('i_fec'), iPat = document.getElementById('i_pat');
         if(!iFec || !iPat || !iFec.value || !iPat.value) {
             if(iFec && !iFec.value) { iFec.style.borderColor = 'var(--st-err)'; setTimeout(()=>iFec.style.borderColor='var(--border)', 2000); }
-            if(iPat && !iPat.value) { iPat.style.borderColor = 'var(--st-err)'; setTimeout(()=>iPat.style.borderColor='var(--primary)', 2000); }
+            if(iPat && !iPat.value) { iPat.style.borderColor = 'var(--st-err)'; setTimeout(()=>iPat.style.borderColor='var(--border)', 2000); }
             return showToast("Falta Fecha o Patente");
         }
         
@@ -723,10 +880,11 @@
             console.error(e);
             showToast("Error de conexión. Chequea el botón de Sincronización."); 
         } finally { 
-            if(b) {b.disabled=false; b.innerHTML='<i class="fas fa-save"></i> GUARDAR';} 
+            if(b) {b.disabled=false; b.innerHTML='<i class="fas fa-save"></i> GUARDAR REGISTRO';} 
         }
     }
 
+    // ELIMINAR MASIVO CON CONFIRMACION
     let deleteTimers = {};
     function confirmDelete(id) {
         if(!S.user || (S.user.perms !== 'ALL' && !S.user.perms.includes('DEL'))) return showToast("Sin permisos para eliminar.");
@@ -736,26 +894,79 @@
     }
     function cancelUndo(id, toastEl) { if(deleteTimers[id]) { clearTimeout(deleteTimers[id]); delete deleteTimers[id]; } toastEl.remove(); showToast("Cancelado"); load(); }
 
-    function toggleAllChk(chk) { document.querySelectorAll('.row-chk').forEach(c => c.checked = chk.checked); let bb=document.getElementById('btn-batch'); if(bb) bb.style.display = chk.checked ? 'block' : 'none'; }
-    document.addEventListener('change', (e) => { if(e.target.classList.contains('row-chk')) { let any = document.querySelector('.row-chk:checked'); let bb=document.getElementById('btn-batch'); if(bb) bb.style.display = any ? 'block' : 'none'; } });
+    async function deleteSelected() {
+        let sel = Array.from(document.querySelectorAll('.row-chk:checked')).map(c => c.value);
+        if(sel.length === 0) return;
+        
+        if(!S.user || (S.user.perms !== 'ALL' && !S.user.perms.includes('DEL'))) return showToast("Sin permisos para eliminar.");
+
+        let confirmacion = confirm(`⚠️ ADVERTENCIA CRÍTICA ⚠️\n\nEstás a punto de ELIMINAR PERMANENTEMENTE ${sel.length} registro(s).\nEsta acción NO se puede deshacer.\n\n¿Estás absolutamente seguro de continuar?`);
+        if(!confirmacion) return;
+
+        ld(true); st('fetch');
+        try {
+            for(let id of sel) {
+                await apiCall({}, new URLSearchParams({sheetName:(S.cat==='TALLER'?'Folios ':'ABASTIBLE ')+S.year, action:'DELETE', rowId:id}));
+            }
+            showToast(`✅ ${sel.length} registros eliminados.`);
+            let chkAll = document.getElementById('chk-all'); if(chkAll) chkAll.checked = false;
+            document.getElementById('btn-batch').style.display = 'none';
+            document.getElementById('btn-batch-del').style.display = 'none';
+            load();
+        } catch(e) {
+            showToast("Error al eliminar algunos registros.");
+            ld(false);
+        }
+    }
+
+    function toggleAllChk(chk) { document.querySelectorAll('.row-chk').forEach(c => c.checked = chk.checked); let bb=document.getElementById('btn-batch'); if(bb) bb.style.display = chk.checked ? 'block' : 'none'; let bd=document.getElementById('btn-batch-del'); if(bd) bd.style.display = chk.checked ? 'block' : 'none'; }
+    document.addEventListener('change', (e) => { if(e.target.classList.contains('row-chk')) { let any = document.querySelector('.row-chk:checked'); let bb=document.getElementById('btn-batch'); if(bb) bb.style.display = any ? 'block' : 'none'; let bd=document.getElementById('btn-batch-del'); if(bd) bd.style.display = any ? 'block' : 'none'; } });
+    
     function exportSelected() { let sel = Array.from(document.querySelectorAll('.row-chk:checked')).map(c => c.value); if(sel.length === 0) return; let fd = S.data.filter(r => sel.includes(String(r[r.length-1]))); exportCSVRaw(fd); }
     function exportToCSV() { let fd = S.data; if(S.sedeFilter !== 'Todas') fd = fd.filter(r => r[1] && r[1].toUpperCase() === S.sedeFilter.toUpperCase()); exportCSVRaw(fd); }
     function exportCSVRaw(dataArr) { let csv = "Fecha,Sede,Ficha,Cliente,RUT,Celular,Comuna,Marca,Modelo,Patente,Color,KM,Año,Coord,Diagnostico,Tecnico,Materiales\n"; dataArr.forEach(r => { let row = r.slice(0, 17).map(c => `"${(c||'').toString().replace(/"/g, '""')}"`).join(','); csv += row + "\n"; }); let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); let link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Reporte_${new Date().getTime()}.csv`; link.click(); }
-    function exportPDFTable() { let area = document.getElementById('print-area'); if(!area)return; let html = `<div class="pr-head"><h2>REPORTE VISTA - JM AUTOGAS</h2><p>Sede: ${S.sedeFilter} | Año: ${S.year}</p></div><table style="width:100%; border-collapse:collapse; font-size:0.8rem" border="1"><tr><th>Fecha</th><th>Ficha</th><th>Cliente</th><th>Patente</th><th>Vehículo</th><th>Diagnóstico</th></tr>`; let fd = S.data; if(S.sedeFilter !== 'Todas') fd = fd.filter(r => r[1] && r[1].toUpperCase() === S.sedeFilter.toUpperCase()); fd.forEach(r => { let d=r[0]?r[0].split('T')[0]:'-'; html += `<tr><td style="padding:4px">${d}</td><td style="padding:4px">${r[2]||'-'}</td><td style="padding:4px">${r[3]||'-'}</td><td style="padding:4px">${r[9]||'-'}</td><td style="padding:4px">${r[7]||''} ${r[8]||''}</td><td style="padding:4px">${r[14]||'-'}</td></tr>`; }); html += `</table>`; area.innerHTML = html; window.print(); }
+    
+    // --- IMPRESION DE TABLA PDF CORREGIDA ---
+    function exportPDFTable() { 
+        let area = document.getElementById('print-area'); if(!area)return; 
+        let html = `<div class="pr-head"><h2>REPORTE DE FLOTA - JM AUTOGAS</h2><p>Sede: ${S.sedeFilter} | Año: ${S.year}</p></div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:20px;">
+            <tr style="background:#eee;">
+                <th style="padding:6px; border:1px solid #000;">Fecha</th>
+                <th style="padding:6px; border:1px solid #000;">Ficha</th>
+                <th style="padding:6px; border:1px solid #000;">Cliente</th>
+                <th style="padding:6px; border:1px solid #000;">Patente</th>
+                <th style="padding:6px; border:1px solid #000;">Vehículo</th>
+                <th style="padding:6px; border:1px solid #000;">Diagnóstico</th>
+            </tr>`; 
+        let fd = S.data; if(S.sedeFilter !== 'Todas') fd = fd.filter(r => r[1] && r[1].toUpperCase() === S.sedeFilter.toUpperCase()); 
+        fd.forEach(r => { 
+            let d=r[0]?r[0].split('T')[0]:'-'; 
+            html += `<tr>
+                <td style="padding:6px; border:1px solid #000;">${d}</td>
+                <td style="padding:6px; border:1px solid #000;">${r[2]||'-'}</td>
+                <td style="padding:6px; border:1px solid #000;">${r[3]||'-'}</td>
+                <td style="padding:6px; border:1px solid #000;">${r[9]||'-'}</td>
+                <td style="padding:6px; border:1px solid #000;">${r[7]||''} ${r[8]||''}</td>
+                <td style="padding:6px; border:1px solid #000;">${r[14]||'-'}</td>
+            </tr>`; 
+        }); 
+        html += `</table>`; area.innerHTML = html; window.print(); 
+    }
     
     function printOT() { let sigData = canvas?canvas.toDataURL():''; let area = document.getElementById('print-area'); if(!area)return; let iFic=document.getElementById('i_fic'), iSede=document.getElementById('i_sede'), iFec=document.getElementById('i_fec'), iCli=document.getElementById('i_cli'), iMar=document.getElementById('i_mar'), iMod=document.getElementById('i_mod'), iDia=document.getElementById('i_dia'); area.innerHTML = `<div class="pr-head"><h1 style="margin:0">ORDEN DE TRABAJO - JM AUTOGAS</h1><div style="font-size:0.8rem; margin-top:5px">Ficha: <b>${iFic?iFic.value||'-':'-'}</b> | Sede: ${iSede?iSede.value:'-'} | Fecha: ${iFec?iFec.value:'-'}</div></div><div class="pr-grid"><div class="pr-box"><div class="pr-lbl">Cliente</div><div class="pr-val">${iCli?iCli.value||'-':'-'}</div></div><div class="pr-box"><div class="pr-lbl">Vehículo</div><div class="pr-val">${iMar?iMar.value:''} ${iMod?iMod.value:''}</div></div></div><div class="pr-box" style="margin-bottom:10px; min-height:80px"><div class="pr-lbl">Diagnóstico</div><div class="pr-val" style="font-weight:normal; margin-top:5px">${iDia?iDia.value||'-':'-'}</div></div><div class="pr-sign"><img src="${sigData}" style="${(ctx&&ctx.getImageData(0,0,canvas.width,canvas.height).data.some(c=>c!==0)) ? '':'display:none'}">Firma Cliente</div>`; window.print(); }
     function printGarantia() { let area = document.getElementById('print-area'); if(!area)return; let iSede=document.getElementById('i_sede'), iCli=document.getElementById('i_cli'), iMar=document.getElementById('i_mar'), iMod=document.getElementById('i_mod'), iPat=document.getElementById('i_pat'), iMat=document.getElementById('i_mat'), iFec=document.getElementById('i_fec'), iTec=document.getElementById('i_tec'); area.innerHTML = `<div class="pr-head"><h1 style="margin:0">CERTIFICADO DE GARANTÍA GLP</h1><div style="font-size:0.8rem; margin-top:5px">JM AUTOGAS | Sede: ${iSede?iSede.value:'-'}</div></div><div class="pr-grid"><div class="pr-box"><div class="pr-lbl">Propietario</div><div class="pr-val">${iCli?iCli.value||'-':'-'}</div></div><div class="pr-box"><div class="pr-lbl">Vehículo</div><div class="pr-val">${iMar?iMar.value:''} ${iMod?iMod.value:''} Patente: ${iPat?iPat.value:''}</div></div></div><div class="pr-warr"><h3>CONDICIONES DE GARANTÍA</h3><p>1. El sistema de conversión a GLP instalado cuenta con garantía legal sobre los componentes de la marca <b>${iMat?iMat.value||'__________':''}</b>.</p><p>2. Esta garantía es válida solo si se realizan las mantenciones preventivas cada 10.000 KM en nuestra red de talleres JM Autogas.</p><p>3. Fecha de Instalación: <b>${iFec?iFec.value:'-'}</b>. Técnico: <b>${iTec?iTec.value:'-'}</b>.</p></div><div class="pr-sign">Timbre y Firma Taller</div>`; window.print(); }
 
-    function openDash() { let fd = S.data; if(S.sedeFilter !== 'Todas') fd = fd.filter(r => r[1] && r[1].toUpperCase() === S.sedeFilter.toUpperCase()); let tecs = {}; let kmTotal = 0; let entregados = 0; fd.forEach(r => { let t = r[15]; if(t) tecs[t] = (tecs[t]||0)+1; kmTotal += parseInt(r[11]) || 0; if(r[14] && r[14].toLowerCase().includes('entregado')) entregados++; }); let total = fd.length; let efectividad = total > 0 ? Math.round((entregados/total)*100) : 0; let html = ` <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px"> <div style="background:var(--bg-input); padding:15px; border-radius:10px; text-align:center; border:1px solid var(--border)"> <div style="font-size:2rem; font-weight:800; color:var(--primary)">${total}</div><div style="font-size:0.75rem; color:var(--text-sec)">AUTOS VISTA</div> </div> <div style="background:var(--bg-input); padding:15px; border-radius:10px; text-align:center; border:1px solid ${efectividad > 50 ? 'var(--primary)' : 'var(--st-fetch)'}"> <div style="font-size:2rem; font-weight:800; color:${efectividad > 50 ? 'var(--primary)' : 'var(--st-fetch)'}">${efectividad}%</div><div style="font-size:0.75rem; color:var(--text-sec)">EFECTIVIDAD</div> </div> </div> <div style="font-size:0.85rem; color:var(--text-sec); margin-bottom:15px; text-align:center">KM Flota: <b style="color:var(--text-main)">${kmTotal.toLocaleString('es-CL')} km</b></div> <div style="font-size:0.8rem; font-weight:700; color:var(--text-sec); text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:5px">Rendimiento</div> `; Object.keys(tecs).sort((a,b)=>tecs[b]-tecs[a]).slice(0,5).forEach(t => { let pct = Math.round((tecs[t] / total) * 100); html += `<div class="stat-row"><span>${t}</span><span>${tecs[t]} (${pct}%)</span></div><div class="bar-wrap"><div class="bar-fill" style="width:0%" data-w="${pct}%"></div></div>`; }); let db=document.getElementById('dash-body'); if(db) db.innerHTML = html; let md=document.getElementById('m-dash'); if(md) md.style.display = 'flex'; setTimeout(() => { document.querySelectorAll('.bar-fill').forEach(b => b.style.width = b.getAttribute('data-w')); }, 100); }
+    function openDash() { let fd = S.data; if(S.sedeFilter !== 'Todas') fd = fd.filter(r => r[1] && r[1].toUpperCase() === S.sedeFilter.toUpperCase()); let tecs = {}; let kmTotal = 0; let entregados = 0; fd.forEach(r => { let t = r[15]; if(t) tecs[t] = (tecs[t]||0)+1; kmTotal += parseInt(r[11]) || 0; if(r[14] && r[14].toLowerCase().includes('entregado')) entregados++; }); let total = fd.length; let efectividad = total > 0 ? Math.round((entregados/total)*100) : 0; let html = ` <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px"> <div style="background:var(--bg-input); padding:20px; border-radius:16px; text-align:center; border:1px solid var(--border); box-shadow:inset 0 2px 5px rgba(0,0,0,0.1)"> <div style="font-size:2.5rem; font-weight:800; color:var(--primary)">${total}</div><div style="font-size:0.8rem; color:var(--text-sec); font-weight:700">AUTOS VISTA</div> </div> <div style="background:var(--bg-input); padding:20px; border-radius:16px; text-align:center; border:1px solid ${efectividad > 50 ? 'var(--primary)' : 'var(--st-fetch)'}; box-shadow:inset 0 2px 5px rgba(0,0,0,0.1)"> <div style="font-size:2.5rem; font-weight:800; color:${efectividad > 50 ? 'var(--primary)' : 'var(--st-fetch)'}">${efectividad}%</div><div style="font-size:0.8rem; color:var(--text-sec); font-weight:700">EFECTIVIDAD</div> </div> </div> <div style="font-size:0.9rem; color:var(--text-main); margin-bottom:25px; text-align:center; background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--border)">KM Flota Total: <b style="color:var(--primary); font-family:monospace; font-size:1.1rem">${kmTotal.toLocaleString('es-CL')} km</b></div> <div style="font-size:0.85rem; font-weight:800; color:var(--text-sec); text-transform:uppercase; border-bottom:2px solid var(--border); padding-bottom:8px">Rendimiento Técnicos</div> `; Object.keys(tecs).sort((a,b)=>tecs[b]-tecs[a]).slice(0,5).forEach(t => { let pct = Math.round((tecs[t] / total) * 100); html += `<div class="stat-row" style="margin-top:15px; font-weight:600"><span>${t}</span><span>${tecs[t]} (${pct}%)</span></div><div class="bar-wrap" style="height:10px"><div class="bar-fill" style="width:0%; box-shadow:0 0 10px var(--primary-dim)" data-w="${pct}%"></div></div>`; }); let db=document.getElementById('dash-body'); if(db) db.innerHTML = html; let md=document.getElementById('m-dash'); if(md) md.style.display = 'flex'; setTimeout(() => { document.querySelectorAll('.bar-fill').forEach(b => b.style.width = b.getAttribute('data-w')); }, 100); }
     
     function openCalc() { let mc=document.getElementById('m-calc'); if(mc) mc.style.display='flex'; calcAhorro(); }
     function calcAhorro() { let cKm=document.getElementById('calc_km'), cRend=document.getElementById('calc_rend'), cVal=document.getElementById('calc_val'); let km = cKm?parseFloat(cKm.value)||0:0; let rend = cRend?parseFloat(cRend.value)||1:1; let val = cVal?parseFloat(cVal.value)||0:0; let litrosMensuales = km / rend; let ahorro = (litrosMensuales * 1350) - (litrosMensuales * 750); let cRes=document.getElementById('calc_res'); if(cRes) cRes.innerText = '$' + Math.max(0, ahorro).toLocaleString('es-CL'); let cRoi=document.getElementById('calc_roi'); if(cRoi) { if(ahorro > 0 && val > 0) { let meses = (val / ahorro).toFixed(1); cRoi.innerText = `¡Recuperas la inversión en ${meses} meses!`; } else cRoi.innerText = ''; } }
 
     function exportBackupJSON() { let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S.data)); let downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", `JM_Autogas_Backup_${new Date().toISOString().split('T')[0]}.json`); document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove(); }
-    function openCfg(){ let cl=document.getElementById('cfg-list'); if(cl) cl.innerHTML=S.lists.map(x=>`<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border); font-size:0.9rem"><span><b>${x.cat}</b>: ${x.val}</span><i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delCfg(${x.id})"></i></div>`).join(''); let mc=document.getElementById('m-cfg'); if(mc) mc.style.display='flex'; }
+    function openCfg(){ let cl=document.getElementById('cfg-list'); if(cl) cl.innerHTML=S.lists.map(x=>`<div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid var(--border); font-size:0.95rem; font-weight:500"><span><b>${x.cat}</b>: ${x.val}</span><i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delCfg(${x.id})"></i></div>`).join(''); let mc=document.getElementById('m-cfg'); if(mc) mc.style.display='flex'; }
     async function addCfg(){ let c=document.getElementById('c-cat'), v=document.getElementById('c-val'); if(!c||!v||!v.value)return; await apiCall({},new URLSearchParams({type:'config',action:'ADD',cat:c.value,val:v.value})); location.reload(); }
     async function delCfg(id){ if(!confirm("Eliminar?"))return; await apiCall({},new URLSearchParams({type:'config',action:'DEL',rowId:id})); location.reload(); }
-    function openAdm(){ let ul=document.getElementById('usr-list'); if(ul) ul.innerHTML=S.users.map(u=>`<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border); font-size:0.9rem"><div><b style="color:var(--primary)">${u.user}</b> <small style="color:var(--text-sec)">[${u.perms}]</small></div>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delUsr(${u.id})"></i>`:''}</div>`).join(''); let mu=document.getElementById('m-usr'); if(mu) mu.style.display='flex'; }
+    function openAdm(){ let ul=document.getElementById('usr-list'); if(ul) ul.innerHTML=S.users.map(u=>`<div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid var(--border); font-size:0.95rem"><div><b style="color:var(--primary)">${u.user}</b> <small style="color:var(--text-sec); font-weight:600">[${u.perms}]</small></div>${u.user!=='Jimmy'?`<i class="fas fa-trash" style="color:var(--st-err);cursor:pointer;opacity:0.7" onclick="delUsr(${u.id})"></i>`:''}</div>`).join(''); let mu=document.getElementById('m-usr'); if(mu) mu.style.display='flex'; }
     async function addUsr(){ let u=document.getElementById('u-new'), p=document.getElementById('p-new'), adm=document.getElementById('adm-chk'); if(!u||!p||!u.value||!p.value)return; let perm=(adm&&adm.checked)?'ALL':'ADD,EDIT'; await apiCall({},new URLSearchParams({type:'users',action:'CREATE',u_user:u.value,u_pass:p.value,u_perms:perm})); location.reload(); }
     async function delUsr(id){ if(confirm("Eliminar usuario?")){ await apiCall({},new URLSearchParams({type:'users',action:'DELETE',rowId:id})); location.reload(); }}
 </script>
