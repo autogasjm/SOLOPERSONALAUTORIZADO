@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JM Autogas | V32 Responsive & Performance</title>
+    <title>JM Autogas | V32.5 Fix Performance Transparency</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -11,7 +11,6 @@
         :root {
             --bg-body: #050507; 
             --bg-panel: rgba(22, 22, 24, 0.65);
-            --bg-panel-solid: #161618; /* Fallback Modo Rendimiento */
             --bg-input: rgba(255, 255, 255, 0.05);
             --bg-hover: rgba(255, 255, 255, 0.1);
             --primary: #00e676;
@@ -30,7 +29,6 @@
         body.light-mode {
             --bg-body: #f2f2f7; 
             --bg-panel: rgba(255, 255, 255, 0.75);
-            --bg-panel-solid: #ffffff; /* Fallback Modo Rendimiento */
             --bg-input: rgba(0, 0, 0, 0.04);
             --bg-hover: rgba(0, 0, 0, 0.08);
             --text-main: #1d1d1f;
@@ -50,7 +48,9 @@
             position: relative;
         }
 
-        body::before, body::after { content: ''; position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; transition: background 0.8s ease; }
+        body::before, body::after {
+            content: ''; position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; transition: background 0.8s ease;
+        }
         body::before { width: 50vw; height: 50vw; background: rgba(0, 230, 118, 0.12); top: -15vw; left: -10vw; }
         body::after { width: 40vw; height: 40vw; background: rgba(41, 121, 255, 0.08); bottom: 10vw; right: -10vw; }
         body.light-mode::before { background: rgba(0, 168, 84, 0.15); }
@@ -102,7 +102,6 @@
         
         .toolbar{padding:15px 20px;background: var(--bg-panel); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex-shrink:0;z-index:10} 
         
-        /* SCROLLABLE TOOLBAR GROUPS FOR MOBILE */
         .toolbar-scroll-wrapper { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
         .grp{background:var(--bg-input);border-radius:12px;padding:4px;display:flex;border:1px solid var(--border);height:42px;align-items:center;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);flex-shrink:0} 
         .btn-cap{background:transparent;border:none;padding:0 16px;height:32px;border-radius:8px;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap} 
@@ -122,7 +121,7 @@
         .loader-line{position:fixed;top:0;left:0;height:4px;width:100%;background:transparent;z-index:9999;overflow:hidden;display:none} .loader-bar{width:100%;height:100%;background:var(--primary);transform:translateX(-100%);animation:load 1.2s infinite;box-shadow:0 0 10px var(--primary)} @keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
         
         main{flex-grow:1;overflow-y:auto;overflow-x:auto;padding:0 20px;position:relative;-webkit-overflow-scrolling:touch} 
-        .animate-row{animation:fadeSlideUp 0.4s var(--spring) forwards;opacity:0}
+        .animate-row{animation:fadeSlideUp 0.4s var(--spring) forwards;}
         
         #v-pc{width:100%;border-collapse:collapse;min-width:1050px;margin-bottom:20px;margin-top:10px} 
         #v-pc th{text-align:left;padding:18px 15px;color:var(--text-sec);font-size:0.75rem;font-weight:700;text-transform:uppercase;border-bottom:2px solid var(--border);position:sticky;top:0;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);z-index:5;cursor:pointer;user-select:none;transition:all 0.3s;letter-spacing:0.5px} 
@@ -136,44 +135,20 @@
         
         #context-menu{position:absolute;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg), inset 0 1px 0 var(--border-light);display:none;flex-direction:column;padding:8px;z-index:4000;min-width:180px;animation:fadeSlideUp 0.2s var(--ease)} .cm-item{padding:12px 16px;font-size:0.9rem;color:var(--text-main);display:flex;align-items:center;gap:12px;cursor:pointer;border-radius:10px;transition:all 0.2s;font-weight:600} .cm-item:hover{background:var(--bg-hover);color:var(--primary)} .cm-item.cm-danger:hover{color:var(--st-err);background:rgba(255,23,68,0.1)}
         
-        .mob-only{display:none;flex-direction:column;gap:15px;padding-bottom:100px;margin-top:15px} .m-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:18px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light);position:relative;cursor:pointer;user-select:none;transition:all 0.2s} .m-card:active{transform:scale(0.96)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.08) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:10px;margin-bottom:10px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.2rem;letter-spacing:1px} body.light-mode .m-head{border-bottom:1px solid rgba(0,0,0,0.05)} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
-
-        /* MEDIA QUERIES OPTIMIZADAS */
-        @media (min-width: 1024px) { 
-            .pc-only { display: table; } 
-            .mob-only { display: none !important; } 
-        }
-        
-        /* TABLET OPTIMIZATION (768px - 1023px) */
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .pc-only { display: none !important; }
-            .mob-only { display: grid !important; grid-template-columns: repeat(2, 1fr); gap: 15px; } /* Grid layout for tablets */
-            .toolbar-scroll-wrapper { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-            .toolbar-scroll-wrapper::-webkit-scrollbar { display: none; }
-            .search-bar { width: 100%; margin-top: 10px; }
-            .m-box { width: 85%; max-height: 85vh; }
-            .form-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* MOBILE OPTIMIZATION (< 768px) */
-        @media (max-width: 767px) {
-            .pc-only { display: none !important; }
-            .mob-only { display: flex !important; }
+        @media (min-width:1024px){.pc-only{display:table} .mob-only{display:none !important}}
+        @media (max-width:768px){
             .form-grid{grid-template-columns:1fr;gap:12px} 
-            .toolbar{padding:12px 15px; flex-direction: column; align-items: stretch;} 
-            .toolbar-scroll-wrapper { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; width: 100%; display: flex; }
-            .toolbar-scroll-wrapper::-webkit-scrollbar { display: none; }
-            .search-bar{width:100%; margin-top: 5px;}
+            .toolbar{justify-content:space-between; padding:12px 15px;} 
+            .search-bar{width:100%}
             .itunes-display { padding: 4px 12px; gap: 8px; min-width: auto; }
             .display-user span.u-text { display: none; } 
             header { padding: 0 15px; }
-            
-            /* Full screen modal for mobile */
-            .m-box { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; border: none; }
-            .m-body-form { padding: 15px; }
+            .m-box { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
         }
+
+        .mob-only{display:none;flex-direction:column;gap:15px;padding-bottom:100px;margin-top:15px} .m-card{background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);padding:18px;border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-sm), inset 0 1px 0 var(--border-light);position:relative;cursor:pointer;user-select:none;transition:all 0.2s} .m-card:active{transform:scale(0.96)} .m-card.pinned{border-color:var(--primary-dim);background:linear-gradient(180deg,rgba(0,230,118,0.08) 0%,var(--bg-panel) 100%)} .m-head{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:10px;margin-bottom:10px} .m-pat{color:var(--primary);font-weight:800;font-family:monospace;font-size:1.2rem;letter-spacing:1px} body.light-mode .m-head{border-bottom:1px solid rgba(0,0,0,0.05)} .coord-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--primary);font-size:0.75rem;padding:2px 8px;border-radius:4px;border:1px solid rgba(0,230,118,0.2);margin-top:5px}
         
-        .chip-btn{display:inline-block;padding:6px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;font-size:0.75rem;color:var(--text-sec);cursor:pointer;margin-right:6px;margin-top:6px;transition:all 0.2s;user-select:none;font-weight:600} .chip-btn:hover,.chip-btn.active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary)}
+        .chip-btn{display:inline-block;padding:4px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;font-size:0.75rem;color:var(--text-sec);cursor:pointer;margin-right:6px;margin-top:6px;transition:all 0.2s;user-select:none;font-weight:600} .chip-btn:hover,.chip-btn.active{background:var(--primary-dim);color:var(--primary);border-color:var(--primary)}
         
         .footer{height:60px;background:var(--bg-panel);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;flex-shrink:0;z-index:20;font-size:0.9rem;color:var(--text-sec)} .pg-btn{width:36px;height:36px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:10px;cursor:pointer;display:grid;place-items:center;transition:all 0.2s;font-size:1.1rem} .pg-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)} .pg-btn:disabled{opacity:0.3;cursor:default}
         .fab{position:fixed;bottom:70px;right:20px;width:55px;height:55px;border-radius:50%;background:var(--primary);color:#000;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 5px 20px var(--primary-dim);cursor:pointer;z-index:100;transition:transform 0.2s} .fab:hover{transform:scale(1.1)}
@@ -186,15 +161,21 @@
         .tabs-nav{display:flex;background:var(--bg-input);border-radius:12px;margin:20px 25px 5px 25px;padding:4px;overflow-x:auto; scrollbar-width: none;} .tabs-nav::-webkit-scrollbar{display:none;} .tab-btn{flex:1;padding:10px 12px;background:transparent;border:none;color:var(--text-sec);font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.3s;border-radius:8px;white-space:nowrap} .tab-btn:hover{color:var(--text-main)} .tab-btn.active{color:var(--text-main);background:var(--bg-hover);box-shadow:var(--shadow-sm)}
         body.light-mode .tabs-nav{background:rgba(0,0,0,0.05)} body.light-mode .tab-btn.active{background:#fff; color:#000}
 
-        .m-body-form{padding:25px;overflow-y:auto;flex-grow:1} .tab-pane{display:none;opacity:0} .tab-pane.active{display:block;animation:fadeSlideUp 0.3s ease forwards}
-        .inp-grp{display:flex;flex-direction:column;position:relative} .inp-lbl{font-size:0.75rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+        .m-body-form{padding:25px;overflow-y:auto;flex-grow:1} .tab-pane{display:none;} .tab-pane.active{display:block;animation:fadeSlideUp 0.3s ease forwards}
         
-        .inp{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-main);border-radius:8px;transition:all 0.3s;font-size:0.9rem} .inp:focus{border-color:var(--primary);background:var(--bg-body);box-shadow:0 0 0 2px var(--primary-dim)} .inp:disabled{opacity:0.5; cursor:not-allowed; pointer-events:none;} textarea.inp{resize:vertical}
+        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px} 
+        .inp-grp{display:flex;flex-direction:column;position:relative} 
+        .inp-lbl{font-size:0.7rem;color:var(--text-sec);font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+        
+        .inp { width: 100%; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; transition: all 0.3s; font-size: 0.9rem; }
+        .inp:focus { border-color: var(--primary); background: var(--bg-body); box-shadow: 0 0 0 2px var(--primary-dim); } 
+        .inp:disabled { opacity:0.5; cursor:not-allowed; pointer-events:none; } 
+        textarea.inp { resize:vertical; }
         
         .save-indicator{font-size:0.7rem;color:var(--st-fetch);margin-left:10px;font-weight:600;opacity:0;transition:0.3s} .save-indicator.show{opacity:1}
 
         .sig-container{border:2px dashed var(--border);border-radius:16px;background:var(--bg-input);position:relative;transition:all 0.3s} .sig-container:hover{border-color:var(--text-sec)} canvas#sig-pad{width:100%;height:200px;touch-action:none;border-radius:16px;cursor:crosshair} .sig-clear{position:absolute;top:10px;right:10px;background:var(--bg-panel);border:1px solid var(--border);color:var(--text-main);padding:5px 10px;border-radius:6px;font-size:0.7rem;cursor:pointer;transition:all 0.2s} .sig-clear:hover{background:var(--st-err);border-color:var(--st-err)}
-        .mic-btn{position:absolute;right:10px;top:32px;color:var(--text-sec);cursor:pointer;transition:all 0.3s;font-size:1.1rem} .mic-btn:hover{color:var(--primary);transform:scale(1.2)} .mic-btn.recording{color:#ff1744;animation:pulse 1s infinite;transform:scale(1.2)} .inp.recording{border-color:#00e676 !important;box-shadow:0 0 15px rgba(0,230,118,0.3) !important}
+        .mic-btn{position:absolute;right:10px;top:28px;color:var(--text-sec);cursor:pointer;transition:all 0.3s;font-size:1.1rem} .mic-btn:hover{color:var(--primary);transform:scale(1.2)} .mic-btn.recording{color:#ff1744;animation:pulse 1s infinite;transform:scale(1.2)} .inp.recording{border-color:#00e676 !important;box-shadow:0 0 15px rgba(0,230,118,0.3) !important}
         
         .m-foot{padding:15px 20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:10px;background:transparent} .btn-act{flex:1;min-width:140px;padding:12px;background:var(--primary);color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:flex;justify-content:center;align-items:center;gap:8px;font-size:0.95rem} .btn-act:active{transform:scale(0.98)} .btn-sec{background:var(--bg-input);color:var(--text-main);border:1px solid var(--border);flex:0.5;font-size:0.85rem} .btn-sec:hover{border-color:var(--primary);color:var(--primary)}
         
@@ -208,12 +189,30 @@
         /* MANUAL DE AYUDA */
         .help-section { margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; } .help-section:last-child { border-bottom: none; } .help-title { color: var(--primary); font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; } .help-item { font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; } .help-item i { color: var(--text-sec); margin-top: 4px; font-size: 1rem; width: 20px; text-align: center; } .help-tag { background: var(--bg-hover); border: 1px solid var(--border); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; color: var(--primary); font-family: monospace; font-weight:700 }
 
-        /* PERFORMANCE MODE CLASSES */
-        body.perf-mode * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none !important; transition: none !important; animation-duration: 0.01ms !important; }
+        /* PERFORMANCE MODE CLASSES FIX - FONDOS SÓLIDOS (NO TRANSPARENTES) */
+        body.perf-mode * { 
+            backdrop-filter: none !important; 
+            -webkit-backdrop-filter: none !important; 
+            box-shadow: none !important; 
+            transition: none !important; 
+            animation: none !important; 
+        }
         body.perf-mode::before, body.perf-mode::after { display: none !important; }
-        body.perf-mode .m-box, body.perf-mode header, body.perf-mode .toolbar, body.perf-mode .footer, body.perf-mode .m-card, body.perf-mode .kb-col { background: var(--bg-panel-solid) !important; border: 1px solid var(--border) !important; }
+        
+        body.perf-mode .animate-row, body.perf-mode .tab-pane.active, body.perf-mode .toast, body.perf-mode #context-menu, body.perf-mode .m-box { opacity: 1 !important; transform: none !important; }
 
-        /* IMPRESION (NUEVO MÉTODO ANTI BLANK PAGE) */
+        /* FONDOS SOLIDOS HEXADECIMALES PARA EVITAR VARIABLES ROTAS */
+        body.perf-mode .m-box, body.perf-mode header, body.perf-mode .toolbar, body.perf-mode .footer, body.perf-mode .m-card, body.perf-mode .kb-col, body.perf-mode #v-pc th, body.perf-mode #context-menu { 
+            background: #111111 !important; 
+            border: 1px solid var(--border) !important; 
+        }
+        body.light-mode.perf-mode .m-box, body.light-mode.perf-mode header, body.light-mode.perf-mode .toolbar, body.light-mode.perf-mode .footer, body.light-mode.perf-mode .m-card, body.light-mode.perf-mode .kb-col, body.light-mode.perf-mode #v-pc th, body.light-mode.perf-mode #context-menu { 
+            background: #ffffff !important; 
+        }
+        
+        body.perf-mode .modal { background: rgba(0,0,0,0.95) !important; }
+
+        /* IMPRESION */
         @media print {
             body, html { height: auto !important; overflow: visible !important; display: block !important; background: #fff !important; color: #000 !important; }
             body > *:not(#print-area) { display: none !important; }
@@ -245,7 +244,7 @@
         <div class="lg-card" id="lg-card">
             <i class="fas fa-fingerprint lg-icon"></i>
             <h2 style="color:var(--text-main); margin:0 0 5px 0; font-weight:800">Bienvenido</h2>
-            <p style="color:var(--text-sec); margin-bottom:25px; font-size:0.95rem">JM Autogas V32</p>
+            <p style="color:var(--text-sec); margin-bottom:25px; font-size:0.95rem">JM Autogas V32.5</p>
             <input type="text" id="lg-u" class="lg-inp" placeholder="Usuario" autocomplete="off">
             <input type="tel" id="lg-p" class="lg-inp" placeholder="PIN (Números)" inputmode="numeric" pattern="[0-9]*" maxlength="8" style="-webkit-text-security: disc;">
             <label class="lg-chk-lbl"><input type="checkbox" id="lg-rem"> Recordar mi sesión</label>
@@ -278,7 +277,7 @@
         
         <div class="h-right">
             <div class="icon-btn" onclick="openHelp()" title="Manual de Uso"><i class="fas fa-question-circle" style="color:var(--primary)"></i></div>
-            <div class="icon-btn" onclick="togglePerformance()" title="Modo Rendimiento (Dispositivos Lentos)" id="btn-perf"><i class="fas fa-bolt"></i></div>
+            <div class="icon-btn" onclick="togglePerformance()" title="Modo Rendimiento" id="btn-perf"><i class="fas fa-bolt"></i></div>
             <div class="icon-btn" onclick="toggleTheme()" title="Tema"><i class="fas fa-adjust"></i></div>
             <div class="icon-btn" onclick="toggleFullScreen()" title="Pantalla Completa"><i class="fas fa-expand" id="ic-fs"></i></div>
             <div class="icon-btn" onclick="openCfg()" title="Configuración"><i class="fas fa-cog"></i></div>
@@ -368,7 +367,7 @@
                 <div class="help-section"><h4 class="help-title"><i class="fas fa-shield-alt"></i> 1. Acceso y General</h4><div class="help-item"><i class="fas fa-fingerprint"></i> <b>Recordar Sesión:</b> Marca la casilla al iniciar sesión para entrar automáticamente la próxima vez.</div><div class="help-item"><i class="fas fa-wifi"></i> <b>Modo Offline:</b> Si pierdes internet, puedes seguir guardando folios en tu "Bandeja Local".</div><div class="help-item"><i class="fas fa-bolt"></i> <b>Modo Rendimiento:</b> (Nuevo) Toca el icono de rayo ⚡ si la app va lenta. Desactiva animaciones y fondos pesados.</div></div>
                 <div class="help-section"><h4 class="help-title"><i class="fas fa-search"></i> 2. Buscador y Filtros Profesionales</h4><div class="help-item"><i class="fas fa-microphone"></i> <b>Búsqueda por Voz:</b> Toca el ícono del micrófono en la barra de búsqueda y dicta el nombre o patente.</div><div class="help-item"><i class="fas fa-minus-circle"></i> <b>Filtro Negativo:</b> Escribe un guion <span class="help-tag">-</span> antes de una palabra para EXCLUIRLA.</div><div class="help-item"><i class="fas fa-bolt"></i> <b>Búsqueda Rápida:</b> Presiona <i>"Enter"</i> en el buscador para buscar sin esperar.</div></div>
                 <div class="help-section"><h4 class="help-title"><i class="fas fa-columns"></i> 3. Vistas y Tablero</h4><div class="help-item"><i class="fas fa-tablet-alt"></i> <b>Optimización Tablet:</b> Las tarjetas ahora se acomodan en columnas dobles en iPads y Tablets.</div><div class="help-item"><i class="fas fa-table"></i> <b>Modo Kanban vs Tabla:</b> Alterna entre la tabla clásica y un panel de tarjetas por estado.</div><div class="help-item"><i class="fas fa-expand"></i> <b>Pantalla Completa:</b> Usa la app como un software de escritorio y evita distracciones.</div></div>
-                <div class="help-section"><h4 class="help-title"><i class="fas fa-mouse-pointer"></i> 4. Menú Contextual (Clic Derecho / Tocar Fila)</h4><div class="help-item"><i class="fas fa-star"></i> <b>Fijar Arriba (Pin):</b> Ancla un vehículo a la parte superior de la lista sin importar su fecha.</div><div class="help-item"><i class="fas fa-undo"></i> <b>Eliminación Segura (Undo):</b> Al borrar un folio, tienes 5 segundos para arrepentirte tocando "Deshacer".</div></div>
+                <div class="help-section"><h4 class="help-title"><i class="fas fa-mouse-pointer"></i> 4. Menú Contextual</h4><div class="help-item"><i class="fas fa-star"></i> <b>Fijar Arriba (Pin):</b> Ancla un vehículo a la parte superior de la lista sin importar su fecha.</div><div class="help-item"><i class="fas fa-undo"></i> <b>Eliminación Segura (Undo):</b> Al borrar un folio, tienes 5 segundos para arrepentirte tocando "Deshacer".</div></div>
                 <div class="help-section"><h4 class="help-title"><i class="fas fa-edit"></i> 5. Formulario de Folios</h4><div class="help-item"><i class="fas fa-lock-open"></i> <b>Modo Candado:</b> Úsalo para bloquear la pantalla si solo vas a leer y no quieres borrar nada por error.</div><div class="help-item"><i class="fas fa-magic"></i> <b>Varita Mágica (Año):</b> Ingresa una Patente chilena, toca la varita y estimará el año del auto.</div><div class="help-item"><i class="fas fa-camera"></i> <b>Cámara Local:</b> Permite tomar una foto de recepción. <i>Nota: Se borra al recargar la app.</i></div><div class="help-item"><i class="fas fa-stopwatch"></i> <b>Cronómetro:</b> Registra el tiempo exacto que le toma al técnico realizar el trabajo (Play/Pause).</div><div class="help-item"><i class="fas fa-signature"></i> <b>Firma Digital:</b> El cliente puede firmar con el dedo en la pantalla para validarlo en la Orden de Trabajo.</div></div>
                 <div class="help-section"><h4 class="help-title"><i class="fas fa-chart-line"></i> 6. Herramientas Extra</h4><div class="help-item"><i class="fas fa-chart-pie"></i> <b>Dashboard:</b> Analiza la efectividad, suma el KM de la flota, y grafica el rendimiento de los técnicos.</div><div class="help-item"><i class="fas fa-gas-pump"></i> <b>Calculadora ROI GLP:</b> Calcula el ahorro mensual y el retorno de inversión.</div><div class="help-item"><i class="fas fa-file-pdf"></i> <b>Exportador y Print:</b> Genera reportes PDF limpios o imprime la Orden de Trabajo y Garantía.</div></div>
             </div>
@@ -383,7 +382,7 @@
                     <span id="save-ind" class="save-indicator"><i class="fas fa-check"></i> Borrador</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:8px">
-                    <div class="icon-btn" onclick="toggleReadOnly()" title="Modo Seguro" id="btn-lock-wrapper">
+                    <div class="icon-btn" onclick="toggleReadOnly()" title="Modo Seguro">
                         <i class="fas fa-lock-open" id="btn-lock-icon"></i>
                     </div>
                     <div class="icon-btn" onclick="closeM('m-form')" title="Cerrar"><i class="fas fa-times"></i></div>
@@ -450,7 +449,9 @@
                     <div class="form-grid">
                         <div class="inp-grp" style="grid-column: span 2"><span class="inp-lbl">TÉCNICO *</span><select id="i_tec" class="inp" onchange="doSaveDraft()"></select></div>
                         
-                        <div class="inp-grp" style="grid-column: span 2; display:flex; flex-direction:row; align-items:center; gap:20px; background:var(--bg-input); border-radius:12px; padding:8px 20px; border:1px solid var(--border)">
+                        <div class="inp-grp"><span class="inp-lbl">COORDENADAS</span><input type="text" id="i_coo" class="inp" onchange="doSaveDraft()"></div>
+                        
+                        <div class="inp-grp" style="grid-column: span 3; display:flex; flex-direction:row; align-items:center; gap:20px; background:var(--bg-input); border-radius:12px; padding:8px 20px; border:1px solid var(--border)">
                             <div style="flex:1"><span class="inp-lbl" style="margin:0; font-size:0.7rem">TIEMPO REPARACIÓN</span><div class="timer-display" id="tt-disp">00:00:00</div></div>
                             <button class="btn-act btn-sec" style="padding:12px; flex:0; width:50px; height:50px; border-radius:50%; border:2px solid var(--primary); color:var(--primary)" id="btn-tt" onclick="toggleTimer()"><i class="fas fa-play" style="margin-left:3px"></i></button>
                         </div>
@@ -524,17 +525,9 @@
     let S = { cat:'TALLER', year:'2026', page:1, data:[], user:null, lists:[], users:[], q:'', timer:null, sort: { col: null, asc: false }, sedeFilter: 'Todas', pinned: [], viewMode: 'table', qFilter: null, totalHist: null };
     const MAP=['i_fec','i_sede','i_fic','i_cli','i_rut','i_cel','i_com','i_mar','i_mod','i_pat','i_col','i_km','i_ano','i_coo','i_dia','i_tec','i_mat'];
 
-    // --- MODO RENDIMIENTO (NUEVO) ---
-    function initPerformanceMode() {
-        if(localStorage.getItem('perf_mode') === 'true') { document.body.classList.add('perf-mode'); document.getElementById('btn-perf').classList.add('active-mode'); }
-    }
-    function togglePerformance() {
-        document.body.classList.toggle('perf-mode');
-        let isActive = document.body.classList.contains('perf-mode');
-        localStorage.setItem('perf_mode', isActive);
-        document.getElementById('btn-perf').classList.toggle('active-mode', isActive);
-        showToast(isActive ? "⚡ Modo Rendimiento Activo (Efectos reducidos)" : "✨ Modo Visual Activo (Efectos completos)");
-    }
+    // --- MODO RENDIMIENTO ---
+    function initPerformanceMode() { if(localStorage.getItem('perf_mode') === 'true') { document.body.classList.add('perf-mode'); document.getElementById('btn-perf').classList.add('active-mode'); } }
+    function togglePerformance() { document.body.classList.toggle('perf-mode'); let isActive = document.body.classList.contains('perf-mode'); localStorage.setItem('perf_mode', isActive); document.getElementById('btn-perf').classList.toggle('active-mode', isActive); showToast(isActive ? "⚡ Modo Rendimiento Activo" : "✨ Modo Visual Activo"); }
 
     // --- UTILIDADES GLOBALES ---
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
@@ -711,7 +704,7 @@
         document.getElementById('context-menu').style.display = 'none';
     }
 
-    // --- ABRIR FOLIO (CLICK DIRECTO EN LA FILA) ---
+    // --- ABRIR FOLIO ---
     window.openFormById = function(id) {
         try {
             if(id === 'new') { form(null); return; }
@@ -761,7 +754,7 @@
                 if(S.viewMode === 'table') {
                     if(window.innerWidth >= 1024) {
                         let tr=document.createElement('tr'); tr.className = `animate-row ${isP?'pinned':''}`; tr.setAttribute('data-id', id);
-                        // ALINEACION CHECKBOX REPARADA (td width:40px; text-align:center)
+                        // FIX: TD centrado para el checkbox igual que el TH
                         tr.innerHTML=`<td style="width:40px; text-align:center" onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" value="${id}" onclick="event.stopPropagation()" style="cursor:pointer; width:16px; height:16px; accent-color:var(--primary)"></td>
                         <td>${isP?'<i class="fas fa-star" style="color:var(--primary); font-size:0.7rem"></i> ':''}${hl(d)}</td><td class="col-1">${hl(r[1])}</td><td class="col-2">${hl(r[2])}</td><td class="col-3" style="font-weight:700">${hl(r[3])}</td><td style="color:var(--primary);font-family:monospace;font-weight:800">${hl(r[9])}</td><td class="col-5">${hl(r[7])} ${hl(r[8])}</td><td class="col-6" style="color:var(--text-sec);font-size:0.85rem">${hl(r[13])}</td><td class="col-7 td-diag" title="${r[14]}">${stat.b}${hl(r[14])}</td>`;
                         pc.appendChild(tr);
@@ -797,7 +790,7 @@
     
     function switchTab(idx) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); let btn = document.getElementById('tb-'+idx); if(btn) btn.classList.add('active'); document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); document.getElementById('tab-'+idx).classList.add('active'); }
     
-    // VISUAL DE LECTURA BLOQUEADA CORREGIDA (SOLO OPACIDAD)
+    // VISUAL DE LECTURA BLOQUEADA (FIX BUG DOBLE ICONO)
     function toggleReadOnly() { 
         let icon = document.getElementById('btn-lock-icon');
         let wrapper = document.getElementById('btn-lock-wrapper');
